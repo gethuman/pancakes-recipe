@@ -10,15 +10,6 @@ var batter  = require('batter');
 
 batter.whip(gulp, taste, {
     targetDir:      __dirname,
-    unitTargetCode: ['utils/*.js', 'middleware/*.js'],
+    unitTargetCode: ['utils/*.js', 'middleware/*.js', 'batch/*.js'],
     intTargetCode:  ['middleware/*.js']
 });
-
-//taste.init({
-//    gulp:       gulp,
-//    rootDir:    __dirname,
-//    loadModule: require,
-//    unitTargetCode: ['middleware/**/*.js', 'utils/**/*.js']
-//});
-//
-//gulp.task('default', ['jshint', 'test']);

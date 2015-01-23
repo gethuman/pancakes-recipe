@@ -1,6 +1,6 @@
 {
   "name": "pancakes-recipe",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Misc common utilities and middleware for pancakes apps",
   "main": "pancakes.recipe.js",
   "repository": {
@@ -34,7 +34,7 @@
     "yar": "^3.0.3"
   },
   "devDependencies": {
-    "batter": "0.0.9",
+    "batter": "0.0.10",
     "gulp": "^3.8.10",
     "taste": "^0.1.44"
   }
