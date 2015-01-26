@@ -19,7 +19,7 @@ module.exports = function (Q, _, Hapi, pancakes, log, config, chainPromises) {
      */
     function getServer(container) {
         var server = new Hapi.Server();
-        server.connection({ port: process.env.PORT || config[container].port });
+        server.connection({ port: config[container].port || process.env.PORT });
         return server;
     }
 
