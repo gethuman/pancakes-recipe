@@ -45,10 +45,17 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, AppError
             domain = host.substring(0, idx);
         }
 
-        // if the domain is not in the map, throw an error
+        // get the app name
         var appName = domainMap[domain];
+
+        // if no app name found, try to use the default (else if no default, throw error)
         if (!appName) {
-            throw AppError.invalidRequestError('No valid domain in requested host: ' + req.info.host);
+            if (config.webserver && config.webserver.defaultApp) {
+                appName = config.webserver.defaultApp;
+            }
+            else {
+                throw AppError.invalidRequestError('No valid domain in requested host: ' + req.info.host);
+            }
         }
 
         // at this point we should have the domain and the app name so set it in the request
