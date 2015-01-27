@@ -21,6 +21,7 @@
     "bcrypt": "^0.8.0",
     "bell": "^2.0.0",
     "boom": "^2.6.1",
+    "commander": "^2.6.0",
     "continuation-local-storage": "^3.1.2",
     "funnelweb": "0.0.1",
     "hapi": "^8.1.0",

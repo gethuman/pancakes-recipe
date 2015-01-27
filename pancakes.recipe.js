@@ -7,7 +7,7 @@
  */
 module.exports = {
     rootDir:            __dirname,
-    serverModuleDirs:   ['middleware', 'utils']
+    serverModuleDirs:   ['middleware', 'utils', 'batch']
 };
 
 

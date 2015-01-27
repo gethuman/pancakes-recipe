@@ -13,22 +13,29 @@ module.exports = function (Q, _, resources, mongo, config, log) {
      */
     function run(options) {
         var target = options.target;
-        var promise;
+        var promises = [];
 
         // get the database connections
         var primary = mongo.connectRaw(config.mongo.url);
         var archive = mongo.connectRaw(config.mongo.archive);
 
-        if (target) {
-            promise = archiveResource(resources[target], primary, archive);
+        // if there is a target and it is not all
+        if (target && target !== 'all') {
+            if (!resources[target]) {
+                throw new Error('There is no collection called ' + target);
+            }
+
+            promises.push(archiveResource(resources[target], primary, archive));
         }
+        // else archive all resources
         else {
-            promise = Q.all(resources.map(function (resource) {
-                return archiveResource(resource, primary, archive);
-            }));
+            _.each(resources, function (resource) {
+                promises.push(archiveResource(resource, primary, archive));
+            });
         }
 
-        return promise.then(function () {
+        log.info('starting archive...');
+        return Q.all(promises).then(function () {
 
             log.info('All archiving complete');
 
