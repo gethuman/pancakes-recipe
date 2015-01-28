@@ -91,14 +91,23 @@ module.exports = function (Q, _, pancakes, adapters, resources, reactors, config
      * @returns {*}
      */
     function initAdapters(container) {
-        if (container === 'webserver') { return new Q(); }
 
         var calls = [];
-        _.each(adapters, function (adapter) {
-            if (adapter.init) {
-                calls.push(adapter.init);
-            }
-        });
+
+        if (container === 'webserver') {
+            _.each(adapters, function (adapter) {
+                if (adapter.webInit) {
+                    calls.push(adapter.webInit);
+                }
+            });
+        }
+        else {
+            _.each(adapters, function (adapter) {
+                if (adapter.init) {
+                    calls.push(adapter.init);
+                }
+            });
+        }
 
         return chainPromises(calls, config);
     }

@@ -4,11 +4,8 @@
  *
  * All passport related functionality
  */
-module.exports = function (Q, _, crypto, userService, lruCache, config) {
+module.exports = function (Q, _, crypto, userService, userCacheService, config) {
     var oneYear = 365 * 24 * 60 * 60 * 1000;
-
-    // create a 60 second in-memory cache for user info just so that it is not hit multiple times per request
-    var userCache = lruCache({ max: 1000, maxAge: 60000 });
 
     // we will use the same cookie config values for both the session and the social auth
     var cookieConfig = {
@@ -157,21 +154,18 @@ module.exports = function (Q, _, crypto, userService, lruCache, config) {
         // if no id, return without doing anything
         if (!_id) { reply.continue(); return; }
 
-        // if user in the cache, just return that
-        var cachedUser = userCache.get(_id + '');
-
-        if (cachedUser) {
-            req.user = cachedUser;
-            reply.continue();
-            return;
-        }
-
-        // otherwise get the user from the database
-        userService.findById({ caller: userService.admin, _id: _id })
+        var cachedUser = null;
+        userCacheService.get({ key: _id + '' })
             .then(function (user) {
-                if (user) {
-                    userCache.set(_id + '', user);
-                    req.user = user;
+                cachedUser = user;
+                return user ? user : userService.findById({ caller: userService.admin, _id: _id });
+            })
+            .then(function (user) {
+                req.user = user;
+
+                // if user found in database, but not in cache, save in cache
+                if (user && !cachedUser) {
+                    userCacheService.set({ key: _id + '', value: user });
                 }
 
                 reply.continue();

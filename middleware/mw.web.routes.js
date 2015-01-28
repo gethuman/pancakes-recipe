@@ -4,7 +4,7 @@
  *
  * All the web server routes
  */
-module.exports = function (Q, pancakes, mwCommonRoutes, mwTasks, mwViewModel) {
+module.exports = function (Q, pancakes, pageCacheService, mwCommonRoutes, mwTasks, mwViewModel) {
 
     /**
      * Loading web routes
@@ -40,7 +40,8 @@ module.exports = function (Q, pancakes, mwCommonRoutes, mwTasks, mwViewModel) {
         pancakes.addWebRoutes({
             server:     server,
             preProcess: mwTasks.isTaskHandled,
-            addToModel: mwViewModel.addToModel
+            addToModel: mwViewModel.addToModel,
+            pageCacheService: pageCacheService
         });
 
         return new Q(ctx);

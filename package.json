@@ -1,6 +1,6 @@
 {
   "name": "pancakes-recipe",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Misc common utilities and middleware for pancakes apps",
   "main": "pancakes.recipe.js",
   "repository": {
@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/gethuman/pancakes-recipe",
   "dependencies": {
-    "bcrypt": "^0.8.0",
+    "bcrypt": "^0.8.1",
     "bell": "^2.0.0",
     "boom": "^2.6.1",
     "commander": "^2.6.0",
@@ -26,17 +26,17 @@
     "funnelweb": "0.0.1",
     "hapi": "^8.1.0",
     "hapi-auth-cookie": "^2.0.0",
-    "lodash": "^2.4.1",
+    "lodash": "^3.0.0",
     "lru-cache": "^2.5.0",
     "moment": "^2.9.0",
-    "mongoose": "^3.8.21",
-    "pancakes": "^0.1.33",
+    "mongoose": "^3.8.22",
+    "pancakes": "^0.1.42",
     "q": "^1.1.2",
     "yar": "^3.0.3"
   },
   "devDependencies": {
-    "batter": "0.0.10",
+    "batter": "0.0.11",
     "gulp": "^3.8.10",
-    "taste": "^0.1.44"
+    "taste": "^0.1.45"
   }
 }
