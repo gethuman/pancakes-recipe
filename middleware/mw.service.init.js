@@ -40,19 +40,27 @@ module.exports = function (Q, _, pancakes, adapters, resources, reactors, config
             if (objUtils.matchesCriteria(payload.data, reactData.criteria)) {
                 reactor = reactors[reactData.type + '.reactor'];
 
-                return Q.when(reactor.react({
-                    caller:         payload.caller,
-                    inputData:      payload.inputData,
-                    data:           payload.data,
-                    context:        payload.context,
-                    reactData:      reactData,
-                    resourceName:   eventData.name.resource,
-                    methodName:     eventData.name.method
-                }))
-                    .catch(function (err) {
-                        log.error(err);
-                    });
+                if (reactor) {
+                    return Q.when(reactor.react({
+                        caller:         payload.caller,
+                        inputData:      payload.inputData,
+                        data:           payload.data,
+                        context:        payload.context,
+                        reactData:      reactData,
+                        resourceName:   eventData.name.resource,
+                        methodName:     eventData.name.method
+                    }))
+                        .catch(function (err) {
+                            log.error(err);
+                        });
+                }
+                else {
+                    log.info('reactHandler does not exist: ' + JSON.stringify(reactData));
+                }
             }
+
+            // return resolved promise if no reactor found
+            return new Q();
         };
     }
 
