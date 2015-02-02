@@ -7,7 +7,7 @@
 module.exports = function (Q, funnelweb, crypto, userService, visitorService,
                            mongoose, config, log, AppError, cls) {
 
-    var isRobot = funnelweb;    // better name for lib used to detect robots
+    //var isRobot = funnelweb;    // better name for lib used to detect robots
     var partnerCache = {};      // partners don't change often, so just store them statically
 
     /**
@@ -22,28 +22,28 @@ module.exports = function (Q, funnelweb, crypto, userService, visitorService,
         // if visitor ID already exists, we are all set, so just return
         if (req.session && req.session.get('visitorId')) { return; }
 
-        var headers = req.headers || {};
-        var userAgent = headers['user-agent'] || '';
+        //var headers = req.headers || {};
+        //var userAgent = headers['user-agent'] || '';
 
         // no visitor info in session, so create a new visitor
         var id = (new mongoose.Types.ObjectId()) + '';  // coerce to a string
         if (req.session) { req.session.set('visitorId', id); }
 
         // we want to force async so processes occurs without stopping to check user agent
-        setTimeout(function () {
-            if (isRobot(userAgent)) { return; }     // robots are not tracked as visitors
-
-            visitorService.create({
-                caller: visitorService.admin,
-                data:   { _id: id }                 // ips: [ req.info.remoteAddress ], headers: req.headers
-            })
-                .then(function (data) {
-                    log.debug('Visitor info saved for ' + data._id, null);
-                })
-                .catch(function (err) {
-                    log.error(err, null);
-                });
-        }, 1);
+        //setTimeout(function () {
+        //    if (isRobot(userAgent)) { return; }     // robots are not tracked as visitors
+        //
+        //    visitorService.create({
+        //        caller: visitorService.admin,
+        //        data:   { _id: id }                 // ips: [ req.info.remoteAddress ], headers: req.headers
+        //    })
+        //        .then(function (data) {
+        //            log.debug('Visitor info saved for ' + data._id, null);
+        //        })
+        //        .catch(function (err) {
+        //            log.error(err, null);
+        //        });
+        //}, 1);
     }
 
     /**
