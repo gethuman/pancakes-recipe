@@ -198,7 +198,7 @@ module.exports = function (Q, funnelweb, crypto, userService, visitorService,
         server.ext('onPreHandler', function (req, reply) {
 
             // if request for a static file, return right away
-            if (req.url.path.indexOf(config.staticFileRoot) === 0) { reply.continue(); return; }
+            if (req.url.path.indexOf(config.staticFiles.assets) > -1) { reply.continue(); return; }
 
             // only if we are on the webserver, initialize the visitor
             if (container === 'webserver') { visitorInit(req); }

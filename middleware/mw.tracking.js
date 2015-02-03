@@ -22,7 +22,7 @@ module.exports = function (Q, config) {
         ctx.server.ext('onPostHandler', function (req, reply) {
             var url = req.url.pathname;
             var domain = req.app.domain;
-            var isNotStaticFile = url.indexOf(config.staticFileRoot) < 0;
+            var isNotStaticFile = url.indexOf(config.staticFiles.assets) < 0;
 
             if (domain !== 'trust' && url !== '/ping' && url !== '/robots.txt' && isNotStaticFile && req.session) {
                 req.session.set('lastPage', req.info.host + url);

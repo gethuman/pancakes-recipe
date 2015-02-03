@@ -7,6 +7,10 @@
  */
 module.exports = function (_, appConfigs, i18n, config) {
 
+    var useSSL = (config.api && config.api.useSSL !== undefined) ?
+        config.api.useSSL : config.useSSL;
+    var httpPrefix = useSSL ? 'https://' : 'http://';
+
     /**
      * Add to the model with certain custom values for the app
      * @param model
@@ -19,8 +23,7 @@ module.exports = function (_, appConfigs, i18n, config) {
         var appName      = model.appName = routeInfo.appName;
         var appConfig    = appConfigs[appName];
         var appPascal    = appName.substring(0, 1).toUpperCase() + appName.substring(1);
-        var apiBase      = (config.api.sslEnabled ? 'https://' : 'http://') +
-            config.api.host + ':' + config.api.port + '/' + config.api.version;
+        var apiBase      = httpPrefix + config.api.host + ':' + config.api.port + '/' + config.api.version;
 
         // add the page head info
         if (model.pageHead) {
@@ -55,7 +58,7 @@ module.exports = function (_, appConfigs, i18n, config) {
                 appEnv:                 config.env,
                 version:                config.staticVersion,
                 baseHost:               config.baseHost,
-                staticFileRoot:         config.staticFileRoot,
+                staticFileRoot:         httpPrefix + config.staticFiles.assets + '/',
                 domains:                config.domains,
                 realtime: {
                     postsHost:          config.realtime.postsHost,

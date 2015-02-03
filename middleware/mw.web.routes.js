@@ -4,7 +4,15 @@
  *
  * All the web server routes
  */
-module.exports = function (Q, pancakes, pageCacheService, mwCommonRoutes, mwTasks, mwViewModel) {
+module.exports = function (Q, pancakes, pageCacheService, mwCommonRoutes, mwTasks, mwViewModel, config) {
+
+    //TODO: lock this down so only from certain origins (also repeated with pancakes.hapi.api)
+    var cors = {
+        origin:         config.corsHosts || [],
+        headers:        ['Accept', 'Accept-Version', 'Content-Type', 'Api-Version', 'X-Requested-With'],
+        methods:        ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        credentials:    true
+    };
 
     /**
      * Loading web routes
@@ -33,6 +41,7 @@ module.exports = function (Q, pancakes, pageCacheService, mwCommonRoutes, mwTask
         server.route({
             method:     'GET',
             path:       '/dist/{path*}',
+            config:     { cors: cors },
             handler:    { directory: { path: './dist', listing: false, index: false } }
         });
 
