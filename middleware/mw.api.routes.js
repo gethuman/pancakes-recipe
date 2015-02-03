@@ -25,6 +25,13 @@ module.exports = function (Q, pancakes, mwCommonRoutes, config, AppError) {
             apiPrefix:  '/' + config.api.version
         });
 
+        // this is needed for the OpsWorks healthcheck on AWS (TODO: come up with another solution)
+        server.route({
+            method:     'GET',
+            path:       '/',
+            handler:    function (request, reply) { reply('salutations'); }
+        });
+
         // finally catch all for 404 error handler
         server.route({
             method:     '*',
