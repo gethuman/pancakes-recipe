@@ -5,7 +5,7 @@
  * Unit test for base64 encoding
  */
 var name    = 'utils/base64';
-var taste   = require('../pancakes.taste.js');
+var taste   = require('../pancakes.taste.js')();
 var base64  = taste.flapjack(name);
 
 describe('UNIT ' + name, function () {

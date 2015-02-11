@@ -5,7 +5,7 @@
  * Unit test the country decoder
  */
 var name    = 'utils/country.decoder';
-var taste   = require('../pancakes.taste.js');
+var taste   = require('../pancakes.taste.js')();
 var decoder = taste.flapjack(name);
 var _           = require('lodash');
 

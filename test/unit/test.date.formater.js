@@ -5,7 +5,7 @@
  *
  */
 var name        = 'utils/date.formater';
-var taste       = require('../pancakes.taste.js');
+var taste       = require('../pancakes.taste.js')();
 var dateFormat  = taste.flapjack(name);
 
 describe('UNIT ' + name, function () {

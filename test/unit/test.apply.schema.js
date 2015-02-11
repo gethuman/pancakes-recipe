@@ -5,7 +5,7 @@
  * Unit test for applying schema to some data
  */
 var name        = 'utils/apply.schema';
-var taste       = require('../pancakes.taste.js');
+var taste       = require('../pancakes.taste.js')();
 var applySchema = taste.flapjack(name);
 
 describe('UNIT ' + name, function () {

@@ -8,7 +8,7 @@
  * Unit tests for log
  */
 var name    = 'utils/log';
-var taste   = require('../pancakes.taste.js');
+var taste   = require('../pancakes.taste.js')();
 var log     = taste.flapjack(name);
 var bus     = taste.flapjack('eventBus');
 

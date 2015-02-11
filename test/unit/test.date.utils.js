@@ -5,7 +5,7 @@
  * Testing date utils
  */
 var name        = 'utils/date.utils';
-var taste       = require('../pancakes.taste.js');
+var taste       = require('../pancakes.taste.js')();
 var dateUtils   = taste.flapjack(name);
 
 describe('UNIT ' + name, function () {
