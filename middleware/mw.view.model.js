@@ -10,9 +10,9 @@ module.exports = function (_, appConfigs, i18n, config) {
     var useSSL = (config.api && config.api.clientUseSSL !== undefined) ?
         config.api.clientUseSSL : config.useSSL;
     var apiBase = (useSSL ? 'https://' : 'http://') + config.api.host;
-    var apiPort = config.api.port;
+    var apiPort = config.api.port + '';
 
-    if (apiPort !== 80 && apiPort !== 443) {
+    if (apiPort !== '80' && apiPort !== '433') {
         apiBase += ':' + apiPort;
     }
     apiBase += '/' + config.api.version;
