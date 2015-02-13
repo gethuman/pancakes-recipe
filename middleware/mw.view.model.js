@@ -67,12 +67,7 @@ module.exports = function (_, appConfigs, i18n, config) {
                 version:                config.staticVersion,
                 baseHost:               config.baseHost,
                 staticFileRoot:         staticFileRoot,
-                domains:                config.domains,
-                realtime: {
-                    postsHost:          config.realtime.postsHost,
-                    presenceHost:       config.realtime.presenceHost,
-                    adminHost:          config.realtime.adminHost
-                }
+                domains:                config.domains
             },
             context: {
                 app:                    appName,
@@ -80,6 +75,14 @@ module.exports = function (_, appConfigs, i18n, config) {
             },
             initialSearchResults:       model.searchResults
         };
+
+        if (config.realtime) {
+            model.clientData.config.realtime = {
+                postsHost:          config.realtime.postsHost,
+                presenceHost:       config.realtime.presenceHost,
+                adminHost:          config.realtime.adminHost
+            };
+        }
 
         return model;
     }

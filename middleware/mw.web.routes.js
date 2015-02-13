@@ -50,7 +50,8 @@ module.exports = function (Q, pancakes, pageCacheService, mwCommonRoutes, mwTask
             server:     server,
             preProcess: mwTasks.isTaskHandled,
             addToModel: mwViewModel.addToModel,
-            pageCacheService: pageCacheService
+            pageCacheService: pageCacheService,
+            config: config
         });
 
         return new Q(ctx);

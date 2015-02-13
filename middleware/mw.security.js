@@ -27,86 +27,90 @@ module.exports = function (Q, _, crypto, userService, userCacheService, config) 
         server.register({ register: require('bell') }, function (err) {
             if (err) { throw err; }
 
-            server.auth.strategy('facebook', 'bell', _.extend({
-                cookie:         'bell-facebook',
-                clientId:       config.security.facebookAppId,
-                clientSecret:   config.security.facebookAppSecret,
-                //provider:       'facebook'
-                provider: {
-                    protocol:   'oauth2',
-                    auth:       'https://graph.facebook.com/oauth/authorize',
-                    token:      'https://graph.facebook.com/oauth/access_token',
-                    scope:      ['email'],
-                    scopeSeparator: ',',
-                    profile: function (credentials, params, get, callback) {
-                        var query = {
-                            appsecret_proof: crypto
-                                .createHmac('sha256', this.clientSecret)
-                                .update(credentials.token)
-                                .digest('hex')
-                        };
-
-                        get('https://graph.facebook.com/me', query, function (profile) {
-                            credentials.profile = {
-                                authType:           'facebook',
-                                email:              profile.email,
-                                emailLower:         profile.email.toLowerCase(),
-                                //profileImg:         profile.picture,
-                                //emailConfirmed:     profile.verified_email,
-                                name: {
-                                    firstName:      profile.first_name,
-                                    lastName:       profile.last_name,
-                                    middleName:     profile.middle_name,
-                                    displayName:    profile.name
-                                },
-                                authData: {
-                                    id:             profile.id,
-                                    username:       profile.username
-                                }
+            if (config.security.facebookAppId) {
+                server.auth.strategy('facebook', 'bell', _.extend({
+                    cookie:         'bell-facebook',
+                    clientId:       config.security.facebookAppId,
+                    clientSecret:   config.security.facebookAppSecret,
+                    //provider:       'facebook'
+                    provider: {
+                        protocol:   'oauth2',
+                        auth:       'https://graph.facebook.com/oauth/authorize',
+                        token:      'https://graph.facebook.com/oauth/access_token',
+                        scope:      ['email'],
+                        scopeSeparator: ',',
+                        profile: function (credentials, params, get, callback) {
+                            var query = {
+                                appsecret_proof: crypto
+                                    .createHmac('sha256', this.clientSecret)
+                                    .update(credentials.token)
+                                    .digest('hex')
                             };
 
-                            return callback();
-                        });
+                            get('https://graph.facebook.com/me', query, function (profile) {
+                                credentials.profile = {
+                                    authType:           'facebook',
+                                    email:              profile.email,
+                                    emailLower:         profile.email.toLowerCase(),
+                                    //profileImg:         profile.picture,
+                                    //emailConfirmed:     profile.verified_email,
+                                    name: {
+                                        firstName:      profile.first_name,
+                                        lastName:       profile.last_name,
+                                        middleName:     profile.middle_name,
+                                        displayName:    profile.name
+                                    },
+                                    authData: {
+                                        id:             profile.id,
+                                        username:       profile.username
+                                    }
+                                };
+
+                                return callback();
+                            });
+                        }
                     }
-                }
-            }, cookieConfig));
+                }, cookieConfig));
+            }
 
-            server.auth.strategy('google', 'bell', _.extend({
-                cookie:         'bell-google',
-                clientId:       config.security.googleAppId,
-                clientSecret:   config.security.googleAppSecret,
-                provider: {
-                    protocol:   'oauth2',
-                    auth:       'https://accounts.google.com/o/oauth2/auth',
-                    token:      'https://accounts.google.com/o/oauth2/token',
-                    scope:      ['email', 'profile'],
-                    profile: function (credentials, params, get, callback) {
-                        get('https://www.googleapis.com/oauth2/v1/userinfo', null, function (profile) {
+            if (config.security.googleAppId) {
+                server.auth.strategy('google', 'bell', _.extend({
+                    cookie:         'bell-google',
+                    clientId:       config.security.googleAppId,
+                    clientSecret:   config.security.googleAppSecret,
+                    provider: {
+                        protocol:   'oauth2',
+                        auth:       'https://accounts.google.com/o/oauth2/auth',
+                        token:      'https://accounts.google.com/o/oauth2/token',
+                        scope:      ['email', 'profile'],
+                        profile: function (credentials, params, get, callback) {
+                            get('https://www.googleapis.com/oauth2/v1/userinfo', null, function (profile) {
 
-                            credentials.profile = {
-                                authType:           'google',
-                                email:              profile.email,
-                                emailLower:         profile.email.toLowerCase(),
-                                profileImg:         profile.picture,
-                                emailConfirmed:     profile.verified_email,
-                                name: {
-                                    firstName:      profile.given_name,
-                                    lastName:       profile.family_name,
-                                    displayName:    profile.name
-                                },
-                                authData: {
-                                    locale:         profile.locale,
-                                    gender:         profile.gender,
-                                    link:           profile.link,
-                                    id:             profile.id
-                                }
-                            };
+                                credentials.profile = {
+                                    authType:           'google',
+                                    email:              profile.email,
+                                    emailLower:         profile.email.toLowerCase(),
+                                    profileImg:         profile.picture,
+                                    emailConfirmed:     profile.verified_email,
+                                    name: {
+                                        firstName:      profile.given_name,
+                                        lastName:       profile.family_name,
+                                        displayName:    profile.name
+                                    },
+                                    authData: {
+                                        locale:         profile.locale,
+                                        gender:         profile.gender,
+                                        link:           profile.link,
+                                        id:             profile.id
+                                    }
+                                };
 
-                            return callback();
-                        });
+                                return callback();
+                            });
+                        }
                     }
-                }
-            }, cookieConfig));
+                }, cookieConfig));
+            }
         });
     }
 
