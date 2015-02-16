@@ -54,7 +54,7 @@ module.exports = {
          * @returns {*} The user object
          */
         function getUser() {
-            return userService.findMe().then(setUserLocal);
+            return userService.findMe ? userService.findMe().then(setUserLocal) : {};
         }
 
         /**
