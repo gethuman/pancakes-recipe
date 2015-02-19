@@ -46,8 +46,8 @@ function init(config) {
         role: 'admin'
     };
     headers = {
-        'x-partner-id':       config.security.siteId,
-        'x-partner-secret':   config.security.siteSecret
+        'x-app-id':       config.security.siteId,
+        'x-app-secret':   config.security.siteSecret
     };
 
     var useSSL = (config.api && config.api.serverUseSSL !== undefined) ?

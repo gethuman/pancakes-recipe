@@ -57,8 +57,8 @@ module.exports = function (Q, funnelweb, crypto, userService, visitorService,
 
         /* jshint camelcase:false */
         // if passport didn't already attach user, only other possibility is a parter
-        var partnerId       = req.headers['x-partner-id'];
-        var partnerSecret   = req.headers['x-partner-secret'];
+        var partnerId       = req.headers['x-app-id'];
+        var partnerSecret   = req.headers['x-app-secret'];
 
         if (!partnerId || !partnerSecret) { return new Q(); }   // no partner ID or secret, then no user
 
