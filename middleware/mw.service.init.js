@@ -123,7 +123,7 @@ module.exports = function (Q, _, pancakes, adapters, resources, reactors, config
     /**
      * Call a promise chain of service init functions ONLY for those
      * that are NOT used for the current container or if there is
-     * not init() method or if the current adapter is restapi
+     * not init() method or if the current adapter is apiclient
      *
      * @param container
      */
@@ -134,7 +134,7 @@ module.exports = function (Q, _, pancakes, adapters, resources, reactors, config
 
             var adapter = resource.adapters[container];
 
-            if (adapter && adapter !== 'restapi') {
+            if (adapter && adapter !== 'apiclient') {
                 var service = pancakes.getService(resource.name);
                 if (service.init) {
                     calls.push(service.init.bind(service));
