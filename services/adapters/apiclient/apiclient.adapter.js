@@ -19,7 +19,7 @@ var admin, baseUrl, headers;
  * @param resource
  * @constructor
  */
-function RestapiAdapter(resource) {
+function ApiclientAdapter(resource) {
     this.admin = admin;
     this.resource = resource || {};
 
@@ -38,7 +38,7 @@ function RestapiAdapter(resource) {
  * Init called at startup and is used to
  * @param config
  */
-RestapiAdapter.init = function init(config) {
+function init(config) {
     admin = {
         _id:  mongo.newObjectId('000000000000000000000000'),
         name: 'systemAdmin',
@@ -60,7 +60,13 @@ RestapiAdapter.init = function init(config) {
     }
 
     baseUrl += '/' + config.api.version;
-};
+}
+
+// add to the class
+_.extend(ApiclientAdapter, {
+    init:       init,
+    webInit:    init
+});
 
 /**
  * Send the request to the restful endpoint
@@ -68,7 +74,7 @@ RestapiAdapter.init = function init(config) {
  * @param path
  * @param req
  */
-RestapiAdapter.prototype.send = function (httpMethod, path, req) {
+function send(httpMethod, path, req) {
     req = req || {};
     httpMethod = httpMethod.toUpperCase();
 
@@ -114,7 +120,12 @@ RestapiAdapter.prototype.send = function (httpMethod, path, req) {
     });
 
     return deferred.promise;
-};
+}
+
+// add send to the prototype for an instance of apiclient adapter
+_.extend(ApiclientAdapter.prototype, {
+    send: send
+});
 
 // return the class
-module.exports = RestapiAdapter;
+module.exports = ApiclientAdapter;
