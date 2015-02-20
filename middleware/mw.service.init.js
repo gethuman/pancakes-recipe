@@ -117,7 +117,15 @@ module.exports = function (Q, _, pancakes, adapters, resources, reactors, config
             });
         }
 
-        return chainPromises(calls, config);
+        return chainPromises(calls, config)
+            .then(function (config) {
+                if (config) {
+                    return config;
+                }
+                else {
+                    throw new Error('An adapter in the chain is not returning the config.');
+                }
+            });
     }
 
     /**

@@ -1,6 +1,6 @@
 {
   "name": "pancakes-recipe",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "Misc common utilities and middleware for pancakes apps",
   "main": "pancakes.recipe.js",
   "repository": {
@@ -27,20 +27,20 @@
     "hapi": "^8.2.0",
     "hapi-auth-cookie": "^2.0.0",
     "hiredis": "^0.2.0",
-    "lodash": "^3.2.0",
+    "lodash": "^3.3.0",
     "lru-cache": "^2.5.0",
     "moment": "^2.9.0",
     "mongoose": "^3.8.23",
     "pancakes": "^0.1.48",
-    "pancakes-mongo": "0.0.9",
+    "pancakes-mongo": "0.0.10",
     "q": "^1.1.2",
     "redis": "^0.12.1",
     "request": "^2.53.0",
     "yar": "^3.0.3"
   },
   "devDependencies": {
-    "batter": "0.0.16",
+    "batter": "0.0.17",
     "gulp": "^3.8.11",
-    "taste": "^0.1.49"
+    "taste": "^0.1.50"
   }
 }

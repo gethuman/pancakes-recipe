@@ -60,6 +60,8 @@ function init(config) {
     }
 
     baseUrl += '/' + config.api.version;
+
+    return config;
 }
 
 // add to the class
