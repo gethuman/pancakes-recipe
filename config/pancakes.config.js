@@ -10,5 +10,8 @@ module.exports = {
     debug:      false,
     preload:    ['utils', 'middleware'],
     rootDir:    path.join(__dirname, '/..'),
-    require:    require
+    require:    require,
+    serverAliases: {
+        hapiAuthJwt:    'hapi-auth-jwt'
+    }
 };

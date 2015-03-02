@@ -20,7 +20,6 @@ module.exports = function (Q, pancakes, mwCommonRoutes, config, AppError) {
         // add all the dynamic API routes
         pancakes.addApiRoutes({
             server:     server,
-            auth:       auth,
             hosts:      config.corsHosts,
             apiPrefix:  '/' + config.api.version
         });
@@ -55,26 +54,8 @@ module.exports = function (Q, pancakes, mwCommonRoutes, config, AppError) {
         return new Q(ctx);
     }
 
-    /**
-     * Function to change the user in session
-     * @param request
-     * @returns {Function}
-     */
-    function auth(request) {
-        return function (user) {
-            if (!request.session) { return user; }
-
-            user ?
-                request.session.set('userId', user._id + '') :
-                request.session.set('userId', null);
-
-            return user;
-        };
-    }
-
     // expose functions
     return {
-        init: init,
-        auth: auth
+        init: init
     };
 };

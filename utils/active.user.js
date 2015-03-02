@@ -27,64 +27,75 @@ module.exports = {
     },
 
     // the client maintains the active user in memory
-    client: function ($timeout, _, Q, userService, log, eventBus) {
+    client: function ($timeout, _, Q, userService, log, eventBus, storage) {
 
         var user = { initComplete: false };
-
-        /**
-         * Set user input into local values
-         * @param me
-         */
-        function setUserLocal(me) {
-
-            // if nothing returned log an error and return
-            if (!me) { log.error('No user info found', null); return null; }
-
-            // otherwise, pull out the user
-            _.extend(user, me.user, { visitorId: me.visitorId });
-
-            // return the user and notify init complete
-            user.initComplete = true;
-            eventBus.emit('user.init');
-            return user;
-        }
-
-        /**
-         * Get the user from the back end
-         * @returns {*} The user object
-         */
-        function getUser() {
-            return userService.findMe ? userService.findMe().then(setUserLocal) : {};
-        }
 
         /**
          * If user already loaded, use that, otherwise get it from the API
          * @returns {*}
          */
-        user.init = function init() {
-            if (user.visitorId) {
-                return Q.when(user);
-            }
-            else {
-                return getUser();
-            }
-        };
+        function init() {
+            return user.visitorId ?
+                Q.when(user) :
+                userService.findMe()
+                    .then(function setUserLocal(me) {
+
+                        // if nothing returned log an error and return
+                        if (!me) { log.error('No user info found', null); return null; }
+
+                        // save the visitor Id in storage for use by ajax
+                        storage.set('visitorId', me.visitorId);
+
+                        // otherwise, pull out the user
+                        _.extend(user, me.user, { visitorId: me.visitorId });
+
+                        // return the user and notify init complete
+                        user.initComplete = true;
+                        eventBus.emit('user.init');
+                        return user;
+                    });
+        }
 
         /**
-         * Update the active user (i.e. during login/logout/etc.)
-         * @param updatedUser
+         * Remove user vals from the user object (for logout or before changing user)
+         * All values are removed from user except functions, visitorId and initComplete
          */
-        user.reinit = function reinit(updatedUser) {
+        function removeUserVals() {
             _.each(user, function reset(val, key) {
                 if (!_.isFunction(val) && key !== 'visitorId' && key !== 'initComplete') {
                     user[key] = null;
                 }
             });
+        }
 
-            _.extend(user, updatedUser);
+        /**
+         * Update the active user (i.e. during login/logout/etc.)
+         * @param updatedUser
+         * @param jwt
+         */
+        function login(updatedUser, jwt) {
+            storage.set('jwt', jwt);        // set the token in local storage
+            removeUserVals();               // remove old user values
+            _.extend(user, updatedUser);    // add new user values
+            eventBus.emit('user.init');     // let everyone else know there is a new user in town
+        }
 
-            eventBus.emit('user.init');
-        };
+        /**
+         * Log the active user out
+         */
+        function logout() {
+            removeUserVals();               // remove user vals to log out
+            storage.remove('jwt');          // then remove the JSON web token from local storage
+            eventBus.emit('user.init');     // let everyone else know user logged out
+        }
+
+        // add functions to user
+        _.extend(user, {
+            init: init,
+            login: login,
+            logout: logout
+        });
 
         // return the user as a singleton from this module
         return user;

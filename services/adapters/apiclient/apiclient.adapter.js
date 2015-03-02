@@ -4,11 +4,12 @@
  *
  * A simple adapter to call out to API from another node process
  */
-var Q       = require('q');
-var _       = require('lodash');
-var request = require('request');
-var cls     = require('continuation-local-storage');
-var mongo   = require('pancakes-mongo');
+var Q               = require('q');
+var _               = require('lodash');
+var request         = require('request');
+var jsonwebtoken    = require('jsonwebtoken');
+var cls             = require('continuation-local-storage');
+var mongo           = require('pancakes-mongo');
 var admin, baseUrl, headers;
 
 /**
@@ -39,15 +40,20 @@ function ApiclientAdapter(resource) {
  * @param config
  */
 function init(config) {
+    var tokenConfig = config.security.token || {};
+    var privateKey = tokenConfig.privateKey;
+    var decryptedToken = {
+        _id: tokenConfig.webserverId,
+        authToken: tokenConfig.webserverToken
+    };
+    var jwt = jsonwebtoken.sign(decryptedToken, privateKey);
+
+    headers = { 'Authorization': 'Bearer ' + jwt };
     admin = {
         _id:  mongo.newObjectId('000000000000000000000000'),
         name: 'systemAdmin',
         type: 'user',
         role: 'admin'
-    };
-    headers = {
-        'x-app-id':       config.security.siteId,
-        'x-app-secret':   config.security.siteSecret
     };
 
     var useSSL = (config.api && config.api.serverUseSSL !== undefined) ?

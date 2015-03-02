@@ -8,7 +8,7 @@ module.exports = function (Q, funnelweb, crypto, userService, visitorService,
                            mongoose, config, log, AppError, cls) {
 
     //var isRobot = funnelweb;    // better name for lib used to detect robots
-    var partnerCache = {};      // partners don't change often, so just store them statically
+    //var partnerCache = {};      // partners don't change often, so just store them statically
 
     /**
      *
@@ -45,51 +45,51 @@ module.exports = function (Q, funnelweb, crypto, userService, visitorService,
         //        });
         //}, 1);
     }
-
-    /**
-     * Get user from the request data
-     * @param req
-     */
-    function getUser(req) {
-
-        // if user already set, then return it
-        if (req.user) { return new Q(req.user); }
-
-        /* jshint camelcase:false */
-        // if passport didn't already attach user, only other possibility is a parter
-        var partnerId       = req.headers['x-app-id'];
-        var partnerSecret   = req.headers['x-app-secret'];
-
-        if (!partnerId || !partnerSecret) { return new Q(); }   // no partner ID or secret, then no user
-
-        // use the value in cache if we have it
-        var cachedPartner = partnerCache[partnerId];
-        if (cachedPartner && cachedPartner.secret === partnerSecret) {
-            return new Q(cachedPartner);
-        }
-
-        // else get the partner from the database
-        var deferred = Q.defer();
-        userService.find({ caller: userService.admin, where: { authToken: partnerId }, findOne: true })
-            .then(function (partner) {
-                partnerCache[partnerId] = partner;
-
-                if (partnerSecret === partner.secret) {
-                    deferred.resolve(partner);
-                }
-                else {
-                    deferred.reject(new AppError({
-                        code: 'invalid_credentials',
-                        msg: 'Partner ' + partnerId + ' tried to auth with secret ' + partnerSecret
-                    }));
-                }
-            })
-            .catch(function (err) {
-                deferred.reject(new AppError({ code: 'invalid_credentials', err: err }));
-            });
-
-        return deferred.promise;
-    }
+    //
+    ///**
+    // * Get user from the request data
+    // * @param req
+    // */
+    //function getUser(req) {
+    //
+    //    // if user already set, then return it
+    //    if (req.user) { return new Q(req.user); }
+    //
+    //    /* jshint camelcase:false */
+    //    // if passport didn't already attach user, only other possibility is a parter
+    //    var partnerId       = req.headers['x-app-id'];
+    //    var partnerSecret   = req.headers['x-app-secret'];
+    //
+    //    if (!partnerId || !partnerSecret) { return new Q(); }   // no partner ID or secret, then no user
+    //
+    //    // use the value in cache if we have it
+    //    var cachedPartner = partnerCache[partnerId];
+    //    if (cachedPartner && cachedPartner.secret === partnerSecret) {
+    //        return new Q(cachedPartner);
+    //    }
+    //
+    //    // else get the partner from the database
+    //    var deferred = Q.defer();
+    //    userService.find({ caller: userService.admin, where: { authToken: partnerId }, findOne: true })
+    //        .then(function (partner) {
+    //            partnerCache[partnerId] = partner;
+    //
+    //            if (partnerSecret === partner.secret) {
+    //                deferred.resolve(partner);
+    //            }
+    //            else {
+    //                deferred.reject(new AppError({
+    //                    code: 'invalid_credentials',
+    //                    msg: 'Partner ' + partnerId + ' tried to auth with secret ' + partnerSecret
+    //                }));
+    //            }
+    //        })
+    //        .catch(function (err) {
+    //            deferred.reject(new AppError({ code: 'invalid_credentials', err: err }));
+    //        });
+    //
+    //    return deferred.promise;
+    //}
 
     /**
      * Get the device id if it exists and the secret is valid
@@ -106,7 +106,7 @@ module.exports = function (Q, funnelweb, crypto, userService, visitorService,
         if (!deviceId || !deviceSecret) { return null; }
 
         // else we have a device, so check the sha hash
-        var shasum = crypto.createHash('md5').update(deviceId + config.security.deviceHashSalt);
+        var shasum = crypto.createHash('md5').update(deviceId + config.security.device.salt);
         var digest = shasum.digest('hex');
 
         // if the digest is not the same as the secret, request is unauthorized
@@ -126,13 +126,14 @@ module.exports = function (Q, funnelweb, crypto, userService, visitorService,
      * @returns {*}
      */
     function getCaller(req) {
-        var visitorId = req.session && req.session.get('visitorId');
+        var visitorId = (req.session && req.session.get('visitorId'));
         var ipAddress = req.info.remoteAddress;
+        var user = req.user;
 
-        if (req.user) {
+        if (user) {
 
             // if user admin and there is an onBehalfOf value then use onBehalfOf
-            if (req.user.role === 'admin' && req.query.onBehalfOfId) {
+            if (user.role === 'admin' && req.query.onBehalfOfId) {
                 return {
                     _id:    req.query.onBehalfOfId,
                     name:   req.query.onBehalfOfName,
@@ -145,11 +146,11 @@ module.exports = function (Q, funnelweb, crypto, userService, visitorService,
 
             // else return user data as caller info
             return {
-                _id:    req.user._id,
-                name:   req.user.username,
-                role:   req.user.role,
+                _id:    user._id,
+                name:   user.username,
+                role:   user.role,
                 type:   'user',
-                user:   req.user,
+                user:   user,
                 visitorId: visitorId,
                 ipAddress: ipAddress
             };
@@ -175,16 +176,16 @@ module.exports = function (Q, funnelweb, crypto, userService, visitorService,
             };
         }
         // if no other auth, but GET then defer to fakeblock ACL level security
-        else if (req.method === 'get' || req.method === 'options') {
+        //else if (req.method === 'get' || req.method === 'options') {
+        else {
             return {
                 _id:    'unknown',
                 name:   'unknown',
-                role:   'unknown',
-                type:   'unknown',
+                role:   'visitor',
+                type:   'visitor',
                 ipAddress: ipAddress
             };
         }
-        else { return null; }
     }
 
     /**
@@ -204,25 +205,18 @@ module.exports = function (Q, funnelweb, crypto, userService, visitorService,
             if (container === 'webserver') { visitorInit(req); }
 
             // get potential information about the caller
-            getUser(req)
-                .then(function (user) {
-                    req.user = user;
-                    req.deviceId = getDeviceId(req);
-                    req.caller = getCaller(req);
+            req.deviceId = getDeviceId(req);
+            req.caller = getCaller(req);
 
-                    if (container === 'webserver') {
-                        var session = cls.getNamespace('appSession');
-                        if (session) { session.set('caller', req.caller); }
-                    }
+            if (container === 'webserver') {
+                var session = cls.getNamespace('appSession');
+                if (session) { session.set('caller', req.caller); }
+            }
 
-                    req.caller ? reply.continue() : reply(new AppError({
-                        code: 'invalid_credentials',
-                        msg: 'caller not found'
-                    }));
-                })
-                .catch(function (err) {
-                    reply(err);
-                });
+            req.caller ? reply.continue() : reply(new AppError({
+                code: 'invalid_credentials',
+                msg: 'caller not found'
+            }));
         });
 
         return new Q(ctx);
@@ -231,7 +225,6 @@ module.exports = function (Q, funnelweb, crypto, userService, visitorService,
     // exposing functions
     return {
         visitorInit: visitorInit,
-        getUser: getUser,
         getDeviceId: getDeviceId,
         getCaller: getCaller,
         init: init

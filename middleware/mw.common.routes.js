@@ -7,7 +7,7 @@
 module.exports = function (config) {
     var cors = {
         origin:         config.corsHosts,
-        headers:        ['Accept', 'Accept-Version', 'Content-Type', 'Api-Version', 'X-Requested-With'],
+        headers:        ['Accept', 'Accept-Version', 'Content-Type', 'Api-Version', 'X-Requested-With', 'Authorization'],
         methods:        ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         credentials:    true
     };

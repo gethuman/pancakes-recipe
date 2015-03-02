@@ -9,8 +9,9 @@ module.exports = function (Q, _, Hapi, pancakes, log, config, chainPromises) {
 
     // this contains the list of middleware (in order) for each container
     var mwConfig = {
-        api:        ['mwErrorHandling', 'mwServiceInit', 'mwSecurity', 'mwCaller', 'mwApiRoutes'],
-        webserver:  ['mwErrorHandling', 'mwServiceInit', 'mwSecurity', 'mwCaller',
+        api:        ['mwErrorHandling', 'mwServiceInit', 'mwAuthToken', 'mwCaller', 'mwApiRoutes'],
+        webserver:  ['mwErrorHandling', 'mwServiceInit',
+                        'mwAuthSocial', 'mwAuthCookie', 'mwAuthToken', 'mwCaller',
                         'mwTasks', 'mwAppContext', 'mwWebRoutes', 'mwTracking']
     };
 

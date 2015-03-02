@@ -27,6 +27,7 @@
     "hapi": "^8.2.0",
     "hapi-auth-cookie": "^2.0.0",
     "hiredis": "^0.2.0",
+    "jsonwebtoken": "^3.2.2",
     "lodash": "^3.3.1",
     "lru-cache": "^2.5.0",
     "moment": "^2.9.0",

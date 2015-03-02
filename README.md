@@ -1,5 +1,5 @@
 
-pancakes-common
+pancakes-recipe
 ==========
 
 This is a temporary repo for common utilities and middleware that a pancakes
