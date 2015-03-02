@@ -67,7 +67,8 @@ module.exports = function (_, appConfigs, i18n, config) {
                 version:                config.staticVersion,
                 baseHost:               config.baseHost,
                 staticFileRoot:         staticFileRoot,
-                domains:                config.domains
+                domains:                config.domains,
+                cookieDomain:           config.security.cookie.domain
             },
             context: {
                 app:                    appName,
