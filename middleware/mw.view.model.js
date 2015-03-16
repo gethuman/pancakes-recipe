@@ -7,16 +7,6 @@
  */
 module.exports = function (_, appConfigs, i18n, config) {
 
-    var useSSL = (config.api && config.api.clientUseSSL !== undefined) ?
-        config.api.clientUseSSL : config.useSSL;
-    var apiBase = (useSSL ? 'https://' : 'http://') + config.api.host;
-    var apiPort = config.api.port + '';
-
-    if (apiPort !== '80' && apiPort !== '433') {
-        apiBase += ':' + apiPort;
-    }
-    apiBase += '/' + config.api.version;
-
     /**
      * Add to the model with certain custom values for the app
      * @param model
@@ -29,9 +19,6 @@ module.exports = function (_, appConfigs, i18n, config) {
         var appName     = model.appName = routeInfo.appName;
         var appConfig   = appConfigs[appName];
         var appPascal   = appName.substring(0, 1).toUpperCase() + appName.substring(1);
-        var staticSSL   = (config[appName] && config[appName].useSSL !== undefined) ?
-            config[appName].useSSL : config.useSSL;
-        var staticFileRoot = (staticSSL ? 'https://' : 'http://') + config.staticFiles.assets + '/';
 
         // add the page head info
         if (model.pageHead) {
@@ -54,27 +41,17 @@ module.exports = function (_, appConfigs, i18n, config) {
         model.serverOnly        = model.serverOnly || routeInfo.query.server || false;
         model.env               = config.env;
 
-        // set the client data that is sent down to the AngularJS client
-        // ****IMPORTANT**** Don't put anything in the DOM here that is user-specific.
-        //                   This data may be cached on the edge servers.
-        //                   So, only stuff specific to the page/URL/etc. that everyone sees the same.
+        var staticSSL   = (config[appName] && config[appName].useSSL !== undefined) ?
+            config[appName].useSSL : config.useSSL;
+        var staticFileRoot = (staticSSL ? 'https://' : 'http://') + config.staticFiles.assets + '/';
+
         model.clientData = {
-            config: {
-                apiBase:                apiBase,
-                i18nDebug:              config.i18nDebug,
-                logToken:               config.logging.logglyToken,
-                appEnv:                 config.env,
-                version:                config.staticVersion,
-                baseHost:               config.baseHost,
-                staticFileRoot:         staticFileRoot,
-                domains:                config.domains,
-                cookieDomain:           config.security.cookie.domain
-            },
+            config: _.extend({ staticFileRoot: staticFileRoot }, config.client),
             context: {
-                app:                    appName,
-                lang:                   model.lang
+                app:                appName,
+                lang:               model.lang
             },
-            initialSearchResults:       model.searchResults
+            initialSearchResults:   model.searchResults
         };
 
         if (config.realtime) {
