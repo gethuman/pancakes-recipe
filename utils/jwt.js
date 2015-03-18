@@ -4,52 +4,40 @@
  *
  * Convenience wrapper around jsonwebtoken
  */
-module.exports = function (Q, jsonwebtoken, config) {
+module.exports = function (_, Q, jsonwebtoken, config) {
 
     /**
      * Simple function to generate a JWT based off a user
      * @param user
+     * @param existingToken Optional, pass in if there is an existing token we are adding to
      * @returns {*}
      */
-    function generateForUser(user) {
+    function generateForUser(user, existingToken) {
+        existingToken = existingToken || {};
+
         var privateKey = config.security.token.privateKey;
-        var decryptedToken = { _id: user._id, authToken: user.authToken };
+        var decryptedToken = _.extend(existingToken, { _id: user._id, authToken: user.authToken });
         return jsonwebtoken.sign(decryptedToken, privateKey);
     }
 
     /**
-     * Wrapper around jsonwebtoken.verify to add promises. Also, if no token it
-     * doesn't fail. Just doesn't return a user.
-     *
+     * Simple promise based wrapper around jsonwebtoken verify()
      * @param token
      * @param privateKey
-     * @param getUserForTokenFn
+     * @param audience
      * @returns {*}
      */
-    function veryifyAndGetUser(token, privateKey, getUserForTokenFn) {
+    function verify(token, privateKey, audience) {
         var deferred = Q.defer();
+        var options = { ignoreExpiration: true, audience: audience };
 
         // no token so return nothing
         if (!token) {
             return new Q();
         }
 
-        jsonwebtoken.verify(token, privateKey, function (err, decodedToken) {
-            if (err) { deferred.reject(err); }
-
-            // no decoded token so return nothing
-            if (!decodedToken) {
-                deferred.resolve();
-                return;
-            }
-
-            getUserForTokenFn(decodedToken)
-                .then(function (user) {
-                    deferred.resolve(user);
-                })
-                .catch(function (error) {
-                    deferred.reject(error);
-                });
+        jsonwebtoken.verify(token, privateKey, options, function (err, decodedToken) {
+            err ? deferred.reject(err) : deferred.resolve(decodedToken);
         });
 
         return deferred.promise;
@@ -58,6 +46,6 @@ module.exports = function (Q, jsonwebtoken, config) {
     // exposed functions
     return {
         generateForUser: generateForUser,
-        veryifyAndGetUser: veryifyAndGetUser
+        verify: verify
     };
 };

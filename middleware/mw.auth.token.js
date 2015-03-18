@@ -77,7 +77,10 @@ module.exports = function (Q, userService, userCacheService, config, jwt) {
 
         var token = parts[1];
 
-        jwt.veryifyAndGetUser(token, privateKey, getUserForToken)
+        jwt.verify(token, privateKey)
+            .then(function (decodedToken) {
+                return getUserForToken(decodedToken);
+            })
             .then(function (user) {
                 req.user = user;
                 reply.continue();

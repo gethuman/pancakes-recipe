@@ -40,9 +40,10 @@ module.exports = {
                 Q.when(user) :
                 userService.findMe()
                     .then(function setUserLocal(me) {
+                        me = me || {};
 
                         // if nothing returned log an error and return
-                        if (!me) { log.error('No user info found', null); return null; }
+                        //if (!me) { log.error('No user info found', null); return null; }
 
                         // save the visitor Id in storage for use by ajax
                         storage.set('visitorId', me.visitorId);
@@ -53,6 +54,7 @@ module.exports = {
                         // return the user and notify init complete
                         user.initComplete = true;
                         eventBus.emit('user.init');
+
                         return user;
                     });
         }
