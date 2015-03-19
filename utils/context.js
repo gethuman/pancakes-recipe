@@ -13,7 +13,7 @@ module.exports = {
      * @returns {*}
      */
     client: function (clientData) {
-        var context = clientData.get('context');
+        var context = clientData.get('context') || {};
         return {
             get: function (key) {
                 return context[key];
