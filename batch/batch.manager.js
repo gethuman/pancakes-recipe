@@ -30,7 +30,7 @@ module.exports = function (fs, commander, moment, pancakes, mwServiceInit, log, 
     function processCommandLine() {
         commander
             .version('0.0.3')
-            .option('-a, --app [appName]', 'Name of app to run (required)')
+            .option('-a, --app [appName]', 'Name of app to run (required)') // TODO: remove -a since it's required not optional
             .option('-b, --debug', 'Use [dev] environment')
             .option('-d, --delete', 'Delete data before processing job (data.load only)')
             .option('-e, --environment [dev|ci|prod]', 'Use [dev] environment', 'dev')
