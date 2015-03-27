@@ -147,11 +147,13 @@ module.exports = function (_) {
 
         var match = true;
         _.each(criteria, function (val, key) {
+            var dataValue = getNestedValue(data, key);
             var vals = _.isArray(val) ? val : [val];
-            if (vals.indexOf(data[key]) < 0) {
+            if (vals.indexOf(dataValue) < 0) {
                 match = false;
             }
         });
+
         return match;
     }
 

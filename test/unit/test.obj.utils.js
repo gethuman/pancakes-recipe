@@ -69,6 +69,43 @@ describe('UNIT ' + name, function () {
         });
     });
 
+    describe('getNestedValue()', function () {
+        it('should return undefined if value does not exist', function () {
+            taste.should.not.exist(objUtils.getNestedValue());
+        });
+
+        it('should return undefined field not in data', function () {
+            var data = { foo: 'choo' };
+            var field = 'blah';
+            var actual = objUtils.getNestedValue(data, field);
+            taste.should.not.exist(actual);
+        });
+
+        it('should return default since no value', function () {
+            var data = { foo: 'choo' };
+            var field = 'blah';
+            var defaultValue = 'boochica';
+            var actual = objUtils.getNestedValue(data, field, defaultValue);
+            actual.should.equal(defaultValue);
+        });
+
+        it('should get a simple value', function () {
+            var data = { foo: 'choo' };
+            var field = 'foo';
+            var expected = 'choo';
+            var actual = objUtils.getNestedValue(data, field);
+            actual.should.equal(expected);
+        });
+
+        it('should get a nested value', function () {
+            var data = { foo: { choo: { zoo: 'yep' }} };
+            var field = 'foo.choo.zoo';
+            var expected = 'yep';
+            var actual = objUtils.getNestedValue(data, field);
+            actual.should.equal(expected);
+        });
+    });
+
     describe('setNestedValue()', function () {
         it('should set a basic value', function () {
             var data = { foo: 3 };
@@ -92,6 +129,42 @@ describe('UNIT ' + name, function () {
             var val = 2;
             objUtils.setNestedValue(data, field, val);
             data.foo.man.choo.should.equal(val);
+        });
+    });
+
+    describe('matchesCriteria()', function () {
+        it('should return true if no params', function () {
+            return objUtils.matchesCriteria().should.be.true;
+        });
+
+        it('should return false if the data does not match the simple criteria', function () {
+            var data = { foo: 'choo' };
+            var criteria = { blah: 'zoo' };
+            return objUtils.matchesCriteria(data, criteria).should.be.false;
+        });
+
+        it('should return false if the data does not match the simple criteria 2', function () {
+            var data = { foo: 'choo' };
+            var criteria = { foo: 'soo' };
+            return objUtils.matchesCriteria(data, criteria).should.be.false;
+        });
+
+        it('should return true if the data matches simple criteria', function () {
+            var data = { foo: 'choo' };
+            var criteria = { foo: 'choo' };
+            return objUtils.matchesCriteria(data, criteria).should.be.true;
+        });
+
+        it('should return true if the data matches complex criteria', function () {
+            var data = { foo: 'choo', woo: { boo: 'la' }};
+            var criteria = { foo: 'choo', 'woo.boo': 'la' };
+            return objUtils.matchesCriteria(data, criteria).should.be.true;
+        });
+
+        it('should return false if no data matches complex criteria', function () {
+            var data = { foo: 'choo', woo: { boo: 'la' }};
+            var criteria = { foo: 'choo', 'woo.boo': 'sss' };
+            return objUtils.matchesCriteria(data, criteria).should.be.false;
         });
     });
 });
