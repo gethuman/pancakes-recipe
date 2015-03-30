@@ -4,7 +4,7 @@
  *
  * Connect to mongo and elasticsearch
  */
-module.exports = function (Q, _, pancakes, adapters, resources, reactors, config, eventBus, chainPromises, objUtils, log) {
+module.exports = function (Q, _, pancakes, fakeblock, adapters, resources, reactors, config, eventBus, chainPromises, objUtils, log) {
 
     /**
      * Initialize all the reactors, adapters and services
@@ -34,33 +34,30 @@ module.exports = function (Q, _, pancakes, adapters, resources, reactors, config
     function reactHandler(reactData) {
         return function (eventData) {
             var payload = eventData.payload;
-            var reactor;
+            var inputData = payload.inputData;
+            var reactor = reactors[reactData.type + '.reactor'];
+            var matchesCriteria = objUtils.matchesCriteria(payload.data, reactData.criteria);
+            var fieldMissing = reactData.onFieldChange && reactData.onFieldChange.length &&
+                _.isEmpty(fakeblock.filter.getFieldsFromObj(inputData, reactData.onFieldChange));
 
-            // if we don't meet the prop criteria, return without doing anything
-            if (objUtils.matchesCriteria(payload.data, reactData.criteria)) {
-                reactor = reactors[reactData.type + '.reactor'];
-
-                if (reactor) {
-                    return Q.when(reactor.react({
-                        caller:         payload.caller,
-                        inputData:      payload.inputData,
-                        data:           payload.data,
-                        context:        payload.context,
-                        reactData:      reactData,
-                        resourceName:   eventData.name.resource,
-                        methodName:     eventData.name.method
-                    }))
-                        .catch(function (err) {
-                            log.error(err);
-                        });
-                }
-                else {
-                    log.info('reactHandler does not exist: ' + JSON.stringify(reactData));
-                }
+            if (!reactor) {
+                log.info('reactHandler does not exist: ' + JSON.stringify(reactData));
             }
 
-            // return resolved promise if no reactor found
-            return new Q();
+            // if no reactor or no matching criteria or field missing, just return; else call reactor
+            return (!reactor || !matchesCriteria || fieldMissing) ? new Q() :
+                Q.when(reactor.react({
+                    caller:         payload.caller,
+                    inputData:      inputData,
+                    data:           payload.data,
+                    context:        payload.context,
+                    reactData:      reactData,
+                    resourceName:   eventData.name.resource,
+                    methodName:     eventData.name.method
+                }))
+                    .catch(function (err) {
+                        log.error(err);
+                    });
         };
     }
 
