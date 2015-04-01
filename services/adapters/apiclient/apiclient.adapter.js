@@ -10,7 +10,7 @@ var request         = require('request');
 var jsonwebtoken    = require('jsonwebtoken');
 var cls             = require('continuation-local-storage');
 var mongo           = require('pancakes-mongo');
-var admin, baseUrl, headers;
+var admin = {}, baseUrl, headers;
 
 /**
  * Initialize the methods for this interface using the resource. This will
@@ -49,12 +49,11 @@ function init(config) {
     var jwt = jsonwebtoken.sign(decryptedToken, privateKey);
 
     headers = { 'Authorization': 'Bearer ' + jwt };
-    admin = {
-        _id:  mongo.newObjectId('000000000000000000000000'),
-        name: 'systemAdmin',
-        type: 'user',
-        role: 'admin'
-    };
+
+    admin._id =  mongo.newObjectId('000000000000000000000000');
+    admin.name = 'systemAdmin';
+    admin.type = 'user';
+    admin.role = 'admin';
 
     var useSSL = (config.api && config.api.serverUseSSL !== undefined) ?
         config.api.serverUseSSL : config.useSSL;
