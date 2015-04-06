@@ -16,16 +16,17 @@ module.exports = {
         var config = pancakes.cook('config/index');
 
         // get the API base
+        // the following is so tests don't break...
         var useSSL = (config.api && config.api.clientUseSSL !== undefined) ?
             config.api.clientUseSSL : config.useSSL;
-        var apiBase = (useSSL ? 'https://' : 'http://') + config.api.host;
-        var apiPort = config.api.port + '';
+        var apiBase = (useSSL ? 'https://' : 'http://') + (config.api ? config.api.host : 'test.dev.gethuman.com');
+        var apiPort = (config.api ? config.api.port + '' : '433');
 
         if (apiPort !== '80' && apiPort !== '433') {
             apiBase += ':' + apiPort;
         }
 
-        apiBase += '/' + config.api.version;
+        apiBase += '/' + (config.api ? config.api.version : 'test');
 
         // set config values for the client web apps
         config.client = {
@@ -36,7 +37,7 @@ module.exports = {
             version:                config.staticVersion,
             baseHost:               config.baseHost,
             domains:                config.domains,
-            cookieDomain:           config.security.cookie.domain
+            cookieDomain:           (config.security && config.security.cookie ? config.security.cookie.domain : 'test.dev.gethuman.com')
         };
 
         return config;
