@@ -25,7 +25,6 @@ module.exports = function (Q) {
     BulkChange.prototype.upsert = function upsert(criteria, doc) {
         this.isChange = true;
         this.bulk.find(criteria).upsert().updateOne({ $set: doc });
-        this.bulk.insert(doc);
     };
 
     /**
