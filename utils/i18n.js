@@ -58,7 +58,7 @@ module.exports = function (_, translations, context, config) {
     function interpolate(val, scope) {
 
         // if no scope or value with {{ then no interpolation and can just return translated
-        if (!scope || !val) { return val; }
+        if (!scope || !val || !val.match) { return val; }
 
         // first, we need to get all values with a {{ }} in the string
         var i18nVars = val.match(i18nVarExpr);

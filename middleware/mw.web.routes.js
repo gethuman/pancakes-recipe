@@ -8,10 +8,11 @@ module.exports = function (Q, pancakes, pageCacheService, mwCommonRoutes, mwTask
 
     //TODO: lock this down so only from certain origins (also repeated with pancakes.hapi.api)
     var cors = {
-        origin:         config.corsHosts || [],
+        origin:         config.corsHosts || ['*'],
         headers:        ['Accept', 'Accept-Version', 'Content-Type', 'Api-Version', 'X-Requested-With'],
         methods:        ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        credentials:    true
+        credentials:    true,
+        matchOrigin:    true
     };
 
     /**
