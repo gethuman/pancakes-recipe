@@ -33,16 +33,5 @@ module.exports = function (config) {
                 });
             }
         });
-
-        server.route({
-            method:     'GET',
-            path:       '/favicon.ico',
-            handler: {
-                file: './assets/img/favicon.ico'
-            },
-            config: {
-                cache: {expiresIn: 86400000, privacy: 'public'}
-            }
-        });
     };
 };

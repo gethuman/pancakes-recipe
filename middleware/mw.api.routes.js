@@ -31,6 +31,13 @@ module.exports = function (Q, pancakes, mwCommonRoutes, config, AppError) {
             handler:    function (request, reply) { reply('salutations'); }
         });
 
+        server.route({
+            method:     'GET',
+            path:       '/favicon.ico',
+            handler:    { file: './assets/img/favicon.ico' },
+            config:     { cache: { expiresIn: 86400000, privacy: 'public'}}
+        });
+
         // finally catch all for 404 error handler
         server.route({
             method:     '*',
