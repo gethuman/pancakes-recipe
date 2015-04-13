@@ -33,19 +33,26 @@ module.exports = function (Q, _, pancakes, fakeblock, adapters, resources, react
      */
     function reactHandler(reactData) {
         return function (eventData) {
-            var payload = eventData.payload;
-            var inputData = payload.inputData;
-            var reactor = reactors[reactData.type + '.reactor'];
-            var matchesCriteria = objUtils.matchesCriteria(payload.data, reactData.criteria);
-            var fieldMissing = reactData.onFieldChange && reactData.onFieldChange.length &&
-                _.isEmpty(fakeblock.filter.getFieldsFromObj(inputData, reactData.onFieldChange));
+            var deferred = Q.defer();
 
-            if (!reactor) {
-                log.info('reactHandler does not exist: ' + JSON.stringify(reactData));
-            }
+            // handler should always be run asynchronously
+            setTimeout(function () {
+                var payload = eventData.payload;
+                var inputData = payload.inputData;
+                var reactor = reactors[reactData.type + '.reactor'];
+                var matchesCriteria = objUtils.matchesCriteria(payload.data, reactData.criteria);
+                var fieldMissing = reactData.onFieldChange && reactData.onFieldChange.length &&
+                    _.isEmpty(fakeblock.filter.getFieldsFromObj(inputData, reactData.onFieldChange));
 
-            // if no reactor or no matching criteria or field missing, just return; else call reactor
-            return (!reactor || !matchesCriteria || fieldMissing) ? new Q() :
+                if (!reactor) {
+                    log.info('reactHandler does not exist: ' + JSON.stringify(reactData));
+                }
+
+                if (!reactor || !matchesCriteria || fieldMissing) {
+                    deferred.resolve();
+                    return;
+                }
+
                 Q.when(reactor.react({
                     caller:         payload.caller,
                     inputData:      inputData,
@@ -55,9 +62,16 @@ module.exports = function (Q, _, pancakes, fakeblock, adapters, resources, react
                     resourceName:   eventData.name.resource,
                     methodName:     eventData.name.method
                 }))
+                    .then(function (res) {
+                        deferred.resolve(res);
+                    })
                     .catch(function (err) {
                         log.error(err);
+                        deferred.reject(err);
                     });
+            });
+
+            return deferred.promise;
         };
     }
 
