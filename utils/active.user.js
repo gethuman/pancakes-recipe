@@ -36,7 +36,7 @@ module.exports = {
          * @returns {*}
          */
         function init() {
-            return user.visitorId ?
+            return user.initComplete ?
                 Q.when(user) :
                 userService.findMe()
                     .then(function setUserLocal(me) {
