@@ -4,92 +4,7 @@
  *
  * Getting the caller
  */
-module.exports = function (Q, funnelweb, crypto, userService, visitorService,
-                           mongoose, config, log, AppError, cls) {
-
-    //var isRobot = funnelweb;    // better name for lib used to detect robots
-    //var partnerCache = {};      // partners don't change often, so just store them statically
-
-    /**
-     *
-     * Check the tracking cookie. If exists don't do anything. If it doesn't,
-     * create a new one and send a cookie back to the user in the response.
-     *
-     * @param req
-     */
-    function visitorInit(req) {
-
-        // if visitor ID already exists, we are all set, so just return
-        if (req.session && req.session.get('visitorId')) { return; }
-
-        //var headers = req.headers || {};
-        //var userAgent = headers['user-agent'] || '';
-
-        // no visitor info in session, so create a new visitor
-        var id = (new mongoose.Types.ObjectId()) + '';  // coerce to a string
-        if (req.session) { req.session.set('visitorId', id); }
-
-        // we want to force async so processes occurs without stopping to check user agent
-        //setTimeout(function () {
-        //    if (isRobot(userAgent)) { return; }     // robots are not tracked as visitors
-        //
-        //    visitorService.create({
-        //        caller: visitorService.admin,
-        //        data:   { _id: id }                 // ips: [ req.info.remoteAddress ], headers: req.headers
-        //    })
-        //        .then(function (data) {
-        //            log.debug('Visitor info saved for ' + data._id, null);
-        //        })
-        //        .catch(function (err) {
-        //            log.error(err, null);
-        //        });
-        //}, 1);
-    }
-    //
-    ///**
-    // * Get user from the request data
-    // * @param req
-    // */
-    //function getUser(req) {
-    //
-    //    // if user already set, then return it
-    //    if (req.user) { return new Q(req.user); }
-    //
-    //    /* jshint camelcase:false */
-    //    // if passport didn't already attach user, only other possibility is a parter
-    //    var partnerId       = req.headers['x-app-id'];
-    //    var partnerSecret   = req.headers['x-app-secret'];
-    //
-    //    if (!partnerId || !partnerSecret) { return new Q(); }   // no partner ID or secret, then no user
-    //
-    //    // use the value in cache if we have it
-    //    var cachedPartner = partnerCache[partnerId];
-    //    if (cachedPartner && cachedPartner.secret === partnerSecret) {
-    //        return new Q(cachedPartner);
-    //    }
-    //
-    //    // else get the partner from the database
-    //    var deferred = Q.defer();
-    //    userService.find({ caller: userService.admin, where: { authToken: partnerId }, findOne: true })
-    //        .then(function (partner) {
-    //            partnerCache[partnerId] = partner;
-    //
-    //            if (partnerSecret === partner.secret) {
-    //                deferred.resolve(partner);
-    //            }
-    //            else {
-    //                deferred.reject(new AppError({
-    //                    code: 'invalid_credentials',
-    //                    msg: 'Partner ' + partnerId + ' tried to auth with secret ' + partnerSecret
-    //                }));
-    //            }
-    //        })
-    //        .catch(function (err) {
-    //            deferred.reject(new AppError({ code: 'invalid_credentials', err: err }));
-    //        });
-    //
-    //    return deferred.promise;
-    //}
+module.exports = function (Q, crypto, userService, mongoose, config, log, AppError, cls) {
 
     /**
      * Get the device id if it exists and the secret is valid
@@ -126,9 +41,11 @@ module.exports = function (Q, funnelweb, crypto, userService, visitorService,
      * @returns {*}
      */
     function getCaller(req) {
-        var visitorId = (req.session && req.session.get('visitorId'));
         var ipAddress = req.info.remoteAddress;
         var user = req.user;
+        var visitorId = (user && user.visitorId) ||
+            req.query.onBehalfOfVisitorId ||
+            (new mongoose.Types.ObjectId()) + '';
 
         if (user) {
 
@@ -201,9 +118,6 @@ module.exports = function (Q, funnelweb, crypto, userService, visitorService,
             // if request for a static file, return right away
             if (req.url.path.indexOf(config.staticFiles.assets) > -1) { reply.continue(); return; }
 
-            // only if we are on the webserver, initialize the visitor
-            if (container === 'webserver') { visitorInit(req); }
-
             // get potential information about the caller
             req.deviceId = getDeviceId(req);
             req.caller = getCaller(req);
@@ -224,7 +138,6 @@ module.exports = function (Q, funnelweb, crypto, userService, visitorService,
 
     // exposing functions
     return {
-        visitorInit: visitorInit,
         getDeviceId: getDeviceId,
         getCaller: getCaller,
         init: init
