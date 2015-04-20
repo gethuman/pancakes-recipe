@@ -12,7 +12,7 @@ module.exports = function (Q, pancakes, pageCacheService, mwCommonRoutes, mwTask
         headers:        ['Accept', 'Accept-Version', 'Content-Type', 'Api-Version', 'X-Requested-With'],
         methods:        ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         credentials:    true,
-        matchOrigin:    true
+        matchOrigin:    false
     };
 
     /**
