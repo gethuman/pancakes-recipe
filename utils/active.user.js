@@ -31,7 +31,7 @@ module.exports = {
         var id = storage.get('visitorId');
         var user = {
             initComplete:   false,
-            visitorId:      (id && id !== 'null') ? id : null
+            visitorId:      (id && id !== 'null' && id !== 'undefined') ? id : null
         };
 
         /**
@@ -49,7 +49,7 @@ module.exports = {
                         //if (!me) { log.error('No user info found', null); return null; }
 
                         // save the visitor Id in storage for use by ajax
-                        var visitorId = (user.visitorId && user.visitorId !== 'null') ?
+                        var visitorId = (user.visitorId && user.visitorId !== 'null' && user.visitorId !== 'undefined') ?
                             user.visitorId : me.visitorId;
                         if (visitorId) {
                             storage.set('visitorId', visitorId);
