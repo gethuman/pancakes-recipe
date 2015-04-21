@@ -28,10 +28,10 @@ module.exports = {
 
     // the client maintains the active user in memory
     client: function ($timeout, _, Q, userService, log, eventBus, storage) {
-
+        var id = storage.get('visitorId');
         var user = {
             initComplete:   false,
-            visitorId:      storage.get('visitorId')
+            visitorId:      (id && id !== 'null') ? id : null
         };
 
         /**
@@ -49,8 +49,11 @@ module.exports = {
                         //if (!me) { log.error('No user info found', null); return null; }
 
                         // save the visitor Id in storage for use by ajax
-                        var visitorId = user.visitorId || me.visitorId;
-                        storage.set('visitorId', visitorId);
+                        var visitorId = (user.visitorId && user.visitorId !== 'null') ?
+                            user.visitorId : me.visitorId;
+                        if (visitorId) {
+                            storage.set('visitorId', visitorId);
+                        }
 
                         // otherwise, pull out the user
                         _.extend(user, me.user, { visitorId: visitorId });
