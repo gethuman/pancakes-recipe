@@ -5,7 +5,7 @@
  * Testing hashing functions
  */
 var name    = 'utils/hash';
-var taste   = require('../pancakes.taste.js')();
+var taste   = require('../../pancakes.taste.js')();
 var hash    = taste.flapjack(name);
 
 describe('UNIT ' + name, function () {

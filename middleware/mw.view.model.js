@@ -46,7 +46,7 @@ module.exports = function (_, appConfigs, i18n, config) {
         var staticFileRoot = (staticSSL ? 'https://' : 'http://') + config.staticFiles.assets + '/';
 
         model.clientData = {
-            config: _.extend({ staticFileRoot: staticFileRoot }, config.client),
+            config: _.extend({ staticFileRoot: staticFileRoot }, config.webclient),
             context: {
                 app:                appName,
                 lang:               model.lang

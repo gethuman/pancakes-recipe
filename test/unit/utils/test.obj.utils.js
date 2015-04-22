@@ -5,7 +5,7 @@
  * Unit test for the data manipulator
  */
 var name    = 'utils/obj.utils';
-var taste   = require('../pancakes.taste.js')();
+var taste   = require('../../pancakes.taste.js')();
 var objUtils = taste.flapjack(name);
 
 describe('UNIT ' + name, function () {

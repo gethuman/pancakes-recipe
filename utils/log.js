@@ -60,8 +60,10 @@ module.exports = function (_, eventBus) {
      */
     function error(msg, logData) {
         logData = logData || {};
+        var err;
 
         if (msg instanceof Error) {
+            err = msg;
             logData.msg = logData.msg || msg.message;
             logData.stack = msg.stack;
 
@@ -74,9 +76,13 @@ module.exports = function (_, eventBus) {
         }
 
         if (logData.err && logData.err instanceof Error) {
+            err = logData.err;
             logData.msg = logData.msg || logData.err.message;
             logData.stack = logData.err.stack;
-            delete logData.err;
+        }
+
+        if (err) {
+            logData.err = err;
         }
 
         logData.msg = (logData.msg || '') + ' ' + (msg || '');
@@ -92,8 +98,10 @@ module.exports = function (_, eventBus) {
      */
     function critical(msg, logData) {
         logData = logData || {};
+        var err;
 
         if (msg instanceof Error) {
+            err = msg;
             logData.msg = logData.msg || msg.message;
             logData.stack = msg.stack;
 
@@ -101,13 +109,21 @@ module.exports = function (_, eventBus) {
             if (msg.err) { logData.inner = msg.err.stack || msg.err.message; }
         }
 
-        if (logData.err && logData.err instanceof Error) {
-            logData.msg = logData.msg || logData.err.message;
-            logData.stack = logData.err.stack;
-            delete logData.err;
+        if (_.isObject(msg)) {
+            msg = JSON.stringify(msg);
         }
 
-        logData.msg = logData.msg || msg;
+        if (logData.err && logData.err instanceof Error) {
+            err = logData.err;
+            logData.msg = logData.msg || logData.err.message;
+            logData.stack = logData.err.stack;
+        }
+
+        if (err) {
+            logData.err = err;
+        }
+
+        logData.msg = (logData.msg || '') + ' ' + (msg || '');
         logData.level = 'critical';
         logData.source = getSource();
         eventBus.emit('log.critical', logData);

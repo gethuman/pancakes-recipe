@@ -84,7 +84,7 @@ module.exports = function (Q, _, pancakes, fakeblock, adapters, resources, react
         // loop through each reactor and call init if it exists
         _.each(reactors, function (reactor) {
             if (reactor.init) {
-                reactor.init();
+                reactor.init({ config: config, pancakes: pancakes });
             }
         });
 

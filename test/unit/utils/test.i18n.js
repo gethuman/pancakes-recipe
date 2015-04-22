@@ -5,7 +5,7 @@
  * Unit tests for the i18n util
  */
 var name    = 'utils/i18n';
-var taste   = require('../pancakes.taste.js')();
+var taste   = require('../../pancakes.taste.js')();
 var target  = taste.target(name);
 
 describe('UNIT ' + name, function () {

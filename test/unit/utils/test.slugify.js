@@ -5,7 +5,7 @@
  * Unit test slugify
  */
 var name    = 'utils/slugify';
-var taste   = require('../pancakes.taste.js')();
+var taste   = require('../../pancakes.taste.js')();
 var slugify = taste.flapjack(name);
 
 describe('UNIT ' + name, function () {

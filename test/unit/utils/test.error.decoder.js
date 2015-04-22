@@ -5,7 +5,7 @@
  * Testing the API error decoder
  */
 var name        = 'utils/error.decoder';
-var taste       = require('../pancakes.taste.js')();
+var taste       = require('../../pancakes.taste.js')();
 var apiErrors   = taste.flapjack(name);
 var _           = require('lodash');
 

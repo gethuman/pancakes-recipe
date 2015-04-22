@@ -1,5 +1,4 @@
 /**
- * Copyright 2014 GetHuman LLC
  * Author: Jeff Whelpley
  * Date: 4/23/14
  *
@@ -12,7 +11,7 @@ module.exports = {
      * for the client from the server values (see mw.view.model where the client
      * values are stuck into the DOM)
      */
-    server: function (pancakes) {
+    server: function (_, pancakes) {
         var config = pancakes.cook('config/index');
 
         // get the API base
@@ -29,16 +28,19 @@ module.exports = {
         apiBase += '/' + (config.api ? config.api.version : 'test');
 
         // set config values for the client web apps
-        config.client = {
+        config.webclient = config.webclient || {};
+        _.extend(config.webclient, {
             apiBase:                apiBase,
+            errorUrl:               config.logging && config.logging.errorClientUrl,
+            logLevel:               config.logging && config.logging.level,
+            logTransport:           config.logging && config.logging.transport,
             i18nDebug:              config.i18nDebug,
-            logToken:               config.logging.logglyToken,
             appEnv:                 config.env,
             version:                config.staticVersion,
             baseHost:               config.baseHost,
             domains:                config.domains,
             cookieDomain:           (config.security && config.security.cookie ? config.security.cookie.domain : 'test.dev.gethuman.com')
-        };
+        });
 
         return config;
     },
