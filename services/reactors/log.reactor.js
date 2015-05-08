@@ -20,6 +20,7 @@ var errorClient = null;
 function errorHandler(event, logData) {
     if (!errorClient) { return; }
 
+    logData = logData || {};
     var err = logData.err;
     delete logData.err;
 
