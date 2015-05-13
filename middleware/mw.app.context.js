@@ -25,7 +25,7 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, AppError
      * @param domainMap Key is subdomain value, value is the name of the app
      */
     function setAppInfo(req, domainMap) {
-        var host = req.info.host;
+        var host = req.info.hostname;
         var domain;
 
         // if the host starts with the lang, then remove it

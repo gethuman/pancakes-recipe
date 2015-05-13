@@ -18,9 +18,9 @@ module.exports = function (Q, _, Hapi, pancakes, log, config, chainPromises) {
     /**
      * Get a Hapi server
      */
-    function getServer(container) {
+    function getServer() {
         var server = new Hapi.Server();
-        var port = config[container].port || process.env.PORT;
+        var port = process.env.PORT;
         server.connection({ port: port });
         return server;
     }
@@ -41,7 +41,7 @@ module.exports = function (Q, _, Hapi, pancakes, log, config, chainPromises) {
     function init(container) {
         var ctx = {
             container:  container,
-            server:     getServer(container)
+            server:     getServer()
         };
         var calls = mwConfig[container].map(function (name) {
             var mw = pancakes.cook(name);
