@@ -4,7 +4,7 @@
  *
  *
  */
-module.exports = function (_, Q, pancakes, resources, log, routeHelper) {
+module.exports = function (_, Q, pancakes, resources, log) {
     var taskHandlers = {};
 
     /**
@@ -43,7 +43,9 @@ module.exports = function (_, Q, pancakes, resources, log, routeHelper) {
 
         // if user is not logged in redirect to login then back to here
         if (!request.caller || !request.caller.user) {
-            reply().redirect(routeHelper.getLoginUrl(request.url.pathname));
+            var currentUrl = request.url.pathname;
+            var loginUrl = currentUrl + '?modal=auth&submodal=login&redirect=' + currentUrl;
+            reply().redirect(loginUrl);
             return true;
         }
 
