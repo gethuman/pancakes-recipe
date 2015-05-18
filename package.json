@@ -19,24 +19,24 @@
   "homepage": "https://github.com/gethuman/pancakes-recipe",
   "dependencies": {
     "bcrypt": "^0.8.3",
-    "bell": "^2.7.1",
+    "bell": "^2.8.0",
     "boom": "^2.6.1",
     "colors": "^1.1.0",
     "commander": "^2.8.1",
     "continuation-local-storage": "^3.1.4",
-    "fakeblock": "0.0.32",
+    "fakeblock": "0.0.33",
     "funnelweb": "0.0.1",
     "hapi": "^8.4.0",
     "hapi-auth-cookie": "^2.2.0",
     "hiredis": "^0.3.0",
-    "jsonwebtoken": "^5.0.0",
+    "jsonwebtoken": "^5.0.1",
     "lodash": "^3.8.0",
     "lru-cache": "^2.6.3",
     "moment": "^2.10.3",
     "mongoose": "4.0.3",
-    "pancakes": "^0.1.70",
-    "pancakes-mongo": "0.0.30",
-    "q": "^1.4.0",
+    "pancakes": "^0.1.71",
+    "pancakes-mongo": "0.0.31",
+    "q": "^1.4.1",
     "raven": "^0.7.3",
     "redis": "^0.12.1",
     "request": "^2.55.0",
@@ -44,9 +44,9 @@
     "yar": "^3.0.3"
   },
   "devDependencies": {
-    "batter": "0.0.36",
+    "batter": "0.0.37",
     "boom": "^2.7.1",
     "gulp": "^3.8.11",
-    "taste": "^0.1.62"
+    "taste": "^0.1.63"
   }
 }
