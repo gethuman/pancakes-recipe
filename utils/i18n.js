@@ -43,7 +43,9 @@ module.exports = function (_, translations, context, config) {
         var pntr = scope;
 
         _.each(fieldParts, function (fieldPart) {
-            pntr = pntr[fieldPart];
+            if (pntr) {
+                pntr = pntr[fieldPart];
+            }
         });
 
         return pntr;
