@@ -14,7 +14,7 @@ module.exports = function (Q, _, pancakes, fakeblock, adapters, resources, react
         var container = ctx.container;
 
         // reactors can be initialized without a promise since just attaching event handlers
-        initReactors();
+        initReactors(container);
 
         // adapters and services may be making database calls, so do with promises
         return initAdapters(container)
@@ -78,8 +78,10 @@ module.exports = function (Q, _, pancakes, fakeblock, adapters, resources, react
     /**
      * Call all reactor init functions and attach reactors based
      * on reactor data within resource files.
+     * @param container
      */
-    function initReactors() {
+    function initReactors(container) {
+        var isBatch = container === 'batch';
 
         // loop through each reactor and call init if it exists
         _.each(reactors, function (reactor) {
@@ -91,6 +93,10 @@ module.exports = function (Q, _, pancakes, fakeblock, adapters, resources, react
         // most reactors will be through the resource reactor definitions
         _.each(resources, function (resource) {                     // loop through all the resources
             _.each(resource.reactors, function (reactData) {        // loop through reactors
+                if (isBatch && reactData.type === 'audit') {        // don't do anything if audit for batch
+                    return;                                         // since audit not needed for batch
+                }
+
                 var eventTriggers = {                               // events that will trigger this propgation
                     resources:  [resource.name],
                     adapters:   reactData.trigger.adapters,
