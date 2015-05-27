@@ -24,18 +24,18 @@
     "colors": "^1.1.0",
     "commander": "^2.8.1",
     "continuation-local-storage": "^3.1.4",
-    "fakeblock": "0.0.34",
+    "fakeblock": "0.0.35",
     "funnelweb": "0.0.1",
-    "hapi": "^8.4.0",
+    "hapi": "^8.5.2",
     "hapi-auth-cookie": "^2.2.0",
-    "hiredis": "^0.3.0",
+    "hiredis": "^0.4.0",
     "jsonwebtoken": "^5.0.1",
-    "lodash": "^3.9.1",
+    "lodash": "^3.9.3",
     "lru-cache": "^2.6.4",
     "moment": "^2.10.3",
     "mongoose": "4.0.3",
-    "pancakes": "^0.1.73",
-    "pancakes-mongo": "0.0.32",
+    "pancakes": "^0.1.74",
+    "pancakes-mongo": "0.0.33",
     "q": "^1.4.1",
     "raven": "^0.7.3",
     "redis": "^0.12.1",
@@ -44,9 +44,9 @@
     "yar": "^3.0.3"
   },
   "devDependencies": {
-    "batter": "0.0.38",
-    "boom": "^2.7.1",
+    "batter": "0.0.39",
+    "boom": "^2.7.2",
     "gulp": "^3.8.11",
-    "taste": "^0.1.64"
+    "taste": "^0.1.65"
   }
 }
