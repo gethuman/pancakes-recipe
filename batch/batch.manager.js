@@ -28,22 +28,6 @@ module.exports = function (fs, commander, moment, pancakes, mwServiceInit, log, 
      * Process the command line using commander
      */
     function processCommandLine() {
-        commander
-            .version('0.0.3')
-            .option('-a, --app [appName]', 'Name of app to run (required)') // TODO: remove -a since it's required not optional
-            .option('-b, --debug', 'Use [dev] environment')
-            .option('-d, --delete', 'Delete data before processing job (data.load only)')
-            .option('-e, --environment [dev|ci|prod]', 'Use [dev] environment', 'dev')
-            .option('-l, --list', 'List available apps')
-            .option('-r, --runDate [MM/DD/YYYY]', 'Run date (only rollup apps, default now)')
-            .option('-y, --runDays [days]', 'Number of days in run (only rollup apps, default 1)', 1)
-            .option('-s, --source [source]', 'Source of data for this batch job', 'all')
-            .option('-t, --target [name]', 'Target for batch job', 'all')
-            .option('-f, --field [field]', 'Fields to be used for this batch')
-            .option('-x, --reactor [reactor]', 'The reactor to use for the batch (reactor.cleanup only)')
-            .parse(process.argv);
-        process.env.NODE_ENV = commander.environment;
-
         if (commander.list) {
             listApps();
             process.exit(0);
