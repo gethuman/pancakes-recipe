@@ -84,19 +84,19 @@ module.exports = {
          * @param jwt
          */
         function login(updatedUser, jwt) {
-            storage.set('jwt', jwt);        // set the token in local storage
-            removeUserVals();               // remove old user values
-            _.extend(user, updatedUser);    // add new user values
-            eventBus.emit('user.init');     // let everyone else know there is a new user in town
+            storage.set('jwt', 'Bearer ' + jwt);    // set the token in local storage
+            removeUserVals();                       // remove old user values
+            _.extend(user, updatedUser);            // add new user values
+            eventBus.emit('user.init');             // let everyone else know there is a new user in town
         }
 
         /**
          * Log the active user out
          */
         function logout() {
-            removeUserVals();               // remove user vals to log out
-            storage.remove('jwt');          // then remove the JSON web token from local storage
-            eventBus.emit('user.init');     // let everyone else know user logged out
+            removeUserVals();                       // remove user vals to log out
+            storage.remove('jwt');                  // then remove the JSON web token from local storage
+            eventBus.emit('user.init');             // let everyone else know user logged out
         }
 
         // add functions to user

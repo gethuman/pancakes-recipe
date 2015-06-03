@@ -54,7 +54,7 @@ module.exports = function (Q, config) {
         var jwt = req.state && req.state.jwt;
         if (jwt) {
             req.headers = req.headers || {};
-            req.headers.authorization = 'Bearer ' + jwt;
+            req.headers.authorization = jwt;
         }
 
         reply.continue();

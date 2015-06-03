@@ -61,6 +61,14 @@ module.exports = function (Q, userService, userCacheService, config, jwt) {
             return reply.continue();
         }
 
+        // this is hack fix so that localStorage and cookies can either have Bearer or not
+        // if in local storate, it is serialized, so need to replace %20 with space
+        // need to fix this in the future at the source (i.e. on the client side)
+        authorization = authorization.replace('Bearer%20', 'Bearer ');
+        if (!authorization.match(/^Bearer /)) {
+            authorization = 'Bearer ' + authorization;
+        }
+
         var parts = authorization.split(/\s+/);
 
         if (parts.length !== 2) {
@@ -76,7 +84,6 @@ module.exports = function (Q, userService, userCacheService, config, jwt) {
         }
 
         var token = parts[1];
-
         jwt.verify(token, privateKey)
             .then(function (decodedToken) {
                 return getUserForToken(decodedToken);
