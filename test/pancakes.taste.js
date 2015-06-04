@@ -43,7 +43,8 @@ module.exports = function (loadModule) {
     var taste = loadModule('taste');
     pancakesTaste = _.extend({}, taste, {
 
-        init: function init() {
+        init: function init(container) {
+            pancakesConfig.container = container;
             pancakes.init(pancakesConfig);
         },
 
