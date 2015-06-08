@@ -5,18 +5,21 @@
  * This middleware is in charge of setting context variables for a web app
  */
 module.exports = function (Q, _, appConfigs, config, cls, translations, AppError) {
+    var langSubdomains = config.lang.subdomains;
 
     /**
      * Set the language depending on a couple different potential sources
      * @param req
-     * @param langs An object where keys are all the available language codes (i.e. en, fr, etc.)
      */
-    function setLanguage(req, langs) {
-        req.app.lang = req.query.lang ||                            // lang in query string takes precedence
-            (req.info.host.charAt(2) === '.' &&
-                langs[req.info.host.substring(0, 2)]) ||            // else check host name (ex. fr.gethuman.com)
-            config.defaultLang ||                                   // else use default site in config
-            'en';                                                   // else just use english
+    function setLanguage(req) {
+        var host = req.info.host;
+        var subdomain = host.substring(0, 2);
+
+        // either at language-based subdomain or we use english
+        req.app.lang = (host.chartAt(2) === '.' && langSubdomains.indexof(subdomain) >= 0) ?
+            subdomain : 'en';
+
+        console.log('setting lang to ' + req.app.lang);
     }
 
     /**
@@ -77,20 +80,6 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, AppError
     }
 
     /**
-     * Get the potential languages by inspecting the translations module
-     */
-    function getPotentialLanguages() {
-        var langs = {};
-        _.each(translations.common, function (strTranslations) {
-            _.each(strTranslations, function (translatedStr, lang) {
-                langs[lang] = true;
-            });
-        });
-
-        return langs;
-    }
-
-    /**
      * Get the domain map by inspecting the app files
      * @returns {{}}
      */
@@ -110,12 +99,11 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, AppError
      * @returns {Q}
      */
     function init(ctx) {
-        var langs = getPotentialLanguages();
         var domainMap = getDomainMap();
 
         // for each request we need to set the proper context
         ctx.server.ext('onRequest', function (req, reply) {
-            setLanguage(req, langs);
+            setLanguage(req);
             setAppInfo(req, domainMap);
             setContext(req);
             reply.continue();
@@ -129,7 +117,6 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, AppError
         setLanguage: setLanguage,
         setAppInfo: setAppInfo,
         setContext: setContext,
-        getPotentialLanguages: getPotentialLanguages,
         getDomainMap: getDomainMap,
         init: init
     };

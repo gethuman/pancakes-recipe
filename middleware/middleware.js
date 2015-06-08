@@ -10,9 +10,8 @@ module.exports = function (Q, _, Hapi, pancakes, log, config, chainPromises) {
     // this contains the list of middleware (in order) for each container
     var mwConfig = {
         api:        ['mwErrorHandling', 'mwServiceInit', 'mwAuthToken', 'mwCaller', 'mwApiRoutes'],
-        webserver:  ['mwErrorHandling', 'mwServiceInit',
-                        'mwAuthSocial', 'mwAuthCookie', 'mwAuthToken', 'mwCaller',
-                        'mwTasks', 'mwAppContext', 'mwWebRoutes', 'mwTracking']
+        webserver:  ['mwErrorHandling', 'mwServiceInit', 'mwAuthSocial', 'mwAuthCookie',
+                        'mwAuthToken', 'mwCaller', 'mwTasks', 'mwAppContext', 'mwWebRoutes', 'mwTracking']
     };
 
     /**
@@ -46,11 +45,11 @@ module.exports = function (Q, _, Hapi, pancakes, log, config, chainPromises) {
         };
         var calls = mwConfig[container].map(function (name) {
             var mw = pancakes.cook(name);
-            return mw.init;
-            //return function (ctx) {
-            //    console.log('calling init for ' + name);
-            //    return mw.init(ctx);
-            //};
+            //return mw.init;
+            return function (ctx) {
+                console.log('calling init for ' + name);
+                return mw.init(ctx);
+            };
         });
 
         // after all the middleware is done, start the server

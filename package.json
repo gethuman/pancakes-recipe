@@ -45,7 +45,6 @@
   },
   "devDependencies": {
     "batter": "0.0.41",
-    "boom": "^2.7.2",
     "gulp": "^3.9.0",
     "taste": "^0.1.66"
   }

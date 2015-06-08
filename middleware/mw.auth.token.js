@@ -56,7 +56,6 @@ module.exports = function (Q, userService, userCacheService, config, jwt) {
      */
     function validateToken(req, reply) {
         var authorization = req.headers.authorization;
-
         if (!authorization) {
             return reply.continue();
         }
