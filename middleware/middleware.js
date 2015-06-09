@@ -45,11 +45,11 @@ module.exports = function (Q, _, Hapi, pancakes, log, config, chainPromises) {
         };
         var calls = mwConfig[container].map(function (name) {
             var mw = pancakes.cook(name);
-            //return mw.init;
-            return function (ctx) {
-                console.log('calling init for ' + name);
-                return mw.init(ctx);
-            };
+            return mw.init;
+            //return function (ctx) {
+            //    console.log('calling init for ' + name);
+            //    return mw.init(ctx);
+            //};
         });
 
         // after all the middleware is done, start the server

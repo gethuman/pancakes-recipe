@@ -5,7 +5,7 @@
  * This module is used to update a model after it is initially created (i.e. database
  * calls, etc.) but BEFORE it is used to render the page.
  */
-module.exports = function (_, appConfigs, i18n, config) {
+module.exports = function (_, appConfigs, i18n, config, translations) {
 
     /**
      * Add to the model with certain custom values for the app
@@ -49,9 +49,9 @@ module.exports = function (_, appConfigs, i18n, config) {
             config: _.extend({ staticFileRoot: staticFileRoot }, config.webclient),
             context: {
                 app:                appName,
-                lang:               model.lang
+                lang:               routeInfo.lang
             },
-            initialSearchResults:   model.searchResults
+            translations: translations
         };
 
         if (config.realtime) {

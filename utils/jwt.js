@@ -18,8 +18,6 @@ module.exports = function (_, Q, jsonwebtoken, config) {
         var privateKey = config.security.token.privateKey;
         var decryptedToken = _.extend(existingToken, { _id: user._id, authToken: user.authToken });
 
-        console.log('decryptedToken is ' + JSON.stringify(decryptedToken));
-
         return jsonwebtoken.sign(decryptedToken, privateKey);
     }
 

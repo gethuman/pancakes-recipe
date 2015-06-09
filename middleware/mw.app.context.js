@@ -4,8 +4,8 @@
  *
  * This middleware is in charge of setting context variables for a web app
  */
-module.exports = function (Q, _, appConfigs, config, cls, translations, AppError) {
-    var langSubdomains = config.lang.subdomains;
+module.exports = function (Q, _, appConfigs, config, cls, translations, AppError, log) {
+    var langSubdomains = config.lang.subdomains || [];
 
     /**
      * Set the language depending on a couple different potential sources
@@ -16,10 +16,8 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, AppError
         var subdomain = host.substring(0, 2);
 
         // either at language-based subdomain or we use english
-        req.app.lang = (host.chartAt(2) === '.' && langSubdomains.indexof(subdomain) >= 0) ?
+        req.app.lang = (host.charAt(2) === '.' && langSubdomains.indexOf(subdomain) >= 0) ?
             subdomain : 'en';
-
-        console.log('setting lang to ' + req.app.lang);
     }
 
     /**
