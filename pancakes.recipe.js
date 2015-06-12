@@ -9,6 +9,7 @@ var tastePancakes       = require('./test/pancakes.taste');
 var RedisAdapter        = require('./services/adapters/redis/redis.adapter');
 var ApiclientAdapter    = require('./services/adapters/apiclient/apiclient.adapter');
 var logReactor          = require('./services/reactors/log.reactor');
+var translationReactor  = require('./services/reactors/translation.reactor');
 
 module.exports = {
     rootDir:            __dirname,
@@ -19,7 +20,8 @@ module.exports = {
         apiclient:      ApiclientAdapter
     },
     reactors: {
-        log:            logReactor
+        log:            logReactor,
+        translation:    translationReactor
     }
 };
 

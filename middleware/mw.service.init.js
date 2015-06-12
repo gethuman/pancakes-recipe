@@ -4,7 +4,8 @@
  *
  * Connect to mongo and elasticsearch
  */
-module.exports = function (Q, _, pancakes, fakeblock, adapters, resources, reactors, config, eventBus, chainPromises, objUtils, log) {
+module.exports = function (Q, _, pancakes, fakeblock, adapters, resources, reactors, config, eventBus,
+                           chainPromises, objUtils, log) {
 
     /**
      * Initialize all the reactors, adapters and services

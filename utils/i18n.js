@@ -7,28 +7,7 @@
 module.exports = function (_, translations, context, config) {
     // @module({ "client": true })
 
-    var untranslated = {};
-    var lastdumpTimestamp = (new Date()).getTime();
     var i18nVarExpr = /(?:\{\{\s*)([^\{\}]*)(?:\s*\}\})/g;
-
-    /**
-     * Record value that can't be translated
-     * @param val
-     * @param app
-     * @param lang
-     */
-    function recordUntranslated(val, app, lang) {
-        if (!untranslated[app]) { untranslated[app] = {}; }
-        if (!untranslated[app][val]) { untranslated[app][val] = {}; }
-        untranslated[app][val][lang] = '';
-
-        // if it has been 60 seconds since our last dump, do another one
-        var now = (new Date()).getTime();
-        if ((lastdumpTimestamp + 60000) < now) {
-            console.log(JSON.stringify(untranslated, undefined, 2));
-            lastdumpTimestamp = now;
-        }
-    }
 
     /**
      * Get a value from scope for a given field
@@ -83,9 +62,10 @@ module.exports = function (_, translations, context, config) {
      *
      * @param val
      * @param scope
+     * @param status
      * @returns {string}
      */
-    function translate(val, scope) {
+    function translate(val, scope, status) {
         var app = context.get('app') || '';
         var lang = context.get('lang') || 'en';
         var translated;
@@ -101,9 +81,13 @@ module.exports = function (_, translations, context, config) {
             translated = translations.common[val][lang];
         }
 
-        // if no transation, so just record the value so we can translate it later
-        if (!translated && config.i18nDebug) {
-            recordUntranslated(val, app, lang);
+        // if no transation AND caller passed in status object AND lang is not default (i.e. not english),
+        // set the status object values which the caller can use to record some info
+        // note: this is kind of hacky, but we want the caller (i.e. jng.directives.js) to handle
+        // it because jng.directives has more info about the translation than we do at this level
+        if (!translated && config.i18nDebug && status && lang !== config.lang.default) {
+            status.lang = lang;
+            status.missing = true;
         }
 
         // attempt to interpolate and return the resulting value (val if no translation found)
@@ -112,8 +96,6 @@ module.exports = function (_, translations, context, config) {
 
     // expose functions
     return {
-        untranslated: untranslated,
-        recordUntranslated: recordUntranslated,
         getScopeValue: getScopeValue,
         interpolate: interpolate,
         translate: translate
