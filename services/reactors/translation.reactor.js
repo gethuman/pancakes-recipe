@@ -6,9 +6,9 @@
  * and save the data to the database so that it can be later
  * processed.
  */
-var _ = require('lodash');
 var Q = require('q');
 var savedTranslations = {};
+var log = console;
 
 /**
  * Using the translationService, save the missing i18n translation
@@ -17,20 +17,46 @@ var savedTranslations = {};
  * @param missingData
  */
 function save(translationService, missingData) {
-    var slug = missingData.lang + '||' + missingData.value;
-    var data = _.extend(missingData, { slug: slug });
     var caller = translationService.admin;
 
-    if (savedTranslations[slug]) {
-        return new Q(savedTranslations[slug]);
+    // first check to see if we already saved this translation
+    var savedKey = missingData.appName + '||' + missingData.lang + '||' + missingData.text;
+    if (savedTranslations[savedKey]) {
+        return new Q(savedTranslations[savedKey]);
     }
 
-    return translationService.find({ caller: caller, where: { slug: slug }, findOne: true })
+    // we don't set the appName initially so we can check to see if there are multiple apps
+    var appName = missingData.appName;
+    delete missingData.appName;
+
+    return translationService.update({
+        caller: caller,
+        where:  { lang: missingData.lang, text: missingData.text },
+        data:   missingData,
+        upsert: true
+    })
         .then(function (translation) {
-            return translation || translationService.create({ caller: caller, data: data });
+
+            // if the saved translation app name diff than the input here, then update to common
+            if (translation && appName && translation.appName !== 'common' && translation.appName !== appName) {
+                return translationService.update({
+                    caller: caller,
+                    _id:    translation._id,
+                    data:   { appName: 'common' }
+                });
+            }
+            else {
+                return translation;
+            }
         })
         .then(function (translation) {
-            savedTranslations[slug] = translation;
+
+            // if no translation then there is something wrong
+            if (!translation) {
+                log.error('No translation saved for ' + JSON.stringify(missingData));
+            }
+
+            savedTranslations[savedKey] = translation;
             return translation;
         });
 }
@@ -46,6 +72,7 @@ function init(opts) {
     var pancakes = opts.pancakes;
     var eventBus = pancakes.cook('eventBus');
     var translationService = pancakes.cook('translationService');
+    log = pancakes.cook('log');
 
     if (config.i18nDebug) {
         eventBus.on('i18n.missing', function (missingData) {

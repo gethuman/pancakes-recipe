@@ -7,6 +7,11 @@
  */
 module.exports = function (_, appConfigs, i18n, config, translations) {
 
+    // static model values that do not change
+    var versioningEnabled = config.env !== 'dev';
+    var staticVersion = config.staticVersion;
+    var env = config.env;
+
     /**
      * Add to the model with certain custom values for the app
      * @param model
@@ -19,6 +24,7 @@ module.exports = function (_, appConfigs, i18n, config, translations) {
         var appName     = model.appName = routeInfo.appName;
         var appConfig   = appConfigs[appName];
         var appPascal   = appName.substring(0, 1).toUpperCase() + appName.substring(1);
+        var lang        = routeInfo.lang || 'en';
 
         // add the page head info
         if (model.pageHead) {
@@ -31,15 +37,21 @@ module.exports = function (_, appConfigs, i18n, config, translations) {
             model.pageHead.keywords = keywords.join(',');
         }
 
+        // static data that doesn't change
+        model.versioningEnabled = versioningEnabled;
+        model.staticVersion     = staticVersion;
+        model.env               = env;
+
+        // changes per request
         model.pageCssId         = config.projectPrefix + '-' + routeInfo.name.replace('.', '-');
-        model.versioningEnabled = config.env !== 'dev';
         model.clientApp         = config.projectPrefix + appPascal + 'App';
-        model.staticVersion     = config.staticVersion;
-        model.lang              = routeInfo.lang || 'en';
         model.stateData         = routeInfo.data || {};
         model.gaTrackingCode    = appConfig.trackingCode;
         model.serverOnly        = model.serverOnly || routeInfo.query.server || false;
-        model.env               = config.env;
+        model.lang              = lang;
+
+
+        //******************************** WEB CLIENT CONFIG + DATA ****************************************
 
         var staticSSL   = (config[appName] && config[appName].useSSL !== undefined) ?
             config[appName].useSSL : config.useSSL;
@@ -49,9 +61,9 @@ module.exports = function (_, appConfigs, i18n, config, translations) {
             config: _.extend({ staticFileRoot: staticFileRoot }, config.webclient),
             context: {
                 app:                appName,
-                lang:               routeInfo.lang
+                lang:               lang
             },
-            translations: translations
+            translations:           translations && translations[appName] && translations[appName][lang]
         };
 
         if (config.realtime) {

@@ -44,9 +44,7 @@ module.exports = function (_, translations, context, config) {
         // first, we need to get all values with a {{ }} in the string
         var i18nVars = val.match(i18nVarExpr);
 
-        // if no i18nVars found, just return the translated
-        if (!i18nVars) { return val; }
-
+        // loop through {{ }} values
         _.each(i18nVars, function (i18nVar) {
             var field = i18nVar.substring(2, i18nVar.length - 2).trim();
             var scopeVal = getScopeValue(scope, field);

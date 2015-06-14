@@ -26,6 +26,7 @@
     "continuation-local-storage": "^3.1.4",
     "fakeblock": "0.0.39",
     "funnelweb": "0.0.1",
+    "google-translate": "^1.0.0",
     "hapi": "^8.6.1",
     "hapi-auth-cookie": "^3.0.0",
     "hiredis": "^0.4.0",

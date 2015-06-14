@@ -112,9 +112,14 @@ function send(httpMethod, path, req) {
         if (!_.isString(val)) { req[key] = JSON.stringify(val); }
     });
 
+    // replace the ID portion of the URL
+    url = id ?
+        url.replace('{_id}', id + '') :
+        url.replace('/{_id}', '');
+
     var reqConfig = {
         headers:    headers,
-        url:        url.replace('{_id}', id + ''),
+        url:        url,
         method:     httpMethod,
         qs:         _.isEmpty(req) ? undefined : req,
         json:       _.isEmpty(data) ? true : data

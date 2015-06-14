@@ -38,6 +38,10 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppE
             // we need to convert to AppError if it is not already
             if (!(response instanceof AppError)) {
 
+                if (response.errmsg) {
+                    log.error(response.errmsg);
+                }
+
                 // if legit 404 be sure to use that code (happens with not found in /dist on local)
                 is404Error = response.message.indexOf('404:') === 0;
                 is404Status = response.output && response.output.payload && response.output.payload.statusCode === 404;
