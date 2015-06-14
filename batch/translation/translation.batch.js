@@ -38,7 +38,7 @@ module.exports = function (Q, _, translationService, translationTranslatorServic
      * @returns {*}
      */
     function sendAllItemsToTranslator() {
-        var where = { status: 'created' };
+        var where = { status: { $exists: false } };
         return translationService.find({ caller: caller, where: where })
             .then(function (itemsToTranslate) {
                 itemsToTranslate = itemsToTranslate || [];
@@ -102,7 +102,7 @@ module.exports = function (Q, _, translationService, translationTranslatorServic
      * @param rootDir
      */
     function exportToJson(rootDir) {
-        translationService.find({ caller: caller, where: { status: 'completed' } })
+        return translationService.find({ caller: caller, where: { status: 'completed' } })
             .then(function (listOfTranslations) {
 
                 // convert list of translations into JSON object
@@ -111,7 +111,8 @@ module.exports = function (Q, _, translationService, translationTranslatorServic
                 // save the JSON object to the translations.json file in {rootDir}/utils
                 var deferred = Q.defer();
 
-                fs.writeFile(rootDir + '/utils', JSON.stringify(json), function (err) {
+                var jsonFile = rootDir + '/utils/translations.json';
+                fs.writeFile(jsonFile, JSON.stringify(json), function (err) {
                     err ? deferred.reject(err) : deferred.resolve();
                 });
 

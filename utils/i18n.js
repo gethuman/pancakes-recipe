@@ -70,14 +70,8 @@ module.exports = function (_, translations, context, config) {
 
         if (!val) { return val; }
 
-        if (translations[app] && translations[app][val]) {
-            translated = translations[app][val][lang];
-        }
-
-        // if translation isn't at the app level, try the common level
-        if (!translated && translations.common && translations.common[val]) {
-            translated = translations.common[val][lang];
-        }
+        // translations could be either nested (on the server) or at the root (on the client)
+        translated = (translations[app] && translations[app][lang] && translations[app][lang][val] || translations[val]);
 
         // if no transation AND caller passed in status object AND lang is not default (i.e. not english),
         // set the status object values which the caller can use to record some info

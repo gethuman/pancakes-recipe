@@ -42,7 +42,11 @@ function save(translationService, missingData) {
                 return translationService.update({
                     caller: caller,
                     _id:    translation._id,
-                    data:   { appName: 'common' }
+                    data: {
+
+                        // if translation already has appName, then set to common, else set to new appName
+                        appName: translation.appName ? 'common' : appName
+                    }
                 });
             }
             else {
