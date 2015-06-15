@@ -69,10 +69,11 @@ module.exports = function (Q, _, config, crypto) {
 
             _.each(config.security.social, function (providerConfig, providerName) {
                 var opts = _.extend({}, config.security.cookie, {
-                    cookie:         'bell-' + providerName,
-                    clientId:       providerConfig.appId,
-                    clientSecret:   providerConfig.appSecret,
-                    provider:       getProvider(providerName, providerConfig)
+                    'cookie':           'bell-' + providerName,
+                    'clientId':         providerConfig.appId,
+                    'clientSecret':     providerConfig.appSecret,
+                    'isSecure':         config.useSSL,
+                    'provider':         getProvider(providerName, providerConfig)
                 });
 
                 server.auth.strategy(providerName, 'bell', opts);
