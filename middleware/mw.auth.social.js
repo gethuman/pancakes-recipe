@@ -4,7 +4,8 @@
  *
  * Details for social auth login using hapi bell
  */
-module.exports = function (Q, _, config, crypto) {
+module.exports = function (Q, _, config, crypto, routeHelper) {
+    var trustBaseUrl = routeHelper.getBaseUrl('trust');
 
     /**
      * Get the provider info which is really opts from the config plus the
@@ -72,7 +73,10 @@ module.exports = function (Q, _, config, crypto) {
                     'clientId':         providerConfig.appId,
                     'clientSecret':     providerConfig.appSecret,
                     'isSecure':         config.useSSL,
-                    'provider':         getProvider(providerName, providerConfig)
+                    'provider':         getProvider(providerName, providerConfig),
+                    'providerParams': {
+                        'redirect_uri': trustBaseUrl + '/auth/' + providerName
+                    }
                 });
 
                 server.auth.strategy(providerName, 'bell', opts);
