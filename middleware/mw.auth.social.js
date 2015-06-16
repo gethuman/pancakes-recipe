@@ -72,11 +72,11 @@ module.exports = function (Q, _, config, crypto, routeHelper) {
                     'cookie':           'bell-' + providerName,
                     'clientId':         providerConfig.appId,
                     'clientSecret':     providerConfig.appSecret,
-                    'isSecure':         config.useSSL,
-                    'provider':         getProvider(providerName, providerConfig),
-                    'providerParams': {
-                        'redirect_uri': trustBaseUrl + '/auth/' + providerName
-                    }
+                    //'isSecure':         config.useSSL,
+                    'provider':         getProvider(providerName, providerConfig)
+                    //'providerParams': {
+                    //    'redirect_uri': trustBaseUrl + '/auth/' + providerName
+                    //}
                 });
 
                 server.auth.strategy(providerName, 'bell', opts);
