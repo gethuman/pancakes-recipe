@@ -21,7 +21,6 @@ module.exports = function (Q, _, config, crypto) {
                 var proof = null;
 
                 /* jshint camelcase:false */
-
                 if (providerConfig.useProof) {
                     proof = {
                         appsecret_proof: crypto

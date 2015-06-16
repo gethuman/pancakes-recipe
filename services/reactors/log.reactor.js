@@ -71,8 +71,12 @@ function init(opts) {
             var standardFields = ['msg', 'level', 'source', 'stack', 'inner'];
             var color = colorMap[logData.level] || 'grey';
             var msg = logData.msg && logData.msg[color];
+            var now = new Date();
 
             console.log('----');
+            console.log('date: ' + (now.getMonth() + 1) + '/' + now.getDate() + '/' +
+                now.getFullYear() + ' ' + now.getHours() + ':' + now.getMinutes() + ':' +
+                now.getSeconds() + ':' + now.getMilliseconds());
             console.log('message:' + Array(len - 8).join(pad) + msg);
             console.log('level:' + Array(len - 6).join(pad) + logData.level);
             console.log('source:' + Array(len - 7).join(pad) + logData.source);
