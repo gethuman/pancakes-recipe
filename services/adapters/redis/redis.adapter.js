@@ -42,6 +42,7 @@ function wrapRemoteCache(remoteCache) {
         set: function (key, value) {
             value = _.isObject(value) ? JSON.stringify(value) : value;
             remoteCache.set(key, value);
+            remoteCache.expire(key, 3600);
         },
         quit: function () {
             remoteCache.quit();

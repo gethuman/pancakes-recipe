@@ -17,6 +17,7 @@ module.exports = function (Q, config, routeHelper, log) {
      * @param reply
      */
     function checkIfSSL(req, reply) {
+        var url = req.url.path;
         var appName = req.app.name;
         var lang = req.app.lang;
         var forceSSL = (config[appName] && config[appName].forceSSL !== undefined) ?
@@ -24,7 +25,7 @@ module.exports = function (Q, config, routeHelper, log) {
         var protocol = req.connection.info.protocol;
         var host = routeHelper.getBaseUrl(appName, lang);
 
-        if (forceSSL && protocol === 'http') {
+        if (forceSSL && protocol === 'http' && url !== '/ping') {
 
             // make sure https (route helper may return http if forceSSL true by useSSL false
             if (host.substring(0, 5) === 'http:') {
@@ -32,7 +33,7 @@ module.exports = function (Q, config, routeHelper, log) {
                 host = host.replace('http:', 'https:');
             }
 
-            reply.redirect(host + req.url.path).permanent(true);
+            reply.redirect(host + url).permanent(true);
         }
         else {
             reply.continue();
