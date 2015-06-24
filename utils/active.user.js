@@ -21,7 +21,7 @@ module.exports = {
                     }
                 }
 
-                return new Q({});
+                return Q.when({});
             }
         };
     },
