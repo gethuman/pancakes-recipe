@@ -71,7 +71,8 @@ module.exports = function (_, translations, context, config) {
         if (!val) { return val; }
 
         // translations could be either nested (on the server) or at the root (on the client)
-        translated = (translations[app] && translations[app][lang] && translations[app][lang][val] || translations[val]);
+        translated = (translations[app] && translations[app][lang] && translations[app][lang][val]) ||
+            (_.isString(translations[val]) && translations[val]);
 
         // if no transation AND caller passed in status object AND lang is not default (i.e. not english),
         // set the status object values which the caller can use to record some info
