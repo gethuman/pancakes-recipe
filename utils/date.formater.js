@@ -142,9 +142,9 @@ module.exports = function (dateMoment) {
 
     // exposed functions
     return {
-        getFormattedDate: getFormattedDate,
-        short: short,
-        medium: medium,
-        long: long
+        'getFormattedDate': getFormattedDate,
+        'short':            short,
+        'medium':           medium,
+        'long':             long
     };
 };

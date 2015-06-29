@@ -10,29 +10,18 @@ var target  = taste.target(name);
 
 describe('UNIT ' + name, function () {
     var translations = {
-        common: {
-            foo: {
-                fr: 'foofr'
-            },
-            'yo yo': {
-                fr: 'yo yo common'
-            }
-        },
         contact: {
-            'yo yo': {
-                fr: 'yo yo contact'
-            },
-            'another test': {
-                fr: 'wazzup'
-            },
-            '{{numCards}} cool. {{numBlah}} roo.': {
-                fr: '{{numBlah}} is the second thing. {{numCards}} is the first thing.'
+            fr: {
+                'yo yo': 'yo yo contact',
+                'another test': 'wazzup',
+                '{{numCards}} cool. {{numBlah}} roo.':
+                    '{{numBlah}} is the second thing. {{numCards}} is the first thing.'
             }
         }
     };
     var context = {
-        get: function (name) {
-            switch (name) {
+        get: function (varName) {
+            switch (varName) {
                 case 'app': return 'contact';
                 case 'lang': return 'fr';
                 default: return null;
@@ -40,17 +29,6 @@ describe('UNIT ' + name, function () {
         }
     };
     var i18n = taste.inject(target, { translations: translations, context: context });
-
-    describe('recordUntranslated()', function () {
-        it('should store untranslated value', function () {
-            var val = 'some foo';
-            var app = 'myApp';
-            var lang = 'en';
-            var expected = '';
-            i18n.recordUntranslated(val, app, lang);
-            i18n.untranslated[app][val][lang].should.deep.equal(expected);
-        });
-    });
 
     describe('getScopeValue()', function () {
         it('should return back a value', function () {
@@ -73,22 +51,16 @@ describe('UNIT ' + name, function () {
     });
 
     describe('translate()', function () {
-        it('should return common translation if not in app', function () {
-            var text = 'foo';
-            var actual = i18n.translate(text);
-            actual.should.equal(translations.common.foo.fr);
-        });
-
         it('should return app translation if overrides common', function () {
             var text = 'yo yo';
             var actual = i18n.translate(text);
-            actual.should.equal(translations.contact[text].fr);
+            actual.should.equal(translations.contact.fr[text]);
         });
 
         it('should return app if no override', function () {
             var text = 'another test';
             var actual = i18n.translate(text);
-            actual.should.equal(translations.contact[text].fr);
+            actual.should.equal(translations.contact.fr[text]);
         });
 
         it('should interpolate two values without translation', function () {

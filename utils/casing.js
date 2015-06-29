@@ -19,8 +19,8 @@ module.exports = function (_) {
             delims = [delims];
         }
 
-        _.each(delims, function (delim) {
-            var codeParts = str.split(delim);
+        _.each(delims, function (adelim) {
+            var codeParts = str.split(adelim);
             var i, codePart;
 
             for (i = 1; i < codeParts.length; i++) {

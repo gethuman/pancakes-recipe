@@ -136,9 +136,9 @@ module.exports = function (Q, _, pancakes, fakeblock, adapters, resources, react
         }
 
         return chainPromises(calls, config)
-            .then(function (config) {
-                if (config) {
-                    return config;
+            .then(function (returnConfig) {
+                if (returnConfig) {
+                    return returnConfig;
                 }
                 else {
                     throw new Error('An adapter in the chain is not returning the config.');

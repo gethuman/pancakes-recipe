@@ -7,6 +7,9 @@
  */
 module.exports = function (fs, commander, moment, pancakes, mwServiceInit, log, casing) {
 
+    /* eslint no-process-exit:0 */
+    /* eslint no-process-env:0 */
+
     /**
      * List out all apps available
      */
@@ -19,6 +22,7 @@ module.exports = function (fs, commander, moment, pancakes, mwServiceInit, log, 
         dirs.sort();
         for (var i = 0; i < dirs.length; i++) {
             if (dirs[i] !== 'batch.manager.js') {
+                /* eslint no-console:0 */
                 console.log(dirs[i]);
             }
         }

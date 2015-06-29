@@ -13,7 +13,7 @@ module.exports = function (_, eventBus) {
      */
     function getSource() {
         var origPrepareStackTrace = Error.prepareStackTrace;  // Save original Error.prepareStackTrace
-        Error.prepareStackTrace = function (_, stack) {  // Override with function that just returns `stack`
+        Error.prepareStackTrace = function (val, stack) {  // Override with function that just returns `stack`
             return stack;
         };
 

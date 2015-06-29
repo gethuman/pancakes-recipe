@@ -20,7 +20,7 @@ module.exports = function (Q, _, config, crypto) {
             profile: function profile(credentials, params, get, callback) {
                 var proof = null;
 
-                /* jshint camelcase:false */
+                /* eslint camelcase:0 */
                 if (providerConfig.useProof) {
                     proof = {
                         appsecret_proof: crypto
@@ -30,23 +30,23 @@ module.exports = function (Q, _, config, crypto) {
                     };
                 }
 
-                get(providerConfig.url, proof, function (profile) {
+                get(providerConfig.url, proof, function (data) {
                     credentials.profile = {
                         authType:           providerName,
-                        email:              profile.email,
-                        emailLower:         profile.email.toLowerCase(),
-                        profileImg:         profile.picture,
-                        emailConfirmed:     profile.verified_email,
+                        email:              data.email,
+                        emailLower:         data.email.toLowerCase(),
+                        profileImg:         data.picture,
+                        emailConfirmed:     data.verified_email,
                         name: {
-                            firstName:      profile.given_name || '',
-                            lastName:       profile.family_name || '',
-                            displayName:    profile.name || ''
+                            firstName:      data.given_name || '',
+                            lastName:       data.family_name || '',
+                            displayName:    data.name || ''
                         },
                         authData: {
-                            locale:         profile.locale || '',
-                            gender:         profile.gender || '',
-                            link:           profile.link || '',
-                            id:             profile.id || ''
+                            locale:         data.locale || '',
+                            gender:         data.gender || '',
+                            link:           data.link || '',
+                            id:             data.id || ''
                         }
                     };
 

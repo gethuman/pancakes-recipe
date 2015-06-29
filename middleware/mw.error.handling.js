@@ -16,6 +16,10 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppE
 
         // hopefully we handle errors before this point, but this will log anything not caught
         process.on('uncaughtException', function (err) {
+
+            /* eslint no-console: 0 */
+            /* eslint no-process-exit: 0 */
+
             console.log('uncaughtException: ' + err + '\n' + err.stack);
             log.critical('uncaughtException: ' + err + '\n' + err.stack, null);
             process.exit(1);

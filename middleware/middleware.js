@@ -20,6 +20,8 @@ module.exports = function (Q, _, Hapi, pancakes, log, config, chainPromises) {
      */
     function getServer(container) {
         var server = new Hapi.Server();
+
+        /* eslint no-process-env:0 */
         var port = process.env.PORT || config[container].port;
         server.connection({ port: port });
         return server;
@@ -65,6 +67,3 @@ module.exports = function (Q, _, Hapi, pancakes, log, config, chainPromises) {
         init: init
     };
 };
-
-
-
