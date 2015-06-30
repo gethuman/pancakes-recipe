@@ -11,7 +11,7 @@ module.exports = function (Q, _, Hapi, pancakes, log, config, chainPromises) {
     var mwConfig = {
         api:        ['mwErrorHandling', 'mwServiceInit', 'mwAuthToken', 'mwCaller', 'mwApiRoutes'],
         webserver:  ['mwErrorHandling', 'mwServiceInit', 'mwAuthSocial', 'mwAuthCookie',
-                        'mwAuthToken', 'mwCaller', 'mwTasks', 'mwAppContext', 'mwWebRoutes', 'mwTracking']
+                        'mwAuthToken', 'mwCaller', 'mwTasks', 'mwAppContext', 'mwSsl', 'mwWebRoutes', 'mwTracking']
     };
 
     /**

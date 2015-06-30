@@ -22,10 +22,10 @@ module.exports = function (Q, config, routeHelper, log) {
         var lang = req.app.lang;
         var forceSSL = (config[appName] && config[appName].forceSSL !== undefined) ?
             config[appName].forceSSL : config.forceSSL;
-        var protocol = req.connection.info.protocol;
+        var port = (req.headers && req.headers['x-forwarded-port']) || '';
         var host = routeHelper.getBaseUrl(appName, lang);
 
-        if (forceSSL && protocol === 'http' && url !== '/ping') {
+        if (forceSSL && port === '80' && url !== '/ping') {
 
             // make sure https (route helper may return http if forceSSL true by useSSL false
             if (host.substring(0, 5) === 'http:') {
