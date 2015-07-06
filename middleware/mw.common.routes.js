@@ -33,5 +33,15 @@ module.exports = function (config) {
                 });
             }
         });
+
+        // temp just used for load testing
+        server.route({
+            method:     'GET',
+            path:       '/loaderio-ffc8a3a108c413a9a91044a7c2f88c10.html',
+
+            handler: function (request, reply) {
+                reply('loaderio-ffc8a3a108c413a9a91044a7c2f88c10');
+            }
+        });
     };
 };
