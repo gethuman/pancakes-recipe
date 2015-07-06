@@ -5,7 +5,7 @@
  *
  * Simple utility that wraps bcrypt to provide a promise-based interface
  */
-module.exports = function (Q, bcrypt) {
+module.exports = function (_, Q, bcrypt) {
 
     /**
      * Compare some data to an encrypted version
