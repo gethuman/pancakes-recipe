@@ -164,6 +164,10 @@ module.exports = function (Q, _, pancakes, fakeblock, adapters, resources, react
                 var service = pancakes.getService(resource.name);
                 if (service.init) {
                     calls.push(service.init.bind(service));
+                    //calls.push(function () {
+                    //    console.log('calling service init for ' + resource.name);
+                    //    return service.init();
+                    //});
                 }
             }
         });

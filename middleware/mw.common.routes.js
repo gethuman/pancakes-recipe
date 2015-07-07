@@ -37,10 +37,10 @@ module.exports = function (config) {
         // temp just used for load testing
         server.route({
             method:     'GET',
-            path:       '/loaderio-ffc8a3a108c413a9a91044a7c2f88c10.html',
+            path:       '/loaderio-76099a58f8eae4fb0e2f91f846a2dd26.html',
 
             handler: function (request, reply) {
-                reply('loaderio-ffc8a3a108c413a9a91044a7c2f88c10');
+                reply('loaderio-76099a58f8eae4fb0e2f91f846a2dd26');
             }
         });
     };
