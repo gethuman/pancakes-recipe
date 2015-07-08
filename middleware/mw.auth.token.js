@@ -5,7 +5,7 @@
  *
  * This middleware will
  */
-module.exports = function (Q, userService, userCacheService, config, jwt) {
+module.exports = function (Q, userService, userCacheService, config, jwt, log) {
     var privateKey = config.security && config.security.token && config.security.token.privateKey;
 
     /**
@@ -91,7 +91,11 @@ module.exports = function (Q, userService, userCacheService, config, jwt) {
                 req.user = user;
                 reply.continue();
             })
-            .done();  // if error occurs, let it be thrown up
+            // if error, then log it, but continue on as anonymous
+            .catch(function () {
+                log.error('Problem verifying token: ' + token);
+                reply.continue();
+            });
     }
 
 
