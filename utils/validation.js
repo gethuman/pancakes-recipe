@@ -29,7 +29,7 @@ module.exports = function (_, schemaDefinitions, log) {
             if (_.isString(exp)) {
                 var lastSlash = exp.lastIndexOf('/');
                 var modifiers = exp.substring(lastSlash + 1);
-                exp = exp.substring(1, lastSlash - 1);
+                exp = exp.substring(1, lastSlash);
                 exp = new RegExp(exp, modifiers);
             }
 
