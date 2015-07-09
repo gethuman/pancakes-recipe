@@ -71,7 +71,8 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppE
                 var err = errorDecoder[response.code];
 
                 if (request.path !== '/favicon.ico') {
-                    log.error(request.method + ' ' + request.path, { err: originalResponse });
+                    log.error(request.method + ' ' + request.path + ' (' + err.friendlyMessage + ')',
+                        { err: originalResponse });
                 }
 
                 reply(Boom.create(err.httpErrorCode, err.friendlyMessage));
