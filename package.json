@@ -1,6 +1,6 @@
 {
   "name": "pancakes-recipe",
-  "version": "0.0.100",
+  "version": "0.0.101",
   "description": "Misc common utilities and middleware for pancakes apps",
   "main": "pancakes.recipe.js",
   "repository": {
@@ -19,7 +19,7 @@
   "homepage": "https://github.com/gethuman/pancakes-recipe",
   "dependencies": {
     "bcrypt": "^0.8.3",
-    "bell": "4.0.0",
+    "bell": "3.0.0",
     "boom": "^2.8.0",
     "colors": "^1.1.2",
     "commander": "^2.8.1",
