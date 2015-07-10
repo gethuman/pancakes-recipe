@@ -93,7 +93,7 @@ module.exports = function (Q, userService, userCacheService, config, jwt, log) {
             })
             // if error, then log it, but continue on as anonymous
             .catch(function () {
-                log.error('Problem verifying token: ' + token);
+                log.debug('Problem verifying token: ' + token);
                 reply.continue();
             });
     }

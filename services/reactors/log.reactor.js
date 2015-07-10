@@ -14,10 +14,9 @@ var errorClient = null;
 
 /**
  * Error handler
- * @param event
  * @param logData
  */
-function errorHandler(event, logData) {
+function errorHandler(logData) {
     if (!errorClient) { return; }
 
     logData = logData || {};
