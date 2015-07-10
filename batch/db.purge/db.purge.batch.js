@@ -6,31 +6,33 @@
  * Delete data from the archive database according to the purge
  * criteria in the resource definition
  */
-module.exports = function (Q, resources, mongo, config) {
+module.exports = function (Q, log) {
+//module.exports = function (Q, resources, mongo, config) {
 
     /**
      * Run the batch program
-     * @param options
-     * @returns {*}
      */
-    function run(options) {
-        var target = options.target;
-        var promise;
+    function run() {
 
-        var archive = mongo.connectRaw(config.mongo.archive);
+        log.info('This is not yet implemented');
 
-        if (target) {
-            promise = purgeResource(resources[target], archive);
-        }
-        else {
-            promise = Q.all(resources.map(function (resource) {
-                return purgeResource(resource, archive);
-            }));
-        }
-
-        return promise.then(function () {
-            archive.close();
-        });
+        //var target = options.target;
+        //var promise;
+        //
+        //var archive = mongo.connectRaw(config.mongo.archive);
+        //
+        //if (target) {
+        //    promise = purgeResource(resources[target], archive);
+        //}
+        //else {
+        //    promise = Q.all(resources.map(function (resource) {
+        //        return purgeResource(resource, archive);
+        //    }));
+        //}
+        //
+        //return promise.then(function () {
+        //    archive.close();
+        //});
     }
 
     /**
