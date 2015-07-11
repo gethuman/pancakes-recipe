@@ -5,7 +5,7 @@
  * This module contain the primary server container code for both the API
  * and the web server.
  */
-module.exports = function (Q, _, Hapi, pancakes, log, config, chainPromises) {
+module.exports = function (Q, _, Hapi, pancakes, log, config, chainPromises, cls) {
 
     // this contains the list of middleware (in order) for each container
     var mwConfig = {
@@ -38,14 +38,12 @@ module.exports = function (Q, _, Hapi, pancakes, log, config, chainPromises) {
     }
 
     /**
-     * Initialize the server and middleware and then start the server
+     * Run the middleware
+     * @param ctx
+     * @returns {*}
      */
-    function init(container) {
-        var ctx = {
-            container:  container,
-            server:     getServer(container)
-        };
-        var calls = mwConfig[container].map(function (name) {
+    function runMiddleware(ctx) {
+        var calls = mwConfig[ctx.container].map(function (name) {
             var mw = pancakes.cook(name);
             return mw.init;
             //return function (ctx) {
@@ -61,9 +59,39 @@ module.exports = function (Q, _, Hapi, pancakes, log, config, chainPromises) {
         return chainPromises(calls, ctx);
     }
 
+    /**
+     * Initialize the server and middleware and then start the server
+     */
+    function init(container) {
+        var ctx = {
+            container:  container,
+            server:     getServer(container)
+        };
+
+        if (container === 'webserver') {
+            var deferred = Q.defer();
+            var session = cls.createNamespace('appSession');
+            session.run(function () {
+                runMiddleware(ctx)
+                    .then(function (updatedCtx) {
+                        deferred.resolve(updatedCtx);
+                    })
+                    .catch(function (err) {
+                        deferred.reject(err);
+                    });
+            });
+
+            return deferred.promise;
+        }
+        else {
+            return runMiddleware(ctx);
+        }
+    }
+
     return {
         getServer: getServer,
         startServer: startServer,
+        runMiddleware: runMiddleware,
         init: init
     };
 };
