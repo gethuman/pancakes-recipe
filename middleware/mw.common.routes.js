@@ -12,7 +12,7 @@ module.exports = function (config) {
         credentials:    true
     };
 
-    return function (server) {
+    return function commonRoutes(server) {
         server.route({
             method:     'OPTIONS',
             path:       '/{path*}',

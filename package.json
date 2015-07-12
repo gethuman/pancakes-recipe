@@ -1,6 +1,6 @@
 {
   "name": "pancakes-recipe",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Misc common utilities and middleware for pancakes apps",
   "main": "pancakes.recipe.js",
   "repository": {
@@ -34,9 +34,9 @@
     "lodash": "^3.10.0",
     "lru-cache": "^2.6.5",
     "moment": "^2.10.3",
-    "mongoose": "4.0.6",
+    "mongoose": "^4.0.7",
     "pancakes": "^0.1.89",
-    "pancakes-mongo": "0.0.52",
+    "pancakes-mongo": "0.0.53",
     "q": "^1.4.1",
     "raven": "^0.8.1",
     "redis": "^0.12.1",

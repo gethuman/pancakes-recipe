@@ -7,7 +7,6 @@
  */
 module.exports = function (Q, config, routeHelper, log) {
 
-
     /**
      * Check to see if a given request should be redirected
      * to another URL based on either SSL or redirects in
