@@ -71,7 +71,7 @@ module.exports = function (Q, userService, userCacheService, config, jwt, log) {
         var parts = authorization.split(/\s+/);
 
         if (parts.length !== 2) {
-            throw new Error('Authorization header invalid');
+            throw new Error('Authorization header invalid: ' + authorization);
         }
 
         if (parts[0].toLowerCase() !== 'bearer') {

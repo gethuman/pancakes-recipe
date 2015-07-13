@@ -14,6 +14,7 @@ var redis       = require('redis');
 
 // during init() we will set all the remote caches; local ones added ad hoc in set()
 var caches = {};
+/* eslint no-console: 0 */
 
 /**
  * Create a simple wrapper so the remote cache and local cache
@@ -28,7 +29,10 @@ function wrapRemoteCache(remoteCache) {
             var deferred = Q.defer();
 
             remoteCache.get(key, function (err, value) {
-                if (err) { deferred.reject(err); }
+                if (err) {
+                    console.log(err);
+                    deferred.resolve();
+                }
 
                 if (_.isString(value) && value.charAt(0) === '{') {
                     value = JSON.parse(value);
@@ -95,13 +99,13 @@ function connectToRedis(db, opts) {
             }
 
             client.select(db, function (err) {
-                err ? deferred.reject(err): deferred.resolve(client);
+                err ? deferred.reject(err) : deferred.resolve(client);
             });
         });
     }
     else {
         client.select(db, function (err) {
-            err ? deferred.reject(err): deferred.resolve(client);
+            err ? deferred.reject(err) : deferred.resolve(client);
         });
     }
 

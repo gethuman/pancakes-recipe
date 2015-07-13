@@ -16,12 +16,9 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppE
 
         // hopefully we handle errors before this point, but this will log anything not caught
         process.on('uncaughtException', function (err) {
+            log.critical('uncaughtException: ' + err + '\n' + err.stack);
 
-            /* eslint no-console: 0 */
             /* eslint no-process-exit: 0 */
-
-            console.log('uncaughtException: ' + err + '\n' + err.stack);
-            log.critical('uncaughtException: ' + err + '\n' + err.stack, null);
             process.exit(1);
         });
     }
@@ -34,7 +31,7 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppE
         server.ext('onPreResponse', function (request, reply) {
             var response = request.response;
             var originalResponse = response;
-            var msg, is404Error, is404Status;
+            var msg;
 
             // No error, keep going with the reply as normal
             if (!response.isBoom) { reply.continue(); return; }
@@ -42,14 +39,11 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppE
             // we need to convert to AppError if it is not already
             if (!(response instanceof AppError)) {
 
-                if (response.errmsg) {
-                    log.error(response.errmsg);
-                }
-
                 // if legit 404 be sure to use that code (happens with not found in /dist on local)
-                is404Error = response.message.indexOf('404:') === 0;
-                is404Status = response.output && response.output.payload && response.output.payload.statusCode === 404;
-                if (is404Error || is404Status) {
+                if (response.message.indexOf('404:') >= 0 ||
+                    (response.output && response.output.payload &&
+                    response.output.payload.statusCode === 404)) {
+
                     response = new AppError({
                         code: 'not_found',
                         msg: 'The resource ' + request.url.path + ' was not found'
@@ -58,6 +52,8 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppE
                 else {
                     msg = response.message || (response + '');
                     if (response.data) { msg += ' : ' + response.data; }
+
+                    log.error(msg);
 
                     response = new AppError({
                         code: response.code || 'api_error',
@@ -70,9 +66,9 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppE
             if (response.code && errorDecoder[response.code]) {
                 var err = errorDecoder[response.code];
 
-                if (request.path !== '/favicon.ico') {
+                if (request.path !== '/favicon.ico' && err.httpErrorCode !== 404) {
                     log.error(request.method + ' ' + request.path + ' (' + err.friendlyMessage + ')',
-                        { err: originalResponse });
+                        { err: originalResponse }   );
                 }
 
                 reply(Boom.create(err.httpErrorCode, err.friendlyMessage));

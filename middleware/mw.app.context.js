@@ -70,7 +70,7 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, AppError
      */
     function setContext(req) {
         var session = cls.getNamespace('appSession');
-        if (session) {
+        if (session && session.active) {
             session.set('app', req.app.name);
             session.set('lang', req.app.lang);
             session.set('visitorId', req.session && req.session.get('visitorId'));

@@ -16,6 +16,12 @@ module.exports = function (Q, cls) {
                 ns.run(function () { reply.continue(); });
             });
 
+            ctx.server.ext('onPreHandler', function (request, reply) {
+                ns.bindEmitter(request.raw.req);
+                ns.bindEmitter(request.raw.res);
+                ns.run(function () { reply.continue(); });
+            });
+
             return new Q(ctx);
         }
     };
