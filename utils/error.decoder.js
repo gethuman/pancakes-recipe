@@ -73,6 +73,10 @@ module.exports = function () {
             friendlyMessage: 'An error occurred while calling out to an external ' +
                 'service or resource. Try to resubmit your request and contact ' +
                 'us if you continue to experience issues.'
+        },
+        'unknown_error': {
+            httpErrorCode: 500,
+            friendlyMessage: 'Unknown error occurred'
         }
     };
 };

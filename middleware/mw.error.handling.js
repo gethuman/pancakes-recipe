@@ -4,7 +4,7 @@
  *
  * Monitoring for errors and adding profiling
  */
-module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppError) {
+module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppError, pancakes) {
 
     /**
      * Configure global error handling which includes Q and catching uncaught exceptions
@@ -63,19 +63,22 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppE
                 }
             }
 
-            if (response.code && errorDecoder[response.code]) {
-                var err = errorDecoder[response.code];
+            var code = response.code || 'unknown_error';
+            var err = errorDecoder[code];
 
-                //if (request.path !== '/favicon.ico' && err.httpErrorCode !== 404) {
-                if (request.path !== '/favicon.ico') {
-                    log.error(request.method + ' ' + request.path + ' (' + err.friendlyMessage + ')',
-                        { err: originalResponse }   );
-                }
+            //if (request.path !== '/favicon.ico' && err.httpErrorCode !== 404) {
+            if (request.path !== '/favicon.ico') {
+                log.error(request.method + ' ' + request.path + ' (' + err.friendlyMessage + ')',
+                    { err: originalResponse }   );
+            }
 
-                reply(Boom.create(err.httpErrorCode, err.friendlyMessage));
+            //TODO: this hack sucks, but needed quick way to display error page; do better!
+            if (pancakes.getContainer() === 'webserver') {
+                var errUrl = err.httpErrorCode === 404 ? '/error404' : '/error500';
+                pancakes.processRoute({ request: request, reply: reply, urlOverride: errUrl });
             }
             else {
-                reply.continue();
+                reply(Boom.create(err.httpErrorCode, err.friendlyMessage));
             }
         });
     }
