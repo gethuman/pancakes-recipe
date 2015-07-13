@@ -13,6 +13,16 @@ require('colors');
 var errorClient = null;
 /* eslint no-console:0 */
 
+var ignoreErrors = [
+    'Invalid cookie header',                            // thrown by hapi when hacker has invalid cookie val
+    'Cannot read property \'session\' of null'          // downstream error result of Invalid cookie issue
+];
+
+/**
+ * Check if we should not log remotely based on string
+ * @param val
+ * @returns {boolean}
+ */
 function noRemoteLog(val) {
     var valStr;
 
@@ -29,7 +39,13 @@ function noRemoteLog(val) {
         valStr = val + '';
     }
 
-    return valStr.indexOf('Invalid cookie header') >= 0;
+    for (var i = 0; i < ignoreErrors.length; i++) {
+        if (valStr.indexOf(ignoreErrors[i]) >= 0) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**
