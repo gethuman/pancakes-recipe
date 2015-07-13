@@ -66,7 +66,8 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppE
             if (response.code && errorDecoder[response.code]) {
                 var err = errorDecoder[response.code];
 
-                if (request.path !== '/favicon.ico' && err.httpErrorCode !== 404) {
+                //if (request.path !== '/favicon.ico' && err.httpErrorCode !== 404) {
+                if (request.path !== '/favicon.ico') {
                     log.error(request.method + ' ' + request.path + ' (' + err.friendlyMessage + ')',
                         { err: originalResponse }   );
                 }

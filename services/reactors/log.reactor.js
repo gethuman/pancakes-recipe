@@ -11,22 +11,42 @@ var raven   = require('raven');
 require('colors');
 
 var errorClient = null;
+/* eslint no-console:0 */
+
+function noRemoteLog(val) {
+    var valStr;
+
+    if (_.isString(val)) {
+        valStr = val;
+    }
+    else if (val.msg) {
+        valStr = val.msg;
+    }
+    else if (val.err) {
+        valStr = val.err + '';
+    }
+    else {
+        valStr = val + '';
+    }
+
+    return valStr.indexOf('Invalid cookie header') >= 0;
+}
 
 /**
  * Error handler
  * @param logData
  */
 function errorHandler(logData) {
-    if (!errorClient) { return; }
+    if (!errorClient || noRemoteLog(logData)) { return; }
 
     logData = logData || {};
     var err = logData.err;
     delete logData.err;
 
     err ?
-        errorClient.captureError(err) :
+        errorClient.captureError(err, { extra: logData }) :
         _.isString(logData) ?
-            errorClient.captureMessage(logData) :
+            errorClient.captureMessage(logData, { extra: logData }) :
             errorClient.captureMessage(logData.msg, { extra: logData });
 }
 
@@ -95,7 +115,6 @@ function init(opts) {
             }
 
             console.log('----');
-
         });
     }
 
