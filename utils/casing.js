@@ -49,9 +49,26 @@ module.exports = function (_) {
         return newStr;
     }
 
+    /**
+     * Convert a dash string to dash Proper:
+     * @param str
+     */
+    function dashProperCase(str) {
+        if ( !str.length ) {
+            return str;
+        }
+        return str.split('-').map(function(piece) {
+            if ( piece.length ) {
+                return piece.substring(0,1).toUpperCase() + piece.substring(1);
+            }
+            return piece;
+        }).join('-');
+    }
+
     // expose functions
     return {
         camelCase: camelCase,
-        dashCase: dashCase
+        dashCase: dashCase,
+        dashProperCase: dashProperCase
     };
 };
