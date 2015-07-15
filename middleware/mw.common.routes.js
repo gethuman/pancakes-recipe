@@ -34,6 +34,16 @@ module.exports = function (config) {
             }
         });
 
+        server.route({
+            method:     'GET',
+            path:       '/favicon.ico',
+            config:     { cache: { expiresIn: 86400001 } },
+
+            handler: function (request, reply) {
+                reply().header('Content-Type', 'image/x-icon');
+            }
+        });
+
         // temp just used for load testing
         server.route({
             method:     'GET',
