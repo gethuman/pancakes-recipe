@@ -35,20 +35,23 @@ module.exports = function (Q, _, config, crypto) {
                         authType:           providerName,
                         email:              data.email,
                         emailLower:         data.email.toLowerCase(),
-                        profileImg:         data.picture,
-                        emailConfirmed:     data.verified_email,
+                        emailConfirmed:     data.verified,
                         name: {
                             firstName:      data.given_name || '',
                             lastName:       data.family_name || '',
                             displayName:    data.name || ''
-                        },
-                        authData: {
-                            locale:         data.locale || '',
-                            gender:         data.gender || '',
-                            link:           data.link || '',
-                            id:             data.id || ''
                         }
                     };
+
+                    if (providerName === 'google') {
+                        credentials.profile.profileImg = data.picture;
+                        credentials.profile.googleAuthData = data;
+                    }
+                    else if (providerName === 'facebook') {
+                        credentials.profile.profileImg = 'https://graph.facebook.com/' +
+                            data.id + '/picture?width=80&height=80';
+                        credentials.profile.fbAuthData = data;
+                    }
 
                     return callback();
                 });
