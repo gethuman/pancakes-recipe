@@ -26,6 +26,17 @@ module.exports = function (Q, pancakes, mwCommonRoutes, config, AppError) {
                 handler:    function (request, reply) { reply('salutations'); }
             });
 
+            // route for robots.txt
+            server.route({
+                method:     'GET',
+                path:       '/robots.txt',
+                config:     { cache: { expiresIn: 86400001 } },
+
+                handler: function (request, reply) {
+                    reply('User-agent: *\nDisallow: /').header('Content-Type', 'text/plain');
+                }
+            });
+
             // finally catch all for 404 error handler
             server.route({
                 method:     '*',
