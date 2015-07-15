@@ -124,7 +124,9 @@ module.exports = function (Q, crypto, userService, mongoose, config, log, AppErr
 
             if (container === 'webserver') {
                 var session = cls.getNamespace('appSession');
-                if (session) { session.set('caller', req.caller); }
+                if (session && session.active) {
+                    session.set('caller', req.caller);
+                }
             }
 
             req.caller ? reply.continue() : reply(new AppError({

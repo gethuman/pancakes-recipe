@@ -5,7 +5,7 @@
  *
  * This middleware will
  */
-module.exports = function (Q, userService, userCacheService, config, jwt) {
+module.exports = function (Q, userService, userCacheService, config, jwt, log) {
     var privateKey = config.security && config.security.token && config.security.token.privateKey;
 
     /**
@@ -71,15 +71,18 @@ module.exports = function (Q, userService, userCacheService, config, jwt) {
         var parts = authorization.split(/\s+/);
 
         if (parts.length !== 2) {
-            throw new Error('Authorization header invalid');
+            log.debug('Authorization header invalid: ' + authorization);
+            return reply.continue();
         }
 
         if (parts[0].toLowerCase() !== 'bearer') {
-            throw new Error('Authorization no bearer');
+            log.debug('Authorization no bearer');
+            return reply.continue();
         }
 
         if (parts[1].split('.').length !== 3) {
-            throw new Error('Authorization bearer value invalid');
+            log.debug('Authorization bearer value invalid');
+            return reply.continue();
         }
 
         var token = parts[1];
@@ -91,7 +94,11 @@ module.exports = function (Q, userService, userCacheService, config, jwt) {
                 req.user = user;
                 reply.continue();
             })
-            .done();  // if error occurs, let it be thrown up
+            // if error continue on as anonymous
+            .catch(function () {
+                //log.debug('Problem verifying token: ' + token);
+                reply.continue();
+            });
     }
 
 

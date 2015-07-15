@@ -12,7 +12,7 @@ module.exports = function (config) {
         credentials:    true
     };
 
-    return function (server) {
+    return function commonRoutes(server) {
         server.route({
             method:     'OPTIONS',
             path:       '/{path*}',
@@ -31,6 +31,16 @@ module.exports = function (config) {
                     memory: process.memoryUsage(),
                     uptime: process.uptime()
                 });
+            }
+        });
+
+        // temp just used for load testing
+        server.route({
+            method:     'GET',
+            path:       '/loaderio-76099a58f8eae4fb0e2f91f846a2dd26.html',
+
+            handler: function (request, reply) {
+                reply('loaderio-76099a58f8eae4fb0e2f91f846a2dd26');
             }
         });
     };

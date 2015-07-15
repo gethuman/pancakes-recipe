@@ -33,8 +33,13 @@ module.exports = function (Q, pancakes, pageCacheService, mwCommonRoutes, mwTask
             config:     { cache: { expiresIn: 86400001 } },
 
             handler: function (request, reply) {
-                reply('User-agent: Mediapartners-Google\nDisallow:\nUser-agent: *\nDisallow: /axj/\nAllow: /')
-                    .header('Content-Type', 'text/plain');
+                if (config.env === 'production') {
+                    reply('User-agent: Mediapartners-Google\nDisallow:\nUser-agent: *\nDisallow: /axj/\nAllow: /')
+                        .header('Content-Type', 'text/plain');
+                }
+                else {
+                    reply('User-agent: *\nDisallow: /').header('Content-Type', 'text/plain');
+                }
             }
         });
 

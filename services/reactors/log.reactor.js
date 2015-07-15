@@ -11,23 +11,59 @@ var raven   = require('raven');
 require('colors');
 
 var errorClient = null;
+/* eslint no-console:0 */
+
+var ignoreErrors = [
+    'Invalid cookie header',                            // thrown by hapi when hacker has invalid cookie val
+    'Cannot read property \'session\' of null',         // downstream error result of Invalid cookie issue
+    '.png is not a valid request'
+];
+
+/**
+ * Check if we should not log remotely based on string
+ * @param val
+ * @returns {boolean}
+ */
+function noRemoteLog(val) {
+    var valStr;
+
+    if (_.isString(val)) {
+        valStr = val;
+    }
+    else if (val.msg) {
+        valStr = val.msg;
+    }
+    else if (val.err) {
+        valStr = val.err + '';
+    }
+    else {
+        valStr = val + '';
+    }
+
+    for (var i = 0; i < ignoreErrors.length; i++) {
+        if (valStr.indexOf(ignoreErrors[i]) >= 0) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 /**
  * Error handler
- * @param event
  * @param logData
  */
-function errorHandler(event, logData) {
-    if (!errorClient) { return; }
+function errorHandler(logData) {
+    if (!errorClient || noRemoteLog(logData)) { return; }
 
     logData = logData || {};
     var err = logData.err;
     delete logData.err;
 
     err ?
-        errorClient.captureError(err) :
+        errorClient.captureError(err, { extra: logData }) :
         _.isString(logData) ?
-            errorClient.captureMessage(logData) :
+            errorClient.captureMessage(logData, { extra: logData }) :
             errorClient.captureMessage(logData.msg, { extra: logData });
 }
 
@@ -96,7 +132,6 @@ function init(opts) {
             }
 
             console.log('----');
-
         });
     }
 

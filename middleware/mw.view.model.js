@@ -25,6 +25,8 @@ module.exports = function (_, appConfigs, i18n, config, translations) {
         var appConfig   = appConfigs[appName];
         var appPascal   = appName.substring(0, 1).toUpperCase() + appName.substring(1);
         var lang        = routeInfo.lang || 'en';
+        var ga          = appConfig.googleAnalytics || {};
+        var gaLang      = ga[lang] || {}
 
         // add the page head info
         if (model.pageHead) {
@@ -46,7 +48,7 @@ module.exports = function (_, appConfigs, i18n, config, translations) {
         model.pageCssId         = config.projectPrefix + '-' + routeInfo.name.replace('.', '-');
         model.clientApp         = config.projectPrefix + appPascal + 'App';
         model.stateData         = routeInfo.data || {};
-        model.gaTrackingCode    = appConfig.trackingCode;
+        model.gaTrackingCode    = gaLang.trackingCode;
         model.serverOnly        = model.serverOnly || routeInfo.query.server || false;
         model.lang              = lang;
 

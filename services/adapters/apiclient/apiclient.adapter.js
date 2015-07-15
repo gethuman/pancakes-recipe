@@ -97,7 +97,7 @@ function send(httpMethod, path, req) {
     if (req._id) { delete req._id; }    // delete id from request so no dupe
 
     var session = cls.getNamespace('appSession');
-    var caller = session && session.get('caller');
+    var caller = session && session.active && session.get('caller');
     if (caller && !isAdmin) {
         _.extend(req, {                 // onBehalfOf used by API to know who is the caller
             onBehalfOfType: caller.type,

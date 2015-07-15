@@ -14,7 +14,7 @@ module.exports = {
         return {
             init: function () {
                 var session = cls.getNamespace('appSession');
-                if (session) {
+                if (session && session.active) {
                     var caller = session.get('caller');
                     if (caller) {
                         return new Q(caller.user);

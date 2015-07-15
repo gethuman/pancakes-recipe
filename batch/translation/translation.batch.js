@@ -8,7 +8,7 @@
  *
  * Examples:
  *      Translate all untranslated text and update the translations file
- *          node batch -a translate
+ *          node batch -a translation
  *      Only translate answers
  *          node batch -a translation -t [translate|export]
  */

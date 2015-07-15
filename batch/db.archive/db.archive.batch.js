@@ -9,39 +9,41 @@ module.exports = function (Q, _, resources, mongo, config, log) {
 
     /**
      * Loop through all resources and process each one
-     * @returns {*}
      */
-    function run(options) {
-        var target = options.target;
-        var promises = [];
+    function run() {
 
-        // get the database connections
-        var primary = mongo.connectRaw(config.mongo.url);
-        var archive = mongo.connectRaw(config.mongo.archive);
+        log.info('archive not yet implemented');
 
-        // if there is a target and it is not all
-        if (target && target !== 'all') {
-            if (!resources[target]) {
-                throw new Error('There is no collection called ' + target);
-            }
-
-            promises.push(archiveResource(resources[target], primary, archive));
-        }
-        // else archive all resources
-        else {
-            _.each(resources, function (resource) {
-                promises.push(archiveResource(resource, primary, archive));
-            });
-        }
-
-        log.info('starting archive...');
-        return Q.all(promises).then(function () {
-
-            log.info('All archiving complete');
-
-            primary.close();
-            archive.close();
-        });
+        //var target = options.target;
+        //var promises = [];
+        //
+        //// get the database connections
+        //var primary = mongo.connectRaw(config.mongo.url);
+        //var archive = mongo.connectRaw(config.mongo.archive);
+        //
+        //// if there is a target and it is not all
+        //if (target && target !== 'all') {
+        //    if (!resources[target]) {
+        //        throw new Error('There is no collection called ' + target);
+        //    }
+        //
+        //    promises.push(archiveResource(resources[target], primary, archive));
+        //}
+        //// else archive all resources
+        //else {
+        //    _.each(resources, function (resource) {
+        //        promises.push(archiveResource(resource, primary, archive));
+        //    });
+        //}
+        //
+        //log.info('starting archive...');
+        //return Q.all(promises).then(function () {
+        //
+        //    log.info('All archiving complete');
+        //
+        //    primary.close();
+        //    archive.close();
+        //});
     }
 
     /**

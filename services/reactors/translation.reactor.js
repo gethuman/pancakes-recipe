@@ -6,8 +6,8 @@
  * and save the data to the database so that it can be later
  * processed.
  */
-var Q = require('q');
-var savedTranslations = {};
+//var Q = require('q');
+//var savedTranslations = {};
 var log = console;
 
 /**
@@ -20,10 +20,10 @@ function save(translationService, missingData) {
     var caller = translationService.admin;
 
     // first check to see if we already saved this translation
-    var savedKey = missingData.appName + '||' + missingData.lang + '||' + missingData.text;
-    if (savedTranslations[savedKey]) {
-        return new Q(savedTranslations[savedKey]);
-    }
+    //var savedKey = missingData.appName + '||' + missingData.lang + '||' + missingData.text;
+    //if (savedTranslations[savedKey]) {
+    //    return new Q(savedTranslations[savedKey]);
+    //}
 
     // we don't set the appName initially so we can check to see if there are multiple apps
     var appName = missingData.appName;
@@ -60,7 +60,7 @@ function save(translationService, missingData) {
                 log.error('No translation saved for ' + JSON.stringify(missingData));
             }
 
-            savedTranslations[savedKey] = translation;
+            //savedTranslations[savedKey] = translation;
             return translation;
         });
 }

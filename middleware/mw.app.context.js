@@ -4,7 +4,7 @@
  *
  * This middleware is in charge of setting context variables for a web app
  */
-module.exports = function (Q, _, appConfigs, config, cls, translations, AppError) {
+module.exports = function (Q, _, appConfigs, config, cls, translations, routeHelper, AppError) {
     var langSubdomains = config.lang.secondary || [];
 
     /**
@@ -70,9 +70,12 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, AppError
      */
     function setContext(req) {
         var session = cls.getNamespace('appSession');
-        if (session) {
-            session.set('app', req.app.name);
+        var appName = req.app.name;
+
+        if (session && session.active) {
+            session.set('app', appName);
             session.set('lang', req.app.lang);
+            session.set('url', routeHelper.getBaseUrl(appName) + req.url.path);
             session.set('visitorId', req.session && req.session.get('visitorId'));
         }
     }
