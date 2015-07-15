@@ -15,7 +15,8 @@ var errorClient = null;
 
 var ignoreErrors = [
     'Invalid cookie header',                            // thrown by hapi when hacker has invalid cookie val
-    'Cannot read property \'session\' of null'          // downstream error result of Invalid cookie issue
+    'Cannot read property \'session\' of null',         // downstream error result of Invalid cookie issue
+    '.png is not a valid request'
 ];
 
 /**

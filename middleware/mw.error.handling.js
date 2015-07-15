@@ -65,10 +65,13 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppE
 
             var code = response.code || 'unknown_error';
             var err = errorDecoder[code];
+            var url = request.path;
+            var urlLen = url.length;
+            var urlSuffix = (urlLen > 4 && url.substring(urlLen - 4).toLowerCase()) || '';
 
             //if (request.path !== '/favicon.ico' && err.httpErrorCode !== 404) {
-            if (request.path !== '/favicon.ico') {
-                log.error(request.method + ' ' + request.path + ' (' + err.friendlyMessage + ')',
+            if (url !== '/favicon.ico' || ['.png', '.jpg'].indexOf(urlSuffix) < 0) {
+                log.error(request.method + ' ' + url + ' (' + err.friendlyMessage + ')',
                     { err: originalResponse }   );
             }
 
