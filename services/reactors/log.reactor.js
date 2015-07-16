@@ -24,9 +24,7 @@ function errorHandler(logData) {
 
     err ?
         errorClient.captureError(err, { extra: logData }) :
-        _.isString(logData) ?
-            errorClient.captureMessage(logData, { extra: logData }) :
-            errorClient.captureMessage(logData.msg, { extra: logData });
+        errorClient.captureMessage(logData, { extra: logData });
 }
 
 /**

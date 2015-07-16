@@ -34,7 +34,7 @@ module.exports = function (Q, _, config, crypto) {
                     credentials.profile = {
                         authType:           providerName,
                         email:              data.email,
-                        emailLower:         data.email.toLowerCase(),
+                        emailLower:         data.email && data.email.toLowerCase(),
                         emailConfirmed:     data.verified,
                         name: {
                             firstName:      data.given_name || '',
