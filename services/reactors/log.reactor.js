@@ -7,6 +7,7 @@
  */
 var _       = require('lodash');
 var raven   = require('raven');
+var cls     = require('continuation-local-storage');
 
 require('colors');
 
@@ -22,9 +23,27 @@ function errorHandler(logData) {
     var err = logData.err;
     delete logData.err;
 
+    var session = cls.getNamespace('appSession');
+    if (session && session.active) {
+        var caller = session.get('caller');
+        if (caller && caller.user) {
+            logData.userId = caller.user._id;
+            logData.username = caller.user.username;
+        }
+
+        logData.app = session.get('app');
+        logData.lang = session.get('lang');
+        logData.url = session.get('url');
+        logData.visitorId = session.get('visitorId');
+    }
+
     err ?
         errorClient.captureError(err, { extra: logData }) :
-        errorClient.captureMessage(logData, { extra: logData });
+        _.isString(logData) ?
+            errorClient.captureMessage(logData, { extra: logData }) :
+            logData.msg ?
+                errorClient.captureMessage(logData.msg, { extra: logData }) :
+                errorClient.captureMessage(JSON.stringify(logData), { extra: logData });
 }
 
 /**
