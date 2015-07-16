@@ -4,7 +4,7 @@
  *
  * This middleware is in charge of setting context variables for a web app
  */
-module.exports = function (Q, _, appConfigs, config, cls, translations, routeHelper, AppError) {
+module.exports = function (Q, _, appConfigs, config, cls, translations, routeHelper, AppError, routeHelper) {
     var langSubdomains = config.lang.secondary || [];
 
     /**
@@ -85,7 +85,7 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, routeHel
      * @returns {{}}
      */
     function getDomainMap() {
-        var domainMap = {};
+        var domainMap = { m: 'm' };  // temp for mobile stuff
         _.each(appConfigs, function (appConfig, appName) {
             var domain = appConfig.domain || appName;  // by default domain is the app name
             domainMap[domain] = appName;
@@ -106,6 +106,12 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, routeHel
         ctx.server.ext('onRequest', function (req, reply) {
             setLanguage(req);
             setAppInfo(req, domainMap);
+
+            if (req.app.name === 'm') {
+                reply.redirect(routeHelper.getBaseUrl('contact') + req.url.path).permanent(true);
+                return;
+            }
+
             setContext(req);
             reply.continue();
         });
