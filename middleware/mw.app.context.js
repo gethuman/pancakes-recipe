@@ -85,7 +85,7 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, routeHel
      * @returns {{}}
      */
     function getDomainMap() {
-        var domainMap = { m: 'm' };  // temp for mobile stuff
+        var domainMap = { m: 'm' };  // temp hack for mobile redirect stuff (remove later)
         _.each(appConfigs, function (appConfig, appName) {
             var domain = appConfig.domain || appName;  // by default domain is the app name
             domainMap[domain] = appName;
