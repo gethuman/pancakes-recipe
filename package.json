@@ -35,8 +35,8 @@
     "lru-cache": "^2.6.5",
     "moment": "^2.10.3",
     "mongoose": "^4.0.7",
-    "pancakes": "^0.1.91",
-    "pancakes-mongo": "0.0.54",
+    "pancakes": "^0.1.92",
+    "pancakes-mongo": "0.0.56",
     "q": "^1.4.1",
     "raven": "^0.8.1",
     "redis": "^0.12.1",
@@ -45,8 +45,8 @@
     "yar": "^3.0.3"
   },
   "devDependencies": {
-    "batter": "0.1.4",
+    "batter": "0.1.5",
     "gulp": "^3.9.0",
-    "taste": "^0.2.2"
+    "taste": "^0.2.3"
   }
 }
