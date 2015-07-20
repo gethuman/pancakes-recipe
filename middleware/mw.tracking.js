@@ -4,24 +4,40 @@
  *
  * Tracking middleware
  */
-module.exports = function (Q, config) {
+module.exports = function (Q, config, trackingService, log) {
     return {
         init: function init(ctx) {
-            ctx.server.ext('onPreAuth', function (req, reply) {
-                if (req.query.fromurl && req.session) {
-                    req.session.set('lastPage', req.query.fromurl);
-                }
+            var isWebserver = ctx.container === 'webserver';
+            var isApi = ctx.container === 'api';
 
-                reply.continue();
-            });
+            if (isWebserver) {
+                ctx.server.ext('onPreAuth', function (req, reply) {
+                    if (req.query.fromurl && req.session) {
+                        req.session.set('lastPage', req.query.fromurl);
+                    }
+
+                    reply.continue();
+                });
+            }
 
             ctx.server.ext('onPostHandler', function (req, reply) {
                 var url = req.url.pathname;
                 var domain = req.app.domain;
                 var isNotStaticFile = url.indexOf(config.staticFiles.assets) < 0;
 
-                if (domain !== 'trust' && url !== '/ping' && url !== '/robots.txt' && isNotStaticFile && req.session) {
+                if (isWebserver && domain !== 'trust' && url !== '/ping' && url !== '/robots.txt' && isNotStaticFile && req.session) {
                     req.session.set('lastPage', req.info.host + url);
+                }
+                else if (isApi) {
+                    trackingService.trackApiCall({
+                        caller:     req.caller,
+                        host:       req.info.host,
+                        method:     req.method,
+                        url:        url
+                    })
+                        .catch(function (err) {
+                            log.error(err);
+                        });
                 }
 
                 reply.continue();

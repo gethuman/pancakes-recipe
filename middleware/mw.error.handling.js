@@ -4,7 +4,8 @@
  *
  * Monitoring for errors and adding profiling
  */
-module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppError, pancakes) {
+module.exports = function (Q, _, Boom, errorDecoder, config, log,
+                           eventBus, AppError, pancakes, trackingService) {
 
     /**
      * Configure global error handling which includes Q and catching uncaught exceptions
@@ -64,11 +65,16 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppE
             }
 
             var code = response.code || 'unknown_error';
-            var err = errorDecoder[code];
+            var err = errorDecoder[code] || errorDecoder['unknown_error'];
             var url = request.path;
 
-            log.error(request.method + ' ' + url + ' (' + err.friendlyMessage + ')',
-                { err: originalResponse }   );
+            if (err.httpErrorCode === 404) {
+                trackingService.pageNotFound({ caller: request.caller, url: request.app.name + ' ' + url });
+            }
+            else {
+                log.error(request.method + ' ' + url + ' (' + err.friendlyMessage + ')',
+                    { err: originalResponse }   );
+            }
 
             //TODO: this hack sucks, but needed quick way to display error page; do better!
             if (pancakes.getContainer() === 'webserver') {

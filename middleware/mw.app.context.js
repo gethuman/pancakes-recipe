@@ -85,7 +85,7 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, routeHel
      * @returns {{}}
      */
     function getDomainMap() {
-        var domainMap = { m: 'm' };  // temp hack for mobile redirect stuff (remove later)
+        var domainMap = { m: 'm', 'www': 'www' };  // temp hack for mobile redirect stuff (remove later)
         _.each(appConfigs, function (appConfig, appName) {
             var domain = appConfig.domain || appName;  // by default domain is the app name
             domainMap[domain] = appName;
@@ -107,7 +107,7 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, routeHel
             setLanguage(req);
             setAppInfo(req, domainMap);
 
-            if (req.app.name === 'm') {
+            if (req.app.name === 'm' || req.app.name === 'www') {
                 reply.redirect(routeHelper.getBaseUrl('contact') + req.url.path).permanent(true);
                 return;
             }
