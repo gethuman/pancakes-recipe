@@ -4,7 +4,7 @@
  *
  * This middleware is in charge of setting context variables for a web app
  */
-module.exports = function (Q, _, appConfigs, config, cls, translations, routeHelper, AppError, routeHelper) {
+module.exports = function (Q, _, appConfigs, config, cls, translations, routeHelper, AppError) {
     var langSubdomains = config.lang.secondary || [];
 
     /**

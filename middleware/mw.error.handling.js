@@ -5,7 +5,7 @@
  * Monitoring for errors and adding profiling
  */
 module.exports = function (Q, _, Boom, errorDecoder, config, log,
-                           eventBus, AppError, pancakes, trackingService) {
+                           eventBus, AppError, pancakes, routeHelper, trackingService) {
 
     /**
      * Configure global error handling which includes Q and catching uncaught exceptions
@@ -17,7 +17,7 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log,
 
         // hopefully we handle errors before this point, but this will log anything not caught
         process.on('uncaughtException', function (err) {
-            log.critical('uncaughtException: ' + err + '\n' + err.stack);
+            log.critical('global uncaught exception : ' + err + '\n' + err.stack);
 
             /* eslint no-process-exit: 0 */
             process.exit(1);
@@ -39,9 +39,10 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log,
 
             // we need to convert to AppError if it is not already
             if (!(response instanceof AppError)) {
+                msg = response.message || (response + '');
 
                 // if legit 404 be sure to use that code (happens with not found in /dist on local)
-                if (response.message.indexOf('404:') >= 0 ||
+                if (msg.indexOf('404:') >= 0 ||
                     (response.output && response.output.payload &&
                     response.output.payload.statusCode === 404)) {
 
@@ -69,7 +70,10 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log,
             var url = request.path;
 
             if (err.httpErrorCode === 404) {
-                trackingService.pageNotFound({ caller: request.caller, url: request.app.name + ' ' + url });
+                trackingService.pageNotFound({
+                    caller: request.caller,
+                    url: routeHelper.getBaseUrl(request.app.name) + url
+                });
             }
             else {
                 log.error(request.method + ' ' + url + ' (' + err.friendlyMessage + ')',

@@ -14,6 +14,12 @@ require('colors');
 var errorClient = null;
 /* eslint no-console:0 */
 
+var ignoreErrs = [
+    'Cannot read property \'session\' of null',
+    'Invalid cookie header',
+    'App was rejected'
+];
+
 /**
  * Error handler
  * @param logData
@@ -35,6 +41,16 @@ function errorHandler(logData) {
         logData.lang = session.get('lang');
         logData.url = session.get('url');
         logData.visitorId = session.get('visitorId');
+    }
+
+    // if there is a msg, ignore these errors and just return
+    var msg = logData.msg;
+    if (msg) {
+        for (var i = 0; i < ignoreErrs.length; i++) {
+            if (msg.indexOf(ignoreErrs[i]) >= 0) {
+                return;
+            }
+        }
     }
 
     err ?
