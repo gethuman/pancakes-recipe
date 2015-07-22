@@ -18,7 +18,8 @@ var ignoreErrs = [
     'Cannot read property \'session\' of null',
     'Invalid cookie header',
     'App was rejected',
-    'Missing custom request token cookie'
+    'Missing custom request token cookie',
+    'Bad Request'
 ];
 
 /**

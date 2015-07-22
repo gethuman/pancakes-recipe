@@ -34,7 +34,7 @@
     "lodash": "^3.10.0",
     "lru-cache": "^2.6.5",
     "moment": "^2.10.3",
-    "mongoose": "^4.0.8",
+    "mongoose": "4.0.7",
     "pancakes": "^0.1.94",
     "pancakes-mongo": "0.0.58",
     "q": "^1.4.1",
