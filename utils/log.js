@@ -85,48 +85,10 @@ module.exports = function (_, eventBus) {
             logData.err = err;
         }
 
-        logData.msg = (logData.msg || '') + ' ' + (msg || '');
+        logData.msg = 'error: ' + (logData.msg || '') + ' ' + (msg || '');
         logData.level = 'error';
         logData.source = getSource();
         eventBus.emit('log.error', logData);
-    }
-
-    /**
-     * Critical issues that we need to address immediately
-     * @param msg
-     * @param logData
-     */
-    function critical(msg, logData) {
-        logData = logData || {};
-        var err;
-
-        if (msg instanceof Error) {
-            err = msg;
-            logData.msg = logData.msg || msg.message;
-            logData.stack = msg.stack;
-
-            if (msg.code) { logData.code = msg.code; }
-            if (msg.err) { logData.inner = msg.err.stack || msg.err.message; }
-        }
-
-        if (_.isObject(msg)) {
-            msg = JSON.stringify(msg);
-        }
-
-        if (logData.err && logData.err instanceof Error) {
-            err = logData.err;
-            logData.msg = logData.msg || logData.err.message;
-            logData.stack = logData.err.stack;
-        }
-
-        if (err) {
-            logData.err = err;
-        }
-
-        logData.msg = (logData.msg || '') + ' ' + (msg || '');
-        logData.level = 'critical';
-        logData.source = getSource();
-        eventBus.emit('log.critical', logData);
     }
 
     /**
@@ -146,7 +108,7 @@ module.exports = function (_, eventBus) {
         debug: debug,
         info: info,
         error: error,
-        critical: critical,
+        critical: error,  // not a mistake; do error for now
         andThrow: andThrow
     };
 };
