@@ -24,13 +24,10 @@ module.exports = {
     /**
      * Context on the server side comes from CLS
      */
-    server: function () {
-        var ns = null;
+    server: function (cls) {
         return {
-            setNamespace: function (namespace) {
-                ns = namespace;
-            },
             get: function (key) {
+                var ns = cls.getNamespace('appSession');
                 return ns && ns.active && ns.get(key);
             }
         };

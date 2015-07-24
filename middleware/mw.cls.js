@@ -5,19 +5,12 @@
  *
  * Add CLS wrapper around request
  */
-module.exports = function (Q, cls, context) {
+module.exports = function (Q, cls) {
     return {
         init: function init(ctx) {
             var ns = cls.createNamespace('appSession');
-            context.setNamespace(ns);
 
             ctx.server.ext('onRequest', function (request, reply) {
-                ns.bindEmitter(request.raw.req);
-                ns.bindEmitter(request.raw.res);
-                ns.run(function () { reply.continue(); });
-            });
-
-            ctx.server.ext('onPreHandler', function (request, reply) {
                 ns.bindEmitter(request.raw.req);
                 ns.bindEmitter(request.raw.res);
                 ns.run(function () { reply.continue(); });
