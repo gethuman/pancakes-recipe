@@ -83,7 +83,7 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log,
             //TODO: this hack sucks, but needed quick way to display error page; do better!
             if (pancakes.getContainer() === 'webserver') {
                 var errUrl = err.httpErrorCode === 404 ? '/error404' : '/error500';
-                pancakes.processRoute({ request: request, reply: reply, urlOverride: errUrl });
+                pancakes.processRoute({ request: request, reply: reply, urlOverride: errUrl, returnCode: err.httpErrorCode });
             }
             else {
                 reply(Boom.create(err.httpErrorCode, err.friendlyMessage));

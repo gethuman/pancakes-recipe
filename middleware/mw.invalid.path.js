@@ -6,16 +6,14 @@
  * Short curcuit invalid paths up front
  */
 module.exports = function (Q) {
-    var invalidSuffixes = /(\.php|\.asp|\.cgi|\.aspx|\/rss)$/;
-    var invalidPrefixes = /^\/(cgi-bin|images|css)\//;
+    var invalidSuffixes = /(\.php|\.asp|\.cgi|\.aspx|\/rss|\/atom)$/;
+    var invalidPrefixes = /^\/(cgi-bin|images|css|wp-admin)\//;
     var invalidPaths = [
         '/crossdomain.xml',
         '/browserconfig.xml',
         '/favicon.gif',
         '/urlEmail',
         '/atom.xml',
-        '/change.html',
-        '/atom',
         '/match'
     ];
 
