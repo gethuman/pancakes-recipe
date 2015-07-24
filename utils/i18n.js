@@ -79,6 +79,7 @@ module.exports = function (_, translations, context, config) {
         // note: this is kind of hacky, but we want the caller (i.e. jng.directives.js) to handle
         // it because jng.directives has more info about the translation than we do at this level
         if (!translated && config.i18nDebug && status && lang !== config.lang.default) {
+            status.app = app;
             status.lang = lang;
             status.missing = true;
         }
