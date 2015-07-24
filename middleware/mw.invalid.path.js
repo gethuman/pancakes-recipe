@@ -6,13 +6,15 @@
  * Short curcuit invalid paths up front
  */
 module.exports = function (Q) {
-    var invalidWebPathRegex = /(\.php|\.asp|\.cgi|\.aspx|\/rss)$/;
+    var invalidSuffixes = /(\.php|\.asp|\.cgi|\.aspx|\/rss)$/;
+    var invalidPrefixes = /^\/(cgi-bin|images|css)\//;
     var invalidPaths = [
         '/crossdomain.xml',
         '/browserconfig.xml',
         '/favicon.gif',
         '/urlEmail',
         '/atom.xml',
+        '/change.html',
         '/atom',
         '/match'
     ];
@@ -20,10 +22,10 @@ module.exports = function (Q) {
     return {
         init: function init(ctx) {
             ctx.server.ext('onRequest', function (request, reply) {
-                var url = request.url.pathname;
+                var url = request.url.pathname.toLowerCase();
 
                 // 404 if ends with php, asp, aspx
-                if (invalidWebPathRegex.test(url.toLowerCase())) {
+                if (invalidPrefixes.test(url) || invalidSuffixes.test(url)) {
                     reply('Invalid path').code(404);
                     return;
                 }
