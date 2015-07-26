@@ -64,8 +64,8 @@ module.exports = function (_, translations, context, config) {
      * @returns {string}
      */
     function translate(val, scope, status) {
-        var app = context.get('app') || '';
-        var lang = context.get('lang') || 'en';
+        var app = (scope && scope.appName) || context.get('app') || '';
+        var lang = (scope && scope.lang) || context.get('lang') || 'en';
         var translated;
 
         if (!val) { return val; }
