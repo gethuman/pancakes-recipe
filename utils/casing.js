@@ -57,9 +57,9 @@ module.exports = function (_) {
         if ( !str.length ) {
             return str;
         }
-        return str.split('-').map(function(piece) {
+        return str.split('-').map(function (piece) {
             if ( piece.length ) {
-                return piece.substring(0,1).toUpperCase() + piece.substring(1);
+                return piece.substring(0, 1).toUpperCase() + piece.substring(1);
             }
             return piece;
         }).join('-');

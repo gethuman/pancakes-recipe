@@ -4,7 +4,7 @@
  *
  * Routes for the API
  */
-module.exports = function (Q, pancakes, mwCommonRoutes, config, AppError) {
+module.exports = function (Q, pancakes, mwCommonRoutes, config) {
     return {
         init: function init(ctx) {
             var server = ctx.server;

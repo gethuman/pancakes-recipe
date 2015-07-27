@@ -55,6 +55,14 @@ function errorHandler(logData) {
         }
     }
 
+    if (!(err instanceof Error)) {
+        logData.msg = JSON.stringify(err);
+        err = null;
+    }
+
+    // sanity check since sometimes data not displayed in sentry for some reason
+    logData.yoyo = 'Err is ' + err;
+
     err ?
         errorClient.captureError(err, { extra: logData }) :
         _.isString(logData) ?
