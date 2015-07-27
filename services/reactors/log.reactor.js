@@ -27,10 +27,20 @@ var ignoreErrs = [
  * @param logData
  */
 function errorHandler(logData) {
-    logData = logData || {};
-    var err = logData.err;
-    delete logData.err;
+    if (!logData) {
+        return;
+    }
 
+    logData.msg = (logData.msg === 'undefined' || logData.msg === 'null') ? null : logData.msg;
+    logData.err = (logData.err === 'undefined' || logData.err === 'null') ? null : logData.err;
+
+    if (!logData.msg && !logData.err) {
+        return;
+    }
+
+    // extra data to help with debugging
+    logData.yoyo = 'Err is ' + logData.err;
+    logData.msg = logData.msg || logData.message || logData.yoyo;
     var session = cls.getNamespace('appSession');
     if (session && session.active) {
         var caller = session.get('caller');
@@ -45,31 +55,21 @@ function errorHandler(logData) {
         logData.visitorId = session.get('visitorId');
     }
 
-    // if there is a msg, ignore these errors and just return
-    var msg = logData.msg;
-    if (msg) {
+    if (!(logData.err instanceof Error)) {
+        delete logData.err;
+    }
+
+    if (logData.msg) {
         for (var i = 0; i < ignoreErrs.length; i++) {
-            if (msg.indexOf(ignoreErrs[i]) >= 0) {
+            if (logData.msg.indexOf(ignoreErrs[i]) >= 0) {
                 return;
             }
         }
     }
 
-    if (!(err instanceof Error)) {
-        logData.msg = JSON.stringify(err);
-        err = null;
-    }
-
-    // sanity check since sometimes data not displayed in sentry for some reason
-    logData.yoyo = 'Err is ' + err;
-
-    err ?
-        errorClient.captureError(err, { extra: logData }) :
-        _.isString(logData) ?
-            errorClient.captureMessage(logData, { extra: logData }) :
-            logData.msg ?
-                errorClient.captureMessage(logData.msg, { extra: logData }) :
-                errorClient.captureMessage(JSON.stringify(logData), { extra: logData });
+    logData.err ?
+        errorClient.captureError(logData.err, { extra: logData }) :
+        errorClient.captureMessage(logData.msg, { extra: logData });
 }
 
 /**
