@@ -38,6 +38,10 @@ module.exports = function (Q, _, pancakes, reactors, resources, log, chainPromis
                 // get the cleanup data based on the input options and process it
                 var cleanupData = getCleanupData(options);
                 return processCleanupData(cleanupData, options);
+            })
+            .then(function () {
+                log.info('done with cleanupPrep');
+                return true;
             });
     }
 
