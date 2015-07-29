@@ -30,6 +30,7 @@ module.exports = {
         // set config values for the client web apps
         var logConfig = config.logging || {};
         var securityConfig = config.security || {};
+        var authConfig = securityConfig.auth || {};
 
         config.webclient = config.webclient || {};
         _.extend(config.webclient, {
@@ -42,7 +43,9 @@ module.exports = {
             version:                config.staticVersion,
             baseHost:               config.baseHost,
             domains:                config.domains,
-            cookieDomain:           (securityConfig.cookie ? securityConfig.cookie.domain : 'test.dev.gethuman.com')
+            cookieDomain:           (securityConfig.cookie ? securityConfig.cookie.domain : 'test.dev.gethuman.com'),
+            authDomain:             authConfig.domain,
+            authClientId:           authConfig.clientId
         });
 
         return config;

@@ -34,12 +34,16 @@ function errorHandler(logData) {
     logData.msg = (logData.msg === 'undefined' || logData.msg === 'null') ? null : logData.msg;
     logData.err = (logData.err === 'undefined' || logData.err === 'null') ? null : logData.err;
 
+    logData.yoyo = 'Err is ' + logData.err + ' with msg ' + logData.msg;
+    if (!(logData.err instanceof Error)) {
+        delete logData.err;
+    }
+
     if (!logData.msg && !logData.err) {
         return;
     }
 
     // extra data to help with debugging
-    logData.yoyo = 'Err is ' + logData.err;
     logData.msg = logData.msg || logData.message || logData.yoyo;
     var session = cls.getNamespace('appSession');
     if (session && session.active) {
@@ -55,15 +59,9 @@ function errorHandler(logData) {
         logData.visitorId = session.get('visitorId');
     }
 
-    if (!(logData.err instanceof Error)) {
-        delete logData.err;
-    }
-
-    if (logData.msg) {
-        for (var i = 0; i < ignoreErrs.length; i++) {
-            if (logData.msg.indexOf(ignoreErrs[i]) >= 0) {
-                return;
-            }
+    for (var i = 0; i < ignoreErrs.length; i++) {
+        if (logData.yoyo.indexOf(ignoreErrs[i]) >= 0) {
+            return;
         }
     }
 
