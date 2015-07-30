@@ -13,6 +13,13 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, routeHel
      */
     function setLanguage(req) {
         var host = req.info.host;
+
+        // hack fix for m.reviews, m.fr, m.es, etc.
+        if (host.substring(0, 2) === 'm.') {
+            req.app.isLegacyMobile = true;
+            host = host.substring(2);
+        }
+
         var subdomain = host.substring(0, 2);
 
         // either at language-based subdomain or we use english
@@ -28,6 +35,12 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, routeHel
     function setAppInfo(req, domainMap) {
         var host = req.info.hostname;
         var domain;
+
+        // hack fix for m.reviews, m.fr, m.es, etc.
+        if (host.substring(0, 2) === 'm.') {
+            req.app.isLegacyMobile = true;
+            host = host.substring(2);
+        }
 
         // if the host starts with the lang, then remove it
         if (host.indexOf(req.app.lang + '.') === 0) {
@@ -85,7 +98,7 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, routeHel
      * @returns {{}}
      */
     function getDomainMap() {
-        var domainMap = { m: 'm', 'www': 'www' };  // temp hack for mobile redirect stuff (remove later)
+        var domainMap = { 'www': 'www' };  // temp hack for mobile redirect stuff (remove later)
         _.each(appConfigs, function (appConfig, appName) {
             var domain = appConfig.domain || appName;  // by default domain is the app name
             domainMap[domain] = appName;
@@ -107,8 +120,11 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, routeHel
             setLanguage(req);
             setAppInfo(req, domainMap);
 
-            if (req.app.name === 'm' || req.app.name === 'www') {
-                reply.redirect(routeHelper.getBaseUrl('contact') + req.url.path).permanent(true);
+            var appName = req.app.name;
+            var lang = req.app.lang;
+            if (req.app.isLegacyMobile || appName === 'www') {
+                appName = appName === 'www' ? 'contact' : appName;
+                reply.redirect(routeHelper.getBaseUrl(appName, lang) + req.url.path).permanent(true);
                 return;
             }
 

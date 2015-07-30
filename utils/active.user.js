@@ -94,8 +94,8 @@ module.exports = {
 
         // add functions to user
         _.extend(user, {
-            init: init,
-            login: login,
+            init:   init,
+            login:  login,
             logout: logout
         });
 
