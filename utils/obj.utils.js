@@ -158,6 +158,7 @@ module.exports = function (_) {
             if (_.isString(val) && val.length > 1) {
                 if ( val.charAt(0) === '!' ) {
                     hasNotOperand = true;
+                    val = val.substring(1);
                 }
             }
             var dataValue = getNestedValue(data, key);

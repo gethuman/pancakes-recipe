@@ -179,5 +179,11 @@ describe('UNIT ' + name, function () {
             return objUtils.matchesCriteria(data, criteria).should.be.true;
         });
 
+        it('should not false positive with not operand', function () {
+            var data = { foo: 'choo', woo: { boo: 'la' }};
+            var criteria = { 'foo': '!choo' };
+            return objUtils.matchesCriteria(data, criteria).should.be.false;
+        });
+
     });
 });
