@@ -28,18 +28,24 @@ module.exports = {
         apiBase += '/' + (config.api ? config.api.version : 'test');
 
         // set config values for the client web apps
+        var logConfig = config.logging || {};
+        var securityConfig = config.security || {};
+        var authConfig = securityConfig.auth || {};
+
         config.webclient = config.webclient || {};
         _.extend(config.webclient, {
             apiBase:                apiBase,
-            errorUrl:               config.logging && config.logging.errorClientUrl,
-            logLevel:               config.logging && config.logging.level,
-            logTransport:           config.logging && config.logging.transport,
+            errorUrl:               logConfig.errorClientUrl,
+            logLevel:               logConfig.level,
+            logTransport:           logConfig.transport,
             i18nDebug:              config.i18nDebug,
             appEnv:                 config.env,
             version:                config.staticVersion,
             baseHost:               config.baseHost,
             domains:                config.domains,
-            cookieDomain:           (config.security && config.security.cookie ? config.security.cookie.domain : 'test.dev.gethuman.com')
+            cookieDomain:           (securityConfig.cookie ? securityConfig.cookie.domain : 'test.dev.gethuman.com'),
+            authDomain:             authConfig.domain,
+            authClientId:           authConfig.clientId
         });
 
         return config;

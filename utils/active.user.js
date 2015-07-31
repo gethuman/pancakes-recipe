@@ -10,18 +10,11 @@ module.exports = {
 
     // on the server side, we attempt to get the user from the CLS session
     // NOTE: this is not 100% fullproof, so only use for non-critical situations
-    server: function (Q, cls) {
+    server: function (Q, context) {
         return {
             init: function () {
-                var session = cls.getNamespace('appSession');
-                if (session && session.active) {
-                    var caller = session.get('caller');
-                    if (caller) {
-                        return new Q(caller.user);
-                    }
-                }
-
-                return Q.when({});
+                var caller = context.get('caller');
+                return caller ? new Q(caller.user) : Q.when({});
             }
         };
     },
@@ -101,8 +94,8 @@ module.exports = {
 
         // add functions to user
         _.extend(user, {
-            init: init,
-            login: login,
+            init:   init,
+            login:  login,
             logout: logout
         });
 

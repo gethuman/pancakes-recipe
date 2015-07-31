@@ -4,7 +4,8 @@
  *
  * Monitoring for errors and adding profiling
  */
-module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppError, pancakes) {
+module.exports = function (Q, _, Boom, errorDecoder, config, log,
+                           eventBus, AppError, pancakes, routeHelper, trackingService) {
 
     /**
      * Configure global error handling which includes Q and catching uncaught exceptions
@@ -16,7 +17,7 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppE
 
         // hopefully we handle errors before this point, but this will log anything not caught
         process.on('uncaughtException', function (err) {
-            log.critical('uncaughtException: ' + err + '\n' + err.stack);
+            log.critical('global uncaught exception : ' + err + '\n' + err.stack);
 
             /* eslint no-process-exit: 0 */
             process.exit(1);
@@ -38,9 +39,10 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppE
 
             // we need to convert to AppError if it is not already
             if (!(response instanceof AppError)) {
+                msg = response.message || (response + '');
 
                 // if legit 404 be sure to use that code (happens with not found in /dist on local)
-                if (response.message.indexOf('404:') >= 0 ||
+                if (msg.indexOf('404:') >= 0 ||
                     (response.output && response.output.payload &&
                     response.output.payload.statusCode === 404)) {
 
@@ -64,21 +66,32 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log, eventBus, AppE
             }
 
             var code = response.code || 'unknown_error';
-            var err = errorDecoder[code];
+            var err = errorDecoder[code] || errorDecoder['unknown_error'];
             var url = request.path;
-            var urlLen = url.length;
-            var urlSuffix = (urlLen > 4 && url.substring(urlLen - 4).toLowerCase()) || '';
 
-            //if (request.path !== '/favicon.ico' && err.httpErrorCode !== 404) {
-            if (url !== '/favicon.ico' || ['.png', '.jpg'].indexOf(urlSuffix) < 0) {
+            if (err.httpErrorCode === 404) {
+                trackingService.pageNotFound({
+                    caller: request.caller,
+                    url: routeHelper.getBaseUrl(request.app.name) + url
+                });
+            }
+            else {
                 log.error(request.method + ' ' + url + ' (' + err.friendlyMessage + ')',
                     { err: originalResponse }   );
             }
 
             //TODO: this hack sucks, but needed quick way to display error page; do better!
             if (pancakes.getContainer() === 'webserver') {
-                var errUrl = err.httpErrorCode === 404 ? '/error404' : '/error500';
-                pancakes.processRoute({ request: request, reply: reply, urlOverride: errUrl });
+
+                // hack fix for issue when error on trust site
+                if (request.app && request.app.name === 'trust') {
+                    reply().redirect(routeHelper.getBaseUrl('contact') + '?notify=loginFailure');
+                }
+                // else show error pages
+                else {
+                    var errUrl = err.httpErrorCode === 404 ? '/error404' : '/error500';
+                    pancakes.processRoute({ request: request, reply: reply, urlOverride: errUrl, returnCode: err.httpErrorCode });
+                }
             }
             else {
                 reply(Boom.create(err.httpErrorCode, err.friendlyMessage));

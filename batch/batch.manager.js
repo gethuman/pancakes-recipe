@@ -64,7 +64,7 @@ module.exports = function (fs, commander, moment, pancakes, mwServiceInit, log, 
             .then(function () {
                 var endTime = (new Date()).getTime();
                 var diffTime = (endTime - startTime) / 1000;
-                log.info(commander.app + ' complete for ' + process.env.NODE_ENV + ' (' + diffTime + 's)');
+                log.info(commander.app + ' complete (' + diffTime + 's)');
                 process.exit(0);
             })
             .catch(function (err) {

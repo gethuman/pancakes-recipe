@@ -19,7 +19,7 @@ module.exports = function (Q, userService, userCacheService, config, jwt, log) {
         var cacheKey = userId + authToken;
         var conditions = {
             caller: userService.admin,
-            where: { _id: userId, authToken: authToken },
+            where: { _id: userId, authToken: authToken, status: 'created' },
             findOne: true
         };
         var cachedUser;

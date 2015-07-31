@@ -27,8 +27,8 @@ module.exports = {
     server: function (cls) {
         return {
             get: function (key) {
-                var session = cls.getNamespace('appSession');
-                return session && session.active && session.get(key);
+                var ns = cls.getNamespace('appSession');
+                return ns && ns.active && ns.get(key);
             }
         };
     }

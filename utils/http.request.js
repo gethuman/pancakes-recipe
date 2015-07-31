@@ -18,7 +18,7 @@ module.exports = function (Q, request) {
                 deferred.reject(err);
             }
             else if (resp.statusCode !== 200) {
-                deferred.reject(obj);
+                deferred.reject(obj || resp.statusMessage);
             }
             else {
                 deferred.resolve(obj);

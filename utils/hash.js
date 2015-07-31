@@ -44,6 +44,8 @@ module.exports = function (_, Q, bcrypt, crypto) {
      * @returns {*}
      */
     function md5Hash(val) {
+        if (!val) { return val; }
+
         var str = _.isObject(val) ? JSON.stringify(val) : val;
         var md5 = crypto.createHash('md5');
         md5.update(str);

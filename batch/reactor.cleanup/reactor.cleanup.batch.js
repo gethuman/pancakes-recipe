@@ -14,7 +14,7 @@
  * Examples:
  *      node batch -a reactor.cleanup -t post               // run all cleanup that targets the post collection
  *      node batch -a reactor.cleanup -s post               // run all cleanup for reactors from the post collection
- *      node batch -a reactor.cleanup -x vote               // run all the vote reactor cleanup operations
+ *      node batch -a reactor.cleanup -x rollup.vote        // run all the vote reactor cleanup operations
  *      node batch -a reactor.cleanup -t post -f answers    // specifically target the reactors for the post.answers field
  *
  * NOTE: A start date and run days can also be passed in with -r and -y command line params respectively
@@ -38,6 +38,10 @@ module.exports = function (Q, _, pancakes, reactors, resources, log, chainPromis
                 // get the cleanup data based on the input options and process it
                 var cleanupData = getCleanupData(options);
                 return processCleanupData(cleanupData, options);
+            })
+            .then(function () {
+                log.info('done with cleanupPrep');
+                return true;
             });
     }
 
@@ -63,9 +67,9 @@ module.exports = function (Q, _, pancakes, reactors, resources, log, chainPromis
         }
         // else if source and target resources don't exist (i.e. we are doing everything) the try to call all
         else if (!sourceResource && !targetResource) {
-            return Q.all(reactors.map(function (reactor) {
-                log.info('Running cleanupPrep for ' + reactor);
-                return reactor.cleanupPrep ? reactor.cleanupPrep() : true;
+            return Q.all(reactors.map(function (rctr) {
+                log.info('Running cleanupPrep for ' + rctr);
+                return rctr.cleanupPrep ? rctr.cleanupPrep() : true;
             }));
         }
 

@@ -26,7 +26,7 @@ module.exports = function (_, appConfigs, i18n, config, translations) {
         var appPascal   = appName.substring(0, 1).toUpperCase() + appName.substring(1);
         var lang        = routeInfo.lang || 'en';
         var ga          = appConfig.googleAnalytics || {};
-        var gaLang      = ga[lang] || {}
+        var gaLang      = ga[lang] || {};
 
         // add the page head info
         if (model.pageHead) {

@@ -127,7 +127,7 @@ function send(httpMethod, path, req) {
 
     request(reqConfig, function (err, resp, obj) {
         if (err)                            { deferred.reject(err); }
-        else if (resp.statusCode !== 200)   { deferred.reject(obj); }
+        else if (resp.statusCode !== 200)   { deferred.reject(obj || resp.statusMessage); }
         else                                { deferred.resolve(obj); }
     });
 

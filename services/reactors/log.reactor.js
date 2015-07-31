@@ -7,64 +7,67 @@
  */
 var _       = require('lodash');
 var raven   = require('raven');
+var cls     = require('continuation-local-storage');
 
 require('colors');
 
 var errorClient = null;
 /* eslint no-console:0 */
 
-var ignoreErrors = [
-    'Invalid cookie header',                            // thrown by hapi when hacker has invalid cookie val
-    'Cannot read property \'session\' of null',         // downstream error result of Invalid cookie issue
-    '.png is not a valid request'
+var ignoreErrs = [
+    'Cannot read property \'session\' of null',
+    'Invalid cookie header',
+    'App was rejected',
+    'Missing custom request token cookie',
+    'Bad Request'
 ];
-
-/**
- * Check if we should not log remotely based on string
- * @param val
- * @returns {boolean}
- */
-function noRemoteLog(val) {
-    var valStr;
-
-    if (_.isString(val)) {
-        valStr = val;
-    }
-    else if (val.msg) {
-        valStr = val.msg;
-    }
-    else if (val.err) {
-        valStr = val.err + '';
-    }
-    else {
-        valStr = val + '';
-    }
-
-    for (var i = 0; i < ignoreErrors.length; i++) {
-        if (valStr.indexOf(ignoreErrors[i]) >= 0) {
-            return true;
-        }
-    }
-
-    return false;
-}
 
 /**
  * Error handler
  * @param logData
  */
 function errorHandler(logData) {
-    if (!errorClient || noRemoteLog(logData)) { return; }
+    if (!logData) {
+        return;
+    }
 
-    logData = logData || {};
-    var err = logData.err;
-    delete logData.err;
+    logData.msg = (logData.msg === 'undefined' || logData.msg === 'null') ? null : logData.msg;
+    logData.err = (logData.err === 'undefined' || logData.err === 'null') ? null : logData.err;
 
-    err ?
-        errorClient.captureError(err, { extra: logData }) :
-        _.isString(logData) ?
-            errorClient.captureMessage(logData, { extra: logData }) :
-            errorClient.captureMessage(logData.msg, { extra: logData });
+    logData.yoyo = 'Err is ' + logData.err + ' with msg ' + logData.msg;
+    if (!(logData.err instanceof Error)) {
+        delete logData.err;
+    }
+
+    if (!logData.msg && !logData.err) {
+        return;
+    }
+
+    // extra data to help with debugging
+    logData.msg = logData.msg || logData.message || logData.yoyo;
+    var session = cls.getNamespace('appSession');
+    if (session && session.active) {
+        var caller = session.get('caller');
+        if (caller && caller.user) {
+            logData.userId = caller.user._id;
+            logData.username = caller.user.username;
+        }
+
+        logData.app = session.get('app');
+        logData.lang = session.get('lang');
+        logData.url = session.get('url');
+        logData.visitorId = session.get('visitorId');
+    }
+
+    for (var i = 0; i < ignoreErrs.length; i++) {
+        if (logData.yoyo.indexOf(ignoreErrs[i]) >= 0) {
+            return;
+        }
+    }
+
+    logData.err ?
+        errorClient.captureError(logData.err, { extra: logData }) :
+        errorClient.captureMessage(logData.msg, { extra: logData });
 }
 
 /**
