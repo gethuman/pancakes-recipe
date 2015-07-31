@@ -166,5 +166,18 @@ describe('UNIT ' + name, function () {
             var criteria = { foo: 'choo', 'woo.boo': 'sss' };
             return objUtils.matchesCriteria(data, criteria).should.be.false;
         });
+
+        it('should allow the not operand', function () {
+            var data = { foo: 'choo', woo: { boo: 'la' }};
+            var criteria = { foo: '!la' };
+            return objUtils.matchesCriteria(data, criteria).should.be.true;
+        });
+
+        it('should allow the not operand with complex material', function () {
+            var data = { foo: 'choo', woo: { boo: 'la' }};
+            var criteria = { 'woo.boo': '!zoo' };
+            return objUtils.matchesCriteria(data, criteria).should.be.true;
+        });
+
     });
 });

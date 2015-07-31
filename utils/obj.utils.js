@@ -137,6 +137,13 @@ module.exports = function (_) {
      * True if the given data matches the criteria. If criteria empty,
      * then always true
      *
+     * Examples
+     *
+     * Obj: { a: 'monday', b: 'tuesday' }  Criteria: { a: 'monday' } // true
+     * Obj: { a: 'monday', b: 'tuesday' }  Criteria: { a: 'tuesday' } // false
+     * Obj: { a: 'monday', b: 'tuesday' }  Criteria: { c: 'monday' } // false
+     * Obj: { a: 'monday', b: 'tuesday' }  Criteria: { a: '!tuesday' } // true
+     *
      * @param data
      * @param criteria
      * @returns {Boolean}
@@ -147,10 +154,19 @@ module.exports = function (_) {
 
         var match = true;
         _.each(criteria, function (val, key) {
+            var hasNotOperand = false;
+            if (_.isString(val) && val.length > 1) {
+                if ( val.charAt(0) === '!' ) {
+                    hasNotOperand = true;
+                }
+            }
             var dataValue = getNestedValue(data, key);
             var vals = _.isArray(val) ? val : [val];
             if (vals.indexOf(dataValue) < 0) {
                 match = false;
+            }
+            if ( hasNotOperand ) {
+                match = !match;
             }
         });
 
