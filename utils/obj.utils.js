@@ -142,7 +142,7 @@ module.exports = function (_) {
      * Obj: { a: 'monday', b: 'tuesday' }  Criteria: { a: 'monday' } // true
      * Obj: { a: 'monday', b: 'tuesday' }  Criteria: { a: 'tuesday' } // false
      * Obj: { a: 'monday', b: 'tuesday' }  Criteria: { c: 'monday' } // false
-     * Obj: { a: 'monday', b: 'tuesday' }  Criteria: { a: '!tuesday' } // true
+     * Obj: { a: 'monday', b: 'tuesday' }  Criteria: { a: { '$ne' : tuesday' } } // true
      *
      * @param data
      * @param criteria
@@ -155,11 +155,9 @@ module.exports = function (_) {
         var match = true;
         _.each(criteria, function (val, key) {
             var hasNotOperand = false;
-            if (_.isString(val) && val.length > 1) {
-                if ( val.charAt(0) === '!' ) {
-                    hasNotOperand = true;
-                    val = val.substring(1);
-                }
+            if (_.isObject(val) && val['$ne'] ) {
+                hasNotOperand = true;
+                val = val['$ne'];
             }
             var dataValue = getNestedValue(data, key);
             var vals = _.isArray(val) ? val : [val];

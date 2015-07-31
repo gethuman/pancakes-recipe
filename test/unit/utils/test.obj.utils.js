@@ -169,19 +169,19 @@ describe('UNIT ' + name, function () {
 
         it('should allow the not operand', function () {
             var data = { foo: 'choo', woo: { boo: 'la' }};
-            var criteria = { foo: '!la' };
+            var criteria = { foo: { '$ne' : 'la' } };
             return objUtils.matchesCriteria(data, criteria).should.be.true;
         });
 
         it('should allow the not operand with complex material', function () {
             var data = { foo: 'choo', woo: { boo: 'la' }};
-            var criteria = { 'woo.boo': '!zoo' };
+            var criteria = { 'woo.boo': { '$ne' : 'zoo' } };
             return objUtils.matchesCriteria(data, criteria).should.be.true;
         });
 
         it('should not false positive with not operand', function () {
             var data = { foo: 'choo', woo: { boo: 'la' }};
-            var criteria = { 'foo': '!choo' };
+            var criteria = { 'foo': { '$ne' : 'choo' } };
             return objUtils.matchesCriteria(data, criteria).should.be.false;
         });
 
