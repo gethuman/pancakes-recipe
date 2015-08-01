@@ -166,5 +166,60 @@ describe('UNIT ' + name, function () {
             var criteria = { foo: 'choo', 'woo.boo': 'sss' };
             return objUtils.matchesCriteria(data, criteria).should.be.false;
         });
+
+        it('should allow the not operand', function () {
+            var data = { foo: 'choo', woo: { boo: 'la' }};
+            var criteria = { foo: { '$ne' : 'la' } };
+            return objUtils.matchesCriteria(data, criteria).should.be.true;
+        });
+
+        it('should allow the not operand with complex material', function () {
+            var data = { foo: 'choo', woo: { boo: 'la' }};
+            var criteria = { 'woo.boo': { '$ne' : 'zoo' } };
+            return objUtils.matchesCriteria(data, criteria).should.be.true;
+        });
+
+        it('should not false positive with not operand', function () {
+            var data = { foo: 'choo', woo: { boo: 'la' }};
+            var criteria = { 'foo': { '$ne' : 'choo' } };
+            return objUtils.matchesCriteria(data, criteria).should.be.false;
+        });
+
+        it('should not false positive with not operand w missing property', function () {
+            var data = { woo: { boo: 'la' }};
+            var criteria = { 'foo': { '$ne' : 'choo' } };
+            return objUtils.matchesCriteria(data, criteria).should.be.true;
+        });
+
+        it('should AND values together', function () {
+            var data = { foo: 'choo', woo: { boo: 'la' }};
+            var criteria = { 'foo': 'choo', 'woo.boo': 'la' };
+            return objUtils.matchesCriteria(data, criteria).should.be.true;
+        });
+
+        it('should AND values together and be false if multiple conditions not met', function () {
+            var data = { foo: 'choo', woo: { boo: 'la' }};
+            var criteria = { 'foo': 'choo', 'woo.boo': 'na' };
+            return objUtils.matchesCriteria(data, criteria).should.be.false;
+        });
+
+        it('should AND values together and be true if multiple conditions met w negative', function () {
+            var data = { foo: 'choo', woo: { boo: 'la' }};
+            var criteria = { 'foo': { '$ne': 'zoo' }, 'woo.boo': 'la' };
+            return objUtils.matchesCriteria(data, criteria).should.be.true;
+        });
+
+        it('should AND values together and be false if multiple conditions not met w negative', function () {
+            var data = { foo: 'choo', woo: { boo: 'la' }};
+            var criteria = { 'foo': { '$ne': 'choo' }, 'woo.boo': 'la' };
+            return objUtils.matchesCriteria(data, criteria).should.be.false;
+        });
+
+        it('should AND values together and be false if multiple conditions not met w negative', function () {
+            var data = {};
+            var criteria = { 'foo': { '$ne': 'choo' }, 'woo': 'la' };
+            return objUtils.matchesCriteria(data, criteria).should.be.false;
+        });
+
     });
 });
