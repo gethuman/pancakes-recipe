@@ -122,7 +122,7 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, routeHel
 
             var appName = req.app.name;
             var lang = req.app.lang;
-            if (req.app.isLegacyMobile || appName === 'www') {
+            if (req .app.isLegacyMobile || appName === 'www' || req.app.domain === 'contact') {
                 appName = appName === 'www' ? 'contact' : appName;
                 reply.redirect(routeHelper.getBaseUrl(appName, lang) + req.url.path).permanent(true);
                 return;
