@@ -21,10 +21,14 @@ module.exports = function () {
             friendlyMessage: 'Access denied. One or more input parameter invalid for ' +
                 'this request for the current user.'
         },
-        'no_access' : {
+        'no_access': {
             httpErrorCode: 403,
             friendlyMessage: 'Access denied. Please contact us ' +
                 'about adding this service to your contract.'
+        },
+        'no_user': {
+            httpErrorCode: 403,
+            friendlyMessage: 'No user found for given credentials.'
         },
         'auth_failed' : {
             httpErrorCode: 403,

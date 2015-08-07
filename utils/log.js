@@ -20,8 +20,11 @@ module.exports = function (_, eventBus) {
         var err = new Error();  // Create a new `Error`, which automatically gets `stack`
         var stack = err.stack;  // Evaluate `err.stack`, which calls our new `Error.prepareStackTrace`
         Error.prepareStackTrace = origPrepareStackTrace;  // Restore original `Error.prepareStackTrace`
-        stack.shift(); // Remove superfluous function calls on stack
-        stack.shift();
+
+        if (stack) {
+            stack.shift();      // Remove superfluous function calls on stack
+            stack.shift();
+        }
 
         // Return caller's caller
         return (stack + '').split(',')[0];

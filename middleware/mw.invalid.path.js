@@ -6,7 +6,7 @@
  * Short curcuit invalid paths up front
  */
 module.exports = function (Q) {
-    var invalidSuffixes = /(\.php|\.asp|\.cgi|\.aspx|\/rss|\/atom)$/;
+    var invalidSuffixes = /(\.php|\.cgi|\.aspx|\/rss|\/atom)$/;
     var invalidPrefixes = /^\/(cgi-bin|images|css|wp-admin)\//;
     var invalidPaths = [
         '/crossdomain.xml',
