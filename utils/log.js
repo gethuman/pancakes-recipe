@@ -21,7 +21,7 @@ module.exports = function (_, eventBus) {
         var stack = err.stack;  // Evaluate `err.stack`, which calls our new `Error.prepareStackTrace`
         Error.prepareStackTrace = origPrepareStackTrace;  // Restore original `Error.prepareStackTrace`
 
-        if (stack) {
+        if (stack && stack.shift) {
             stack.shift();      // Remove superfluous function calls on stack
             stack.shift();
         }
