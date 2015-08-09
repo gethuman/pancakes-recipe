@@ -9,6 +9,7 @@
  * @param _ lodash
  */
 module.exports = function (_) {
+    // @module({ "client": true })
 
     var codeToName = {
         'AF': 'Afghanistan',
