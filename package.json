@@ -27,7 +27,7 @@
     "fakeblock": "0.0.54",
     "funnelweb": "0.0.1",
     "google-translate": "^1.0.0",
-    "hapi": "^9.0.2",
+    "hapi": "8.8.1",
     "hapi-auth-cookie": "^3.1.0",
     "hiredis": "^0.4.0",
     "jsonwebtoken": "^5.0.4",
