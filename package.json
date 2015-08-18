@@ -36,7 +36,7 @@
     "moment": "^2.10.6",
     "mongoose": "4.0.6",
     "pancakes": "^0.1.104",
-    "pancakes-mongo": "0.0.71",
+    "pancakes-mongo": "0.0.72",
     "q": "^1.4.1",
     "raven": "^0.8.1",
     "redis": "^0.12.1",
