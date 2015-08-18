@@ -21,11 +21,7 @@ module.exports = {
 
     // the client maintains the active user in memory
     client: function ($timeout, _, Q, userService, log, eventBus, storage) {
-        var id = storage.get('visitorId');
-        var user = {
-            initComplete:   false,
-            visitorId:      (id && id !== 'null' && id !== 'undefined') ? id : null
-        };
+        var user = { initComplete: false };
 
         /**
          * If user already loaded, use that, otherwise get it from the API
@@ -38,18 +34,8 @@ module.exports = {
                     .then(function setUserLocal(me) {
                         me = me || {};
 
-                        // if nothing returned log an error and return
-                        //if (!me) { log.error('No user info found', null); return null; }
-
-                        // save the visitor Id in storage for use by ajax
-                        var visitorId = (user.visitorId && user.visitorId !== 'null' && user.visitorId !== 'undefined') ?
-                            user.visitorId : me.visitorId;
-                        if (visitorId) {
-                            storage.set('visitorId', visitorId);
-                        }
-
-                        // otherwise, pull out the user
-                        _.extend(user, me.user, { visitorId: visitorId });
+                        // pull out the user
+                        _.extend(user, me.user);
 
                         // return the user and notify init complete
                         user.initComplete = true;
@@ -61,11 +47,11 @@ module.exports = {
 
         /**
          * Remove user vals from the user object (for logout or before changing user)
-         * All values are removed from user except functions, visitorId and initComplete
+         * All values are removed from user except functions and initComplete
          */
         function removeUserVals() {
             _.each(user, function reset(val, key) {
-                if (!_.isFunction(val) && key !== 'visitorId' && key !== 'initComplete') {
+                if (!_.isFunction(val) && key !== 'initComplete') {
                     user[key] = null;
                 }
             });

@@ -43,9 +43,6 @@ module.exports = function (Q, crypto, userService, mongoose, config, log, AppErr
     function getCaller(req) {
         var ipAddress = req.info.remoteAddress;
         var user = req.user;
-        var visitorId = (user && user.visitorId) ||
-            req.query.onBehalfOfVisitorId ||
-            (new mongoose.Types.ObjectId()) + '';
 
         if (user) {
 
@@ -56,7 +53,6 @@ module.exports = function (Q, crypto, userService, mongoose, config, log, AppErr
                     name:   req.query.onBehalfOfName,
                     role:   req.query.onBehalfOfRole,
                     type:   req.query.onBehalfOfType,
-                    visitorId: req.query.onBehalfOfVisitorId,
                     ipAddress: ipAddress
                 };
             }
@@ -68,7 +64,6 @@ module.exports = function (Q, crypto, userService, mongoose, config, log, AppErr
                 role:   user.role,
                 type:   'user',
                 user:   user,
-                visitorId: visitorId,
                 ipAddress: ipAddress
             };
 
@@ -79,16 +74,6 @@ module.exports = function (Q, crypto, userService, mongoose, config, log, AppErr
                 name:   req.deviceId,
                 role:   'device',
                 type:   'device',
-                ipAddress: ipAddress
-            };
-        }
-        else if (visitorId) {
-            return {
-                _id:    visitorId,
-                name:   'anonymous',
-                role:   'visitor',
-                type:   'visitor',
-                visitorId: visitorId,
                 ipAddress: ipAddress
             };
         }

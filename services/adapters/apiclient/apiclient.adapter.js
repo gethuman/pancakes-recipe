@@ -103,8 +103,7 @@ function send(httpMethod, path, req) {
             onBehalfOfType: caller.type,
             onBehalfOfId:   caller._id + '',
             onBehalfOfRole: caller.role,
-            onBehalfOfName: caller.name,
-            onBehalfOfVisitorId: caller.visitorId + ''
+            onBehalfOfName: caller.name
         });
     }
 

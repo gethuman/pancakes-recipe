@@ -56,7 +56,6 @@ function errorHandler(logData) {
         logData.app = session.get('app');
         logData.lang = session.get('lang');
         logData.url = session.get('url');
-        logData.visitorId = session.get('visitorId');
     }
 
     for (var i = 0; i < ignoreErrs.length; i++) {

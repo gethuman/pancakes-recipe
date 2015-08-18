@@ -89,7 +89,6 @@ module.exports = function (Q, _, appConfigs, config, cls, translations, routeHel
             session.set('app', appName);
             session.set('lang', req.app.lang);
             session.set('url', routeHelper.getBaseUrl(appName) + req.url.path);
-            session.set('visitorId', req.session && req.session.get('visitorId'));
         }
     }
 

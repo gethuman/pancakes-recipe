@@ -73,11 +73,7 @@ module.exports = function (_, appConfigs, i18n, config, translations) {
         };
 
         if (config.realtime) {
-            model.clientData.config.realtime = {
-                postsHost:          config.realtime.postsHost,
-                presenceHost:       config.realtime.presenceHost,
-                adminHost:          config.realtime.adminHost
-            };
+            model.clientData.config.realtime = { host: config.realtime.host };
         }
 
         return model;
