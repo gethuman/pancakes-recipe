@@ -11,6 +11,7 @@ var Q           = require('q');
 var _           = require('lodash');
 var lruCache    = require('lru-cache');
 var redis       = require('redis');
+var redisOffline = false;
 
 // during init() we will set all the remote caches; local ones added ad hoc in set()
 var caches = {};
@@ -30,7 +31,7 @@ function wrapRemoteCache(remoteCache) {
 
             remoteCache.get(key, function (err, value) {
                 if (err) {
-                    console.log(err);
+                    console.log('redis remoteCache.get err ' + err);
                     deferred.resolve();
                 }
 
@@ -86,7 +87,12 @@ function connectToRedis(db, opts) {
 
     // log any errors
     client.on('error', function (err) {
-        console.log('redis error: ' + err);
+        redisOffline = true;
+        console.log('connectToRedis error: ' + err);
+    });
+
+    client.on('ready', function () {
+        redisOffline = false;
     });
 
     // if there is a password, do auth
@@ -166,7 +172,18 @@ _.extend(RedisAdapter.prototype, {
      */
     get: function get(req) {
         var cache = caches[this.name];
-        return cache ? cache.get(req.key) : new Q(null);
+        var returnVal = null;
+
+        if (cache && !redisOffline) {
+            try {
+                returnVal = cache.get(req.key);
+            }
+            catch (err) {
+                console.log('redis get err: ' + err);
+            }
+        }
+
+        return new Q(returnVal);
     },
 
     /**
@@ -179,7 +196,14 @@ _.extend(RedisAdapter.prototype, {
             cache = caches[this.name] = createLocalCache();
         }
 
-        cache.set(req.key, req.value);
+        if (!redisOffline) {
+            try {
+                cache.set(req.key, req.value);
+            }
+            catch (err) {
+                console.log('redis set err: ' + err);
+            }
+        }
     },
 
     /**
@@ -187,7 +211,7 @@ _.extend(RedisAdapter.prototype, {
      */
     clear: function clear() {
         var cache = caches[this.name];
-        if (cache && cache.flush) {
+        if (cache && cache.flush && !redisOffline) {
             cache.flush();
         }
     }
