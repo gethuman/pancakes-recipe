@@ -4,20 +4,25 @@
  *
  * This adapter is a wrapper around the Google Translate API.
  * Translations from the local system can be sent to Google
- * Translate in order to get back the appropriate translation
+ * Translate in order to get back the appropriate translation.
+ *
+ * NOTE: if you want to use other Google Translate API functions,
+ * you can figure it out here:
+ * https://developers.google.com/apis-explorer/?hl=en_US#p/translate/v2/language.translations.list
  */
 var Q           = require('q');
 var _           = require('lodash');
-var googleInit  = require('google-translate');
-var translator  = null;
+var request     = require('request');
 var i18nVarExpr = /(?:\{\{\s*)([^\{\}]*)(?:\s*\}\})/g;
+var baseUrl     = 'https://www.googleapis.com/language/translate/v2';
+var apiKey;
 
 /**
  * Auth to google with the translator api key
  * @param config
  */
 function init(config) {
-    translator = googleInit(config.translator.apiKey);
+    apiKey = config.translator.apiKey;
     return config;
 }
 
@@ -54,16 +59,31 @@ _.extend(TranslatorAdapter.prototype, {
             }
         }
 
-        translator.translate(text, req.lang, function (err, translation) {
-            if (err) { deferred.reject(err); }
-
-            // if there are replace vars, put them back in the string
-            var translatedText = translation.translatedText;
-            for (i = 0; i < replaceVars.length; i++) {
-                translatedText = translatedText.replace('{' + i + '}', replaceVars[i]);
+        var reqConfig = {
+            method: 'GET',
+            url:    baseUrl,
+            qs: {
+                key:    apiKey,
+                target: req.lang,
+                q:      text
             }
+        };
 
-            deferred.resolve(translatedText);
+        request(reqConfig, function (err, resp, obj) {
+            if (err) {
+                deferred.reject(err);
+            }
+            else if (resp.statusCode !== 200) {
+                deferred.reject(obj || resp.statusMessage);
+            }
+            else {
+                var translatedText = JSON.parse(obj).data.translations[0].translatedText;
+                for (i = 0; i < replaceVars.length; i++) {
+                    translatedText = translatedText.replace('{' + i + '}', replaceVars[i]);
+                }
+
+                deferred.resolve(translatedText);
+            }
         });
 
         return deferred.promise;
