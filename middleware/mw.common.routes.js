@@ -30,6 +30,7 @@ module.exports = function (_, config) {
     };
 
     return function commonRoutes(server) {
+
         server.route({
             method:     'OPTIONS',
             path:       '/{path*}',

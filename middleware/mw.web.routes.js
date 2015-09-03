@@ -4,7 +4,7 @@
  *
  * All the web server routes
  */
-module.exports = function (Q, pancakes, pageCacheService, mwCommonRoutes, mwTasks, mwViewModel, config) {
+module.exports = function (Q, pancakes, pageCacheService, mwCommonRoutes, mwTasks, mwViewModel, config, inert) {
 
     //TODO: lock this down so only from certain origins (also repeated with pancakes.hapi.api)
     var cors = {
@@ -44,6 +44,7 @@ module.exports = function (Q, pancakes, pageCacheService, mwCommonRoutes, mwTask
         });
 
         // this local static dir is only used for dev (prod is on CDN)
+        server.register(inert, function () {});
         server.route({
             method:     'GET',
             path:       '/dist/{path*}',
