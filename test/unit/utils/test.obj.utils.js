@@ -221,5 +221,11 @@ describe('UNIT ' + name, function () {
             return objUtils.matchesCriteria(data, criteria).should.be.false;
         });
 
+        it('should match a string in an array', function () {
+            var data = { 'arr': ['foo', 'bar'] };
+            var criteria = { 'arr': 'foo' };
+            return objUtils.matchesCriteria(data, criteria).should.be.true;
+        });
+
     });
 });
