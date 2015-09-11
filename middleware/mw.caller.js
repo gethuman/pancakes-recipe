@@ -41,7 +41,7 @@ module.exports = function (Q, crypto, userService, mongoose, config, log, AppErr
      * @returns {*}
      */
     function getCaller(req) {
-        var ipAddress = req.info.remoteAddress;
+        var ipAddress = req.headers['x-forwarded-for'] || req.info.remoteAddress || '';
         var user = req.user;
 
         if (user) {
