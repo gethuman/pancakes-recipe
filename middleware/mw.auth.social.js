@@ -70,6 +70,7 @@ module.exports = function (Q, _, config, crypto) {
             if (err) { throw err; }
 
             _.each(config.security.social, function (providerConfig, providerName) {
+                console.log('adding ' + providerName + ' with config ' + JSON.stringify(providerConfig));
                 var opts = _.extend({}, config.security.cookie, {
                     'cookie':           'bell-' + providerName,
                     'clientId':         providerConfig.appId,

@@ -155,17 +155,23 @@ module.exports = function (_) {
         var match = true;
         _.each(criteria, function (val, key) {
             var hasNotOperand = false;
+            var useContains = false;
             if (_.isObject(val) && val['$ne'] ) {
                 hasNotOperand = true;
                 val = val['$ne'];
             }
             var dataValue = getNestedValue(data, key);
-            var vals = _.isArray(val) ? val : [val];
-            if (vals.indexOf(dataValue) < 0) {
-                match = false;
+            if (_.isString(val) && _.isArray(dataValue)) { // allows you to check if an array contains a value
+                match = (dataValue.indexOf(val) > -1);
             }
-            if ( hasNotOperand ) {
-                match = !match;
+            else {
+                var vals = _.isArray(val) ? val : [val];
+                if (vals.indexOf(dataValue) < 0) {
+                    match = false;
+                }
+                if ( hasNotOperand ) {
+                    match = !match;
+                }
             }
         });
 

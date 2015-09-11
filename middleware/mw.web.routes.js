@@ -43,6 +43,7 @@ module.exports = function (Q, pancakes, pageCacheService, mwCommonRoutes, mwTask
             }
         });
 
+        console.log('inert is ' + JSON.stringify(inert));
         // this local static dir is only used for dev (prod is on CDN)
         server.register(inert, function () {});
         server.route({
