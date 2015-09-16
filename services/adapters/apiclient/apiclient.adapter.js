@@ -55,9 +55,11 @@ function init(config) {
     admin.type = 'user';
     admin.role = 'admin';
 
-    var useSSL = (config.api && config.api.serverUseSSL !== undefined) ?
-        config.api.serverUseSSL : config.useSSL;
-    baseUrl = (useSSL ? 'https://' : 'http://') + config.api.host;
+    var apiConfig = config.api || {};
+    var host = apiConfig.internalHost || apiConfig.host;  // from web server to api use internalHost name
+    var useSSL = apiConfig.serverUseSSL !== undefined ?
+        apiConfig.serverUseSSL : config.useSSL;
+    baseUrl = (useSSL ? 'https://' : 'http://') + host;
 
     var port = config.api.port;
     if (port !== 80 && port !== 443) {
