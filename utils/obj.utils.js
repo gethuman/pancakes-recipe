@@ -155,7 +155,7 @@ module.exports = function (_) {
         var match = true;
         _.each(criteria, function (val, key) {
             var hasNotOperand = false;
-            var useContains = false;
+
             if (_.isObject(val) && val['$ne'] ) {
                 hasNotOperand = true;
                 val = val['$ne'];
