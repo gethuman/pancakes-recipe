@@ -6,8 +6,9 @@
  * Short curcuit invalid paths up front
  */
 module.exports = function (Q) {
-    var invalidSuffixes = /(\.php|\.cgi|\.aspx|\/rss|\/atom)$/;
-    var invalidPrefixes = /^\/(cgi-bin|images|css|wp-admin)\//;
+    var invalidSuffixes = /(\.php|\.cgi|\.aspx)$/;
+    var invalidPrefixes = /^\/(cgi-bin|images|css|wp-admin|wp-content|wp-include)\//;
+    var invalidRss = /(\/rss|\/atom)/;
     var invalidPaths = [
         '/crossdomain.xml',
         '/browserconfig.xml',
@@ -24,6 +25,13 @@ module.exports = function (Q) {
 
                 // 404 if ends with php, asp, aspx
                 if (invalidPrefixes.test(url) || invalidSuffixes.test(url)) {
+                    // or... we could just redirect to home page... why not?
+                    //reply('Invalid path').code(404);
+                    reply().redirect('/').permanent(true);
+                    return;
+                }
+
+                if (invalidRss.test(url)) {
                     reply('Invalid path').code(404);
                     return;
                 }
