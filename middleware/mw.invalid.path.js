@@ -7,8 +7,10 @@
  */
 module.exports = function (Q) {
     var invalidSuffixes = /(\.php|\.cgi|\.aspx)$/;
-    var invalidPrefixes = /^\/(cgi-bin|images|css|wp-admin|wp-content|wp-include)\//;
+    var invalidPrefixes = /^\/(cgi-bin|wp-admin|wp-content|wp-include)\//;
     var invalidRss = /(\/rss|\/atom)/;
+    var invalidImages = /^\/(images)\//;
+    var invalidCss = /^\/(css)\//;
     var invalidPaths = [
         '/crossdomain.xml',
         '/browserconfig.xml',
@@ -31,7 +33,7 @@ module.exports = function (Q) {
                     return;
                 }
 
-                if (invalidRss.test(url)) {
+                if (invalidRss.test(url) || invalidImages.test(url) || invalidCss.test(url)) {
                     reply('Invalid path').code(404);
                     return;
                 }
