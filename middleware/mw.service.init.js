@@ -34,7 +34,8 @@ module.exports = function (Q, _, pancakes, fakeblock, adapters, resources, react
      */
     function reactHandler(reactData) {
         return function (eventData) {
-            var deferred = Q.defer();
+            // let's not return a promise here, since that promise is never chained by anybody upstream; we have to deal w errors here
+            //var deferred = Q.defer();
 
             // handler should always be run asynchronously
             setTimeout(function () {
@@ -50,10 +51,11 @@ module.exports = function (Q, _, pancakes, fakeblock, adapters, resources, react
                 }
 
                 if (!reactor || !matchesCriteria || fieldMissing) {
-                    deferred.resolve();
+                    //deferred.resolve();
                     return;
                 }
 
+                /*
                 Q.when(reactor.react({
                     caller:         payload.caller,
                     inputData:      inputData,
@@ -67,12 +69,28 @@ module.exports = function (Q, _, pancakes, fakeblock, adapters, resources, react
                         deferred.resolve(res);
                     })
                     .catch(function (err) {
+                        console.log('error: ' + err);
                         log.error(err);
-                        deferred.reject(err);
-                    });
+                        //deferred.reject(err);
+                    });//.done();  // just in case?  don't think this will ever hit...
+                    */
+                try {
+                    reactor.react({
+                        caller:         payload.caller,
+                        inputData:      inputData,
+                        data:           payload.data,
+                        context:        payload.context,
+                        reactData:      reactData,
+                        resourceName:   eventData.name.resource,
+                        methodName:     eventData.name.method
+                    }).done(); // finish them promises...
+                } catch (e) {
+                    console.log('Reactor error for ' + reactData.type);
+                    log.error(e);
+                }
             });
 
-            return deferred.promise;
+            //return deferred.promise;
         };
     }
 
