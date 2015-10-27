@@ -52,12 +52,12 @@ module.exports = function (_, config) {
             }
         });
 
+        // todo: check if this is extraneous now that we have something in mw.invalid.path.js
         server.route({
             method:     'GET',
             path:       '/favicon.ico',
             config:     { cache: { expiresIn: 86400001 } },
-
-            handler: function (request, reply) {
+            handler:    function (request, reply) {
                 //reply().file(config.projectDir + '/assets/img/favicon.ico');
                 // todo: ask Jeff how to de-couple this...
                 reply().redirect('https://assets.gethuman.com/img/favicon.ico').permanent(true);

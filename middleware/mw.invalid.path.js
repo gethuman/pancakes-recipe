@@ -10,6 +10,9 @@ module.exports = function (Q) {
     var invalidPrefixes = /^\/(cgi-bin|wp|wp-admin|wp-content|wp-include|wp-includes|wordpress)\//;
     var deprecatedPrefixes = /^\/(video)\//;
     var invalidRss = /(\/rss|\/atom)/;
+    var redirectIcons = /(\.ico$)/;
+    var redirectGifs = /(\/images\/.+\.gif$|favicon\.gif$)/;
+    var redirectPngs = /(\/images\/.+\.png$|favicon\.png$)/;
     var invalidImages = /^\/(images)\//;
     var invalidCss = /^\/(css)\//;
     var invalidPaths = [
@@ -28,20 +31,27 @@ module.exports = function (Q) {
                 if (invalidPrefixes.test(url) || invalidSuffixes.test(url) || deprecatedPrefixes.test(url)) {
                     // or... we could just redirect to home page... why not?
                     //reply('Invalid path').code(404);
-                    reply().redirect('/').permanent(true);
-                    return;
+                    return reply().redirect('/').permanent(true);
+                }
+
+                if (redirectIcons.test(url)) {
+                    return reply().redirect('https://assets.gethuman.com/img/favicon.ico').permanent(true);
+                }
+                if (redirectGifs.test(url)) {
+                    return reply().redirect('https://assets.gethuman.com/img/logo-32.gif').permanent(true);
+                }
+                if (redirectPngs.test(url)) {
+                    return reply().redirect('https://assets.gethuman.com/img/logo-32.png').permanent(true);
                 }
 
                 if (invalidRss.test(url) || invalidImages.test(url) || invalidCss.test(url)) {
-                    reply('Invalid path').code(404);
-                    return;
+                    return reply('Invalid path').code(404);
                 }
 
                 // invalid if one of the invalid paths
                 for (var i = 0; i < invalidPaths.length; i++) {
                     if (url === invalidPaths[i]) {
-                        reply('Invalid path').code(404);
-                        return;
+                        return reply('Invalid path').code(404);
                     }
                 }
 
