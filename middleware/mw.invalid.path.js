@@ -16,6 +16,7 @@ module.exports = function (Q) {
     var invalidImages = /^\/(images)\//;
     var invalidCss = /^\/(css)\//;
     var invalidPaths = [
+        '/eyeblaster/addineyev2.html',
         '/crossdomain.xml',
         '/favicon.gif',
         '/atom.xml',

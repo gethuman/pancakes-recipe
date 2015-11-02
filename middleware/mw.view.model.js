@@ -61,6 +61,9 @@ module.exports = function (_, appConfigs, i18n, config, translations) {
 
         model.clientData = {
             config: _.extend({
+                stripe: {
+                    publicKey: config.stripe.publicKey
+                },
                 gethuman: config.gethuman,
                 staticFileRoot: staticFileRoot,
                 useSSL: (config[appName] && config[appName].useSSL !== undefined) ? config[appName].useSSL : config.useSSL
