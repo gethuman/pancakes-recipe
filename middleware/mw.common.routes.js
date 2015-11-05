@@ -52,15 +52,28 @@ module.exports = function (_, config) {
             }
         });
 
+        // todo: check if this is extraneous now that we have something in mw.invalid.path.js
         server.route({
             method:     'GET',
             path:       '/favicon.ico',
             config:     { cache: { expiresIn: 86400001 } },
-
-            handler: function (request, reply) {
-                reply().header('Content-Type', 'image/x-icon');
+            handler:    function (request, reply) {
+                //reply().file(config.projectDir + '/assets/img/favicon.ico');
+                // todo: ask Jeff how to de-couple this...
+                reply().redirect('https://assets.gethuman.com/img/favicon.ico').permanent(true);
             }
         });
+
+        server.route({
+            method:     'GET',
+            path:       '/browserconfig.xml',
+            config:     {cache: {expiresIn: 86400001}},
+
+            handler: function (request, reply) {
+                reply('<?xml version="1.0" encoding="utf-8"?><browserconfig><msapplication><tile><square70x70logo src="https://assets.gethuman.com/img/logo-70.png"/><square150x150logo src="https://assets.gethuman.com/img/logo-150.png"/><wide310x150logo src="https://assets.gethuman.com/img/logo-310x150.png"/><square310x310logo src="https://assets.gethuman.com/img/logo-310.png"/><TileColor>#94cb5e</TileColor></tile></msapplication></browserconfig>')
+                    .header('Content-Type', 'text/xml');
+            }
+        })
 
         _.each(appleTouchIcons, function (localIcon, appleIcon) {
             server.route({
