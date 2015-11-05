@@ -10,9 +10,7 @@ module.exports = function (Q, pancakes, pageCacheService, mwCommonRoutes, mwTask
     var cors = {
         origin:         config.corsHosts || ['*'],
         headers:        ['Accept', 'Accept-Version', 'Content-Type', 'Api-Version', 'X-Requested-With'],
-        methods:        ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        credentials:    true,
-        matchOrigin:    false
+        credentials:    true
     };
 
     /**
