@@ -114,10 +114,12 @@ module.exports = function (Q, crypto, userService, mongoose, config, log, AppErr
                 }
             }
 
-            req.caller ? reply.continue() : reply(new AppError({
-                code: 'invalid_credentials',
-                msg: 'caller not found'
-            }));
+            req.caller ?
+                reply.continue() :
+                reply(new AppError({
+                    code: 'invalid_credentials',
+                    msg: 'caller not found'
+                }));
         });
 
         return new Q(ctx);

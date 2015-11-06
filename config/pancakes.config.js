@@ -12,6 +12,6 @@ module.exports = {
     rootDir:    path.join(__dirname, '/..'),
     require:    require,
     serverAliases: {
-        hapiAuthJwt:    'hapi-auth-jwt'
+
     }
 };
