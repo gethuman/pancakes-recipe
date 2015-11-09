@@ -5,12 +5,6 @@
  * Common routes for API and web
  */
 module.exports = function (_, config) {
-    var cors = {
-        origin:         config.corsHosts,
-        headers:        ['Accept', 'Accept-Version', 'Content-Type', 'Api-Version', 'X-Requested-With', 'Authorization'],
-        methods:        ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        credentials:    true
-    };
 
     var appleTouchIcons = {
         'apple-touch-icon.png':                     'logo-32.png',
@@ -32,13 +26,6 @@ module.exports = function (_, config) {
     return function commonRoutes(server) {
 
         server.route({
-            method:     'OPTIONS',
-            path:       '/{path*}',
-            config:     { cors: cors },
-            handler:    function (request, reply) { reply().code(204); }
-        });
-
-        server.route({
             method:     'GET',
             path:       '/ping',
 
@@ -58,9 +45,7 @@ module.exports = function (_, config) {
             path:       '/favicon.ico',
             config:     { cache: { expiresIn: 86400001 } },
             handler:    function (request, reply) {
-                //reply().file(config.projectDir + '/assets/img/favicon.ico');
-                // todo: ask Jeff how to de-couple this...
-                reply().redirect('https://assets.gethuman.com/img/favicon.ico').permanent(true);
+                reply().redirect(config.staticFiles.assets + '/img/favicon.ico').permanent(true);
             }
         });
 
