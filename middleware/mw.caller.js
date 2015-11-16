@@ -112,6 +112,9 @@ module.exports = function (Q, crypto, userService, mongoose, config, log, AppErr
                 if (session && session.active) {
                     session.set('caller', req.caller);
                 }
+                else {
+                    console.log('not active here');
+                }
             }
 
             req.caller ?

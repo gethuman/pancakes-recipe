@@ -13,7 +13,9 @@ module.exports = function (Q, cls) {
             ctx.server.ext('onRequest', function (request, reply) {
                 ns.bindEmitter(request.raw.req);
                 ns.bindEmitter(request.raw.res);
-                ns.run(function () { reply.continue(); });
+                ns.run(function () {
+                    reply.continue();
+                });
             });
 
             return new Q(ctx);
