@@ -60,6 +60,10 @@ module.exports = function (Q) {
                     return reply('Invalid path').code(404);
                 }
 
+                if ( /\/search\//.test(url) && url.length > 500 ) { // otherwise we sometimes get a 500?
+                    return reply().redirect('/search').permanent(true);
+                }
+
                 // todo: ask Jeff how to get these back to gh- don't belong here...
                 if (/\/problemsUrl$/i.test(url)) {
                     return reply().redirect('https://problems.gethuman.com').permanent(true);
