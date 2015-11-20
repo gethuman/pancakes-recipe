@@ -9,7 +9,7 @@ module.exports = function (Q) {
     var invalidSuffixes = /(\.php|\.cgi|\.aspx|\.asp)$/;
     var invalidPrefixes = /^\/(cgi-bin|wp|wp-admin|wp-content|wp-include|wp-includes|wordpress)\//;
     var deprecatedPrefixes = /^\/(video)\//;
-    var invalidRss = /(\/rss|\/atom)/;
+    var invalidRss = /(\/rss|\/atom)($|\/)/;
     var redirectIcons = /(\.ico$)/;
     var redirectGifs = /(\/images\/.+\.gif$|favicon\.gif$)/;
     var redirectPngs = /(\/images\/.+\.png$|favicon\.png$)/;
@@ -58,6 +58,10 @@ module.exports = function (Q) {
 
                 if (url.substring(0, 8) === '/cgi-bin') {
                     return reply('Invalid path').code(404);
+                }
+
+                if ( /\/search\//.test(url) && url.length > 500 ) { // otherwise we sometimes get a 500?
+                    return reply().redirect('/search').permanent(true);
                 }
 
                 // todo: ask Jeff how to get these back to gh- don't belong here...
