@@ -58,7 +58,7 @@ module.exports = function (_, config) {
                 reply('<?xml version="1.0" encoding="utf-8"?><browserconfig><msapplication><tile><square70x70logo src="https://assets.gethuman.com/img/logo-70.png"/><square150x150logo src="https://assets.gethuman.com/img/logo-150.png"/><wide310x150logo src="https://assets.gethuman.com/img/logo-310x150.png"/><square310x310logo src="https://assets.gethuman.com/img/logo-310.png"/><TileColor>#94cb5e</TileColor></tile></msapplication></browserconfig>')
                     .header('Content-Type', 'text/xml');
             }
-        })
+        });
 
         _.each(appleTouchIcons, function (localIcon, appleIcon) {
             server.route({
