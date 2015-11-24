@@ -15,7 +15,7 @@ module.exports = function (Q, fs, casing, pancakes, log) {
             try {
                 migrationService = pancakes.getService('migration');
             } catch (e) {
-                log.warn('Please be sure to add migration/migration.resource to your project to run migrations');
+                log.info('Please be sure to add migration/migration.resource to your project to run migrations');
             }
             if ( !migrationService ) {
                 return true;
@@ -66,7 +66,7 @@ module.exports = function (Q, fs, casing, pancakes, log) {
             try {
                 dirs = [].concat(fs.readdirSync(process.cwd() + '/migrations'));
             } catch (e) {
-                log.warn('Found no /migrations directory from which to run migrations');
+                log.info('Found no /migrations directory from which to run migrations');
             }
 
             log.info(dirs.length + ' migration(s) found: ' + dirs);
