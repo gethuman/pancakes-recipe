@@ -11,7 +11,7 @@ module.exports = function (pancakes, chainPromises, config, Hapi, log) {
 
     // this contains the list of middleware (in order) for each container
     var mwConfig = {
-        api:        ['mwInvalidPath', 'mwErrorHandling', 'mwServiceInit', 'mwAuthToken', 'mwCaller', 'mwApiRoutes', 'mwTracking'],
+        api:        ['mwInvalidPath', 'mwErrorHandling', 'mwServiceInit', 'mwMigrations', 'mwAuthToken', 'mwCaller', 'mwApiRoutes', 'mwTracking'],
         webserver:  ['mwCls', 'mwInvalidPath', 'mwErrorHandling', 'mwServiceInit', 'mwAuthSocial', 'mwAuthCookie',
                         'mwAuthToken', 'mwCaller', 'mwTasks', 'mwAppContext', 'mwWebRoutes', 'mwTracking']
     };

@@ -60,7 +60,7 @@ module.exports = function (Q) {
                     return reply('Invalid path').code(404);
                 }
 
-                if ( /\/search\//.test(url) && url.length > 500 ) { // otherwise we sometimes get a 500?
+                if ( /\/search\//.test(url) && url.length > 128 ) { // otherwise we sometimes get a 500 or a 404...?
                     return reply().redirect('/search').permanent(true);
                 }
 
