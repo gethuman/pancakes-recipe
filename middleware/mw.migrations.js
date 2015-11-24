@@ -5,12 +5,22 @@
  *
  * I forgot to write about what this component does
  */
-module.exports = function (Q, fs, casing, pancakes, migrationService, log) {
+module.exports = function (Q, fs, casing, pancakes, log) {
 
     function runMigration(dir) {
         var migrationName = casing.camelCase(dir) + 'Migration';
         var migration = pancakes.cook(migrationName);
         if ( migration && migration.run ) {
+            var migrationService = null;
+            try {
+                migrationService = pancakes.getService('migration');
+            } catch (e) {
+                log.warn('Please be sure to add migration/migration.resource to your project to run migrations');
+            }
+            if ( !migrationService ) {
+                return true;
+            }
+
             return migrationService.find({caller: migrationService.admin, where: {slug: migrationName}, findOne:true})
                 .then(function (existingMigration) {
                     return existingMigration ? existingMigration : migrationService.create({
@@ -52,7 +62,12 @@ module.exports = function (Q, fs, casing, pancakes, migrationService, log) {
 
     return {
         init: function init(ctx) {
-            var dirs = [].concat(fs.readdirSync(process.cwd() + '/migrations'));
+            var dirs = [];
+            try {
+                dirs = [].concat(fs.readdirSync(process.cwd() + '/migrations'));
+            } catch (e) {
+                log.warn('Found no /migrations directory from which to run migrations');
+            }
 
             log.info(dirs.length + ' migration(s) found: ' + dirs);
 
