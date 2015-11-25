@@ -33,20 +33,36 @@ module.exports = function (Q, fs, casing, pancakes, log) {
                 .then(function (existingMigration) {
                     if ((migration.frequency && migration.frequency === 'each')
                         || existingMigration.totalRuns < 1) {
-                        var startTime = (new Date()).getTime();
-                        log.info('Running ' + migrationName + '...');
-                        return migration.run()
-                            .then(function () {
-                                var endTime = (new Date()).getTime();
-                                var diffTime = (endTime - startTime) / 1000;
-                                log.info('Ran ' + migrationName + ' in ' + diffTime + 's, total runs: ' + (existingMigration.totalRuns + 1));
-                                return migrationService.update({
-                                    caller: migrationService.admin,
-                                    _id: existingMigration._id,
-                                    data: {
-                                        totalRuns: existingMigration.totalRuns + 1
-                                    }
+
+                        return Q.fcall(function () {
+                            if (migration.dependsOn) { // for now, handle only the array
+                                var ops = [];
+                                migration.dependsOn.forEach(function (depMigration) {
+                                    log.info('Migration ' + dir + ' depends on ' + depMigration + ', so running that first...');
+                                    ops.push(runMigration(depMigration));
                                 });
+                                return Q.all(ops); // run all dependencies first
+                            }
+                            else {
+                                return true;
+                            }
+                        })
+                            .then(function () {
+                                var startTime = (new Date()).getTime();
+                                log.info('Running ' + migrationName + '...');
+                                return migration.run()
+                                    .then(function () {
+                                        var endTime = (new Date()).getTime();
+                                        var diffTime = (endTime - startTime) / 1000;
+                                        log.info('Ran ' + migrationName + ' in ' + diffTime + 's, total runs: ' + (existingMigration.totalRuns + 1));
+                                        return migrationService.update({
+                                            caller: migrationService.admin,
+                                            _id: existingMigration._id,
+                                            data: {
+                                                totalRuns: existingMigration.totalRuns + 1
+                                            }
+                                        });
+                                    });
                             });
                     }
                     else {
