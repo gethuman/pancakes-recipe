@@ -1,6 +1,6 @@
 {
   "name": "pancakes-recipe",
-  "version": "0.1.113",
+  "version": "0.1.114",
   "description": "Misc common utilities and middleware for pancakes apps",
   "main": "pancakes.recipe.js",
   "repository": {
