@@ -5,75 +5,53 @@
  *
  * I forgot to write about what this component does
  */
-module.exports = function (Q, fs, casing, pancakes, log) {
+module.exports = function (Q, fs, casing, pancakes, log, config) {
 
-    function runMigration(dir) {
-        var migrationName = casing.camelCase(dir) + 'Migration';
-        var migration = pancakes.cook(migrationName);
-        if ( migration && migration.run ) {
-            var migrationService = null;
-            try {
-                migrationService = pancakes.getService('migration');
-            } catch (e) {
-                log.info('Please be sure to add migration/migration.resource to your project to run migrations');
+    var migrationService = null;
+
+    function addMigration(dir) {
+        var migrationName = null;
+        var migration  = null;
+        return Q.fcall(function () {
+            migrationName = casing.camelCase(dir) + 'Migration';
+            migration = pancakes.cook(migrationName);
+
+            if (migration.dependsOn) { // for now, handle only the array
+                var ops = [];
+                migration.dependsOn.forEach(function (depMigration) {
+                    log.info('Migration ' + dir + ' depends on ' + depMigration + ', so adding that first...');
+                    ops.push(addMigration(depMigration));
+                });
+                return Q.all(ops); // run all dependencies first
             }
-            if ( !migrationService ) {
+            else {
                 return true;
             }
-
-            return migrationService.find({caller: migrationService.admin, where: {slug: migrationName}, findOne:true})
-                .then(function (existingMigration) {
-                    return existingMigration ? existingMigration : migrationService.create({
-                        caller: migrationService.admin,
-                        data: {
-                            slug: migrationName
-                        }
-                    });
-                })
-                .then(function (existingMigration) {
-                    if ((migration.frequency && migration.frequency === 'each')
-                        || existingMigration.totalRuns < 1) {
-
-                        return Q.fcall(function () {
-                            if (migration.dependsOn) { // for now, handle only the array
-                                var ops = [];
-                                migration.dependsOn.forEach(function (depMigration) {
-                                    log.info('Migration ' + dir + ' depends on ' + depMigration + ', so running that first...');
-                                    ops.push(runMigration(depMigration));
-                                });
-                                return Q.all(ops); // run all dependencies first
-                            }
-                            else {
-                                return true;
-                            }
+        })
+            .then(function () {
+                if ( migration && migration.run ) {
+                    migrationService = migrationService || pancakes.getService('migration');
+                    if (!migrationService) {
+                        throw new Error('MigrationService does not exist- be sure that migration/migration.resource is in your project');
+                    }
+                    return migrationService.create({caller: migrationService.admin, data: {
+                        slug: migrationName
+                    }})
+                        .then(function (newMigration) {
+                            log.info('Added ' + migrationName);
+                            return newMigration;
                         })
-                            .then(function () {
-                                var startTime = (new Date()).getTime();
-                                log.info('Running ' + migrationName + '...');
-                                return migration.run()
-                                    .then(function () {
-                                        var endTime = (new Date()).getTime();
-                                        var diffTime = (endTime - startTime) / 1000;
-                                        log.info('Ran ' + migrationName + ' in ' + diffTime + 's, total runs: ' + (existingMigration.totalRuns + 1));
-                                        return migrationService.update({
-                                            caller: migrationService.admin,
-                                            _id: existingMigration._id,
-                                            data: {
-                                                totalRuns: existingMigration.totalRuns + 1
-                                            }
-                                        });
-                                    });
-                            });
-                    }
-                    else {
-                        log.info('Skipping ' + migrationName + ', already ran ' + existingMigration.totalRuns + ' time(s)');
-                    }
-                });
-        }
-        else {
-            log.info('No migration info supplied for ' + migrationName);
-            return true;
-        }
+                        .catch(function () {
+                            log.error(migrationName + ' had already been added');
+                        });
+                }
+                else {
+                    return true;
+                }
+            })
+            .catch(function (err) {
+                log.info('Error while running ' + migrationName + ': ' + err);
+            });
     }
 
     return {
@@ -81,7 +59,8 @@ module.exports = function (Q, fs, casing, pancakes, log) {
             var dirs = [];
             try {
                 dirs = [].concat(fs.readdirSync(process.cwd() + '/migrations'));
-            } catch (e) {
+            }
+            catch (e) {
                 log.info('Found no /migrations directory from which to run migrations');
             }
 
@@ -89,14 +68,28 @@ module.exports = function (Q, fs, casing, pancakes, log) {
 
             var ops = [];
             dirs.forEach(function (dir) {
-                ops.push(runMigration(dir));
+                ops.push(addMigration(dir));
             });
 
             return Q.all(ops)
                 .then(function () {
-                    return ctx;
+                    migrationService = migrationService || pancakes.getService('migration');
+                    if (config.env === 'production' || config.env === 'staging') {
+                        return true;
+                    }
+                    else if ( migrationService && migrationService.flush ) {
+                        return migrationService.flush({caller: migrationService.admin})   // if on development, just go
+                            .catch(function (err) {
+                                log.error(err);
+                            });
+                    }
+                    else {
+                        throw new Error('Be sure that migrationService is added to your project (and that it has a flush method)');
+                    }
                 })
-                .catch(log.error);
+                .then(function () {
+                    return ctx; // return this no matter what so that the show goes on- migrations or no migrations
+                });
         }
     };
 };
