@@ -74,6 +74,7 @@ module.exports = function (Q, fs, casing, pancakes, log, config) {
             return Q.all(ops)
                 .then(function () {
                     migrationService = migrationService || pancakes.getService('migration');
+
                     if (config.env === 'production' || config.env === 'staging') {
                         return true;
                     }
@@ -84,7 +85,8 @@ module.exports = function (Q, fs, casing, pancakes, log, config) {
                             });
                     }
                     else {
-                        throw new Error('Be sure that migrationService is added to your project (and that it has a flush method)');
+                        log.error('MigrationService does not exist- be sure that migration/migration.resource is in your project');
+                        return true;
                     }
                 })
                 .then(function () {
