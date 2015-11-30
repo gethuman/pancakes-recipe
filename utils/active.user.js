@@ -7,20 +7,12 @@
  * the information about the active user
  */
 module.exports = {
-
-    // on the server side, we attempt to get the user from the CLS session
-    // NOTE: this is not 100% fullproof, so only use for non-critical situations
-    server: function (Q, context) {
-        return {
-            init: function () {
-                var caller = context.get('caller');
-                return caller ? new Q(caller.user) : Q.when({});
-            }
-        };
+    server: function () {
+        return {};
     },
 
-    // the client maintains the active user in memory
     client: function ($timeout, _, Q, userService, log, eventBus, storage) {
+
         var user = { initComplete: false };
 
         /**
