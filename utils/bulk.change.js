@@ -34,7 +34,12 @@ module.exports = function (Q) {
      */
     BulkChange.prototype.update = function update(criteria, doc) {
         this.isChange = true;
-        this.bulk.find(criteria).update({ $set: doc });
+        if ( doc.$addToSet ) { // if we have this here, then we wouldn't have $set like below... need a smarter way to override this default
+            this.bulk.find(criteria).update(doc);
+        }
+        else {
+            this.bulk.find(criteria).update({ $set: doc });
+        }
     };
 
     /**
