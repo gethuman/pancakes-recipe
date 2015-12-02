@@ -45,7 +45,8 @@ module.exports = {
             domains:                config.domains,
             cookieDomain:           (securityConfig.cookie ? securityConfig.cookie.domain : 'test.dev.gethuman.com'),
             authDomain:             authConfig.domain,
-            authClientId:           authConfig.clientId
+            authClientId:           authConfig.clientId,
+            realtime:               config.realtime
         });
 
         return config;
