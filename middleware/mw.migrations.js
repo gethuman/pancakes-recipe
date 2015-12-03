@@ -19,7 +19,7 @@ module.exports = function (Q, fs, casing, pancakes, log, config) {
             if (migration.dependsOn) { // for now, handle only the array
                 var ops = [];
                 migration.dependsOn.forEach(function (depMigration) {
-                    log.info('Migration ' + dir + ' depends on ' + depMigration + ', so adding that first...');
+                    //log.info('Migration ' + dir + ' depends on ' + depMigration + ', so adding that first...');
                     ops.push(addMigration(depMigration));
                 });
                 return Q.all(ops); // run all dependencies first
@@ -42,7 +42,8 @@ module.exports = function (Q, fs, casing, pancakes, log, config) {
                             return newMigration;
                         })
                         .catch(function () {
-                            log.error(migrationName + ' had already been added');
+                            //log.info(migrationName + ' had already been added');
+                            // not really necessary to log this- this will happen many, many times
                         });
                 }
                 else {
@@ -64,7 +65,7 @@ module.exports = function (Q, fs, casing, pancakes, log, config) {
                 log.info('Found no /migrations directory from which to run migrations');
             }
 
-            log.info(dirs.length + ' migration(s) found: ' + dirs);
+            //log.info(dirs.length + ' migration(s) found: ' + dirs);
 
             var ops = [];
             dirs.forEach(function (dir) {
@@ -75,14 +76,27 @@ module.exports = function (Q, fs, casing, pancakes, log, config) {
                 .then(function () {
                     migrationService = migrationService || pancakes.getService('migration');
 
-                    if (config.env === 'production' || config.env === 'staging') {
-                        return true;
-                    }
-                    else if ( migrationService && migrationService.flush ) {
-                        return migrationService.flush({caller: migrationService.admin})   // if on development, just go
-                            .catch(function (err) {
-                                log.error(err);
+                    //run \'node batch -a flush.migrations --env=[env]\' to complete migration
+                    if ( migrationService && migrationService.flush ) {
+                        return migrationService.find({caller: migrationService.admin, where: {totalRuns: 0}})
+                            .then(function (pendingMigrations) {
+                                if ( pendingMigrations && pendingMigrations.length ) {
+                                    if (!(config.migrations && config.migrations.runImmediately)) {
+                                        log.info('You have ' + pendingMigrations.length + ' migration(s) pending; run \'node batch -a flush.migrations --env=[env]\' to flush');
+                                        return true;
+                                    }
+                                    else {
+                                        return migrationService.flush({caller: migrationService.admin})   // if on development, just go
+                                            .catch(function (err) {
+                                                log.error(err);
+                                            });
+                                    }
+                                }
+                                else {
+                                    return true;
+                                }
                             });
+
                     }
                     else {
                         log.error('MigrationService does not exist- be sure that migration/migration.resource is in your project');
