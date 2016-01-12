@@ -60,14 +60,7 @@ module.exports = function (_, appConfigs, i18n, config, translations) {
         var staticFileRoot = (staticSSL ? 'https://' : 'http://') + config.staticFiles.assets + '/';
 
         model.clientData = {
-            config: _.extend({
-                stripe: {
-                    publicKey: config.stripe.publicKey
-                },
-                gethuman: config.gethuman,
-                staticFileRoot: staticFileRoot,
-                useSSL: (config[appName] && config[appName].useSSL !== undefined) ? config[appName].useSSL : config.useSSL
-            }, config.webclient),
+            config: _.extend(config.exposeToClient(config), config.webclient),
             context: {
                 app:                appName,
                 lang:               lang
@@ -75,10 +68,13 @@ module.exports = function (_, appConfigs, i18n, config, translations) {
             translations:           translations && translations[appName] && translations[appName][lang]
         };
 
+        /*
         if (config.realtime) {
             model.clientData.config.realtime = { host: config.realtime.host };
         }
+        */
 
+        console.log('clientData is ' + JSON.stringify(model.clientData.config));
         return model;
     }
 
