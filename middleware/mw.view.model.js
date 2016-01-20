@@ -59,13 +59,14 @@ module.exports = function (_, appConfigs, i18n, config, translations) {
             config[appName].useSSL : config.useSSL;
         var staticFileRoot = (staticSSL ? 'https://' : 'http://') + config.staticFiles.assets + '/';
 
-        var exposedConfig = config.exposeToClient ? config.exposeToClient(config, {appName: appName, staticFileRoot: staticFileRoot})
-            : { // this is deprecated- use config.exposeToClient in your pancakes project instead
-            gethuman: config.gethuman,
-            staticFileRoot: staticFileRoot,
-            realtime: (config.realtime ? {host: config.realtime.host} : null),
-            useSSL: (config[appName] && config[appName].useSSL !== undefined) ? config[appName].useSSL : config.useSSL
-        };
+        var exposedConfig = config.exposeToClient ?
+            config.exposeToClient(config, { appName: appName, staticFileRoot: staticFileRoot }) :
+            { // this is deprecated- use config.exposeToClient in your pancakes project instead
+                gethuman: config.gethuman,
+                staticFileRoot: staticFileRoot,
+                realtime: (config.realtime ? {host: config.realtime.host} : null),
+                useSSL: (config[appName] && config[appName].useSSL !== undefined) ? config[appName].useSSL : config.useSSL
+            };
 
         model.clientData = {
             config: _.extend(exposedConfig, config.webclient),
