@@ -18,6 +18,7 @@ module.exports = function () {
      * @returns {*|boolean}
      */
     function canEdit(item, user) {
+        user = user || {};
 
         if (user.role === 'admin') { return true; }
 
