@@ -13,7 +13,7 @@ module.exports = function (Q, config, trackingService, log) {
             if (isWebserver) {
                 ctx.server.ext('onPreAuth', function (req, reply) {
                     if (req.query.fromurl && req.session) {
-                        req.session.set('lastPage', req.query.fromurl);
+                        req.yar.set('lastPage', req.query.fromurl);
                     }
 
                     reply.continue();
@@ -26,7 +26,7 @@ module.exports = function (Q, config, trackingService, log) {
                 var isNotStaticFile = url.indexOf(config.staticFiles.assets) < 0;
 
                 if (isWebserver && domain !== 'trust' && url !== '/ping' && url !== '/robots.txt' && isNotStaticFile && req.session) {
-                    req.session.set('lastPage', req.info.host + url);
+                    req.yar.set('lastPage', req.info.host + url);
                 }
                 else if (isApi) {
                     trackingService.trackApiCall({
