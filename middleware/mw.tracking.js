@@ -12,7 +12,7 @@ module.exports = function (Q, config, trackingService, log) {
 
             if (isWebserver) {
                 ctx.server.ext('onPreAuth', function (req, reply) {
-                    if (req.query.fromurl && req.session) {
+                    if (req.query.fromurl && req.yar) {
                         req.yar.set('lastPage', req.query.fromurl);
                     }
 
@@ -23,7 +23,8 @@ module.exports = function (Q, config, trackingService, log) {
             ctx.server.ext('onPostHandler', function (req, reply) {
                 var url = req.url.pathname;
                 var domain = req.app.domain;
-                var isNotStaticFile = url.indexOf(config.staticFiles.assets) < 0;
+                var isNotStaticFile = url.indexOf('/dist') !== 0 &&
+                    config.staticFiles.assets.indexOf(req.info.host) < 0;
 
                 if (isWebserver && domain !== 'trust' && url !== '/ping' && url !== '/robots.txt' && isNotStaticFile && req.yar) {
                     req.yar.set('lastPage', req.info.host + url);
