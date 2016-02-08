@@ -25,7 +25,7 @@ module.exports = function (Q, config, trackingService, log) {
                 var domain = req.app.domain;
                 var isNotStaticFile = url.indexOf(config.staticFiles.assets) < 0;
 
-                if (isWebserver && domain !== 'trust' && url !== '/ping' && url !== '/robots.txt' && isNotStaticFile && req.session) {
+                if (isWebserver && domain !== 'trust' && url !== '/ping' && url !== '/robots.txt' && isNotStaticFile && req.yar) {
                     req.yar.set('lastPage', req.info.host + url);
                 }
                 else if (isApi) {
