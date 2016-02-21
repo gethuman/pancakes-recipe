@@ -86,18 +86,18 @@ module.exports = function (Q, userService, userCacheService, config, jwt, log) {
         }
 
         var token = parts[1];
-        jwt.verify(token, privateKey)
+        return jwt.verify(token, privateKey)
             .then(function (decodedToken) {
                 return getUserForToken(decodedToken);
             })
             .then(function (user) {
                 req.user = user;
-                reply.continue();
+                return reply.continue();
             })
             // if error continue on as anonymous
             .catch(function () {
                 //log.debug('Problem verifying token: ' + token);
-                reply.continue();
+                return reply.continue();
             });
     }
 

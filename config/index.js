@@ -4,8 +4,10 @@
  *
  * Only used for testing purposes
  */
-module.exports = {
+var _ = require('lodash');
+
+module.exports = _.extend({
     translator: {
         apiKey: 'testonly'  //TODO: find good way to test w/o exposing api key
     }
-};
+}, require('./env'));

@@ -85,7 +85,7 @@ module.exports = function (Q) {
                 }
 
                 // if we get here, we can continue as normal
-                reply.continue();
+                return reply.continue();
             });
 
             return new Q(ctx);
