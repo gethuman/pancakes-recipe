@@ -7,6 +7,8 @@
 module.exports = function (_, eventBus) {
     // @module({ "client": true })
 
+    var enabled = true;
+
     /**
      * Get the source from the error stack trace
      * @returns {*}
@@ -40,7 +42,10 @@ module.exports = function (_, eventBus) {
         logData.msg = msg;
         logData.level = 'debug';
         logData.source = getSource();
-        eventBus.emit('log.debug', logData);
+
+        if (enabled) {
+            eventBus.emit('log.debug', logData);
+        }
     }
 
     /**
@@ -53,7 +58,10 @@ module.exports = function (_, eventBus) {
         logData.msg = msg;
         logData.level = 'info';
         logData.source = getSource();
-        eventBus.emit('log.info', logData);
+
+        if (enabled) {
+            eventBus.emit('log.info', logData);
+        }
     }
 
     /**
@@ -91,7 +99,10 @@ module.exports = function (_, eventBus) {
         logData.msg = 'error: ' + (logData.msg || '') + ' ' + (msg || '');
         logData.level = 'error';
         logData.source = getSource();
-        eventBus.emit('log.error', logData);
+
+        if (enabled) {
+            eventBus.emit('log.error', logData);
+        }
     }
 
     /**
@@ -112,6 +123,8 @@ module.exports = function (_, eventBus) {
         info: info,
         error: error,
         critical: error,  // not a mistake; do error for now
-        andThrow: andThrow
+        andThrow: andThrow,
+        disable: function () { enabled = false; },
+        enable: function () { enabled = true; }
     };
 };

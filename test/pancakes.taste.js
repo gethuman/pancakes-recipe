@@ -11,6 +11,12 @@ var path    = require('path');
 var delim   = path.normalize('/');
 var adminId = mongo.newObjectId(null);
 var pancakesTaste;
+var admin = {
+    _id:    adminId,
+    name:   'TestUser',
+    role:   'admin',
+    type:   'user'
+};
 
 // test code in client project would reference this by doing:
 // var taste = require('pancakes-recipe').taste(require);
@@ -67,15 +73,35 @@ module.exports = function (loadModule) {
             done();
         },
 
-        caller: {
-            admin: {
-                _id:    adminId,
-                name:   'TestUser',
-                role:   'admin',
-                type:   'user'
-            }
+        addTestData: function (service, savedItems, data) {
+            return service.create({
+                    caller: admin,
+                    data: data
+                })
+                .then(function (item) {
+                    savedItems.push(item);
+                });
         },
 
+        deleteTestData: function (service, savedItems) {
+            return service.removePermanently({
+                caller: admin,
+                where: {
+                    _id: {
+                        $in: savedItems
+                            .filter(function (item) {
+                                return item && item._id;
+                            })
+                            .map(function (item) {
+                                return item._id;
+                            })
+                    }
+                },
+                multi: true
+            });
+        },
+
+        caller: { admin: admin },
         newObjectId: mongo.newObjectId,
         config: config,
         getService: pancakes.getService,
