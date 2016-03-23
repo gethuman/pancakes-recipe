@@ -38,6 +38,7 @@ module.exports = function (loadModule) {
 
     // make sure errors printed to console since we aren't using the log reactor
     var config = loadModule(configDir);
+    config.isThisTest = true;
     config.logging = config.logging || {};
     config.logging.level = 'error';
     var eventBus = pancakes.cook('eventBus', null);
