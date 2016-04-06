@@ -6,12 +6,12 @@
  * Listens for log events and propagates them appropriately
  */
 var _       = require('lodash');
-var raven   = require('raven');
 var cls     = require('continuation-local-storage');
 
 require('colors');
 
 var errorClient = null;
+
 /* eslint no-console:0 */
 
 var ignoreErrs = [
@@ -86,10 +86,7 @@ function init(opts) {
         error: 'red',
         critical: 'red'
     };
-    var logRemote = transport.indexOf('remote') >= 0;
-
-    errorClient = loggingConfig.errorServerUrl && logRemote ?
-        new raven.Client(loggingConfig.errorServerUrl) : null;
+    // var logRemote = transport.indexOf('remote') >= 0;
 
     if (level === 'error') {
         handlers = handlers.concat(['log.error']);
