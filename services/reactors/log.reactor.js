@@ -6,68 +6,56 @@
  * Listens for log events and propagates them appropriately
  */
 var _       = require('lodash');
-var cls     = require('continuation-local-storage');
+// var cls     = require('continuation-local-storage');
 
 require('colors');
 
-var errorClient = null;
 
 /* eslint no-console:0 */
 
-var ignoreErrs = [
-    'Cannot read property \'session\' of null',
-    'Invalid cookie header',
-    'App was rejected',
-    'Missing custom request token cookie',
-    'Bad Request'
-];
-
-/**
- * Error handler
- * @param logData
- */
-function errorHandler(logData) {
-    if (!logData) {
-        return;
-    }
-
-    logData.msg = (logData.msg === 'undefined' || logData.msg === 'null') ? null : logData.msg;
-    logData.err = (logData.err === 'undefined' || logData.err === 'null') ? null : logData.err;
-
-    logData.yoyo = 'Err is ' + logData.err + ' with msg ' + logData.msg;
-    if (!(logData.err instanceof Error)) {
-        delete logData.err;
-    }
-
-    if (!logData.msg && !logData.err) {
-        return;
-    }
-
-    // extra data to help with debugging
-    logData.msg = logData.msg || logData.message || logData.yoyo;
-    var session = cls.getNamespace('appSession');
-    if (session && session.active) {
-        var caller = session.get('caller');
-        if (caller && caller.user) {
-            logData.userId = caller.user._id;
-            logData.username = caller.user.username;
-        }
-
-        logData.app = session.get('app');
-        logData.lang = session.get('lang');
-        logData.url = session.get('url');
-    }
-
-    for (var i = 0; i < ignoreErrs.length; i++) {
-        if (logData.yoyo.indexOf(ignoreErrs[i]) >= 0) {
-            return;
-        }
-    }
-
-    logData.err ?
-        errorClient.captureError(logData.err, { extra: logData }) :
-        errorClient.captureMessage(logData.msg, { extra: logData });
-}
+// var errorClient = null;
+// function errorHandler(logData) {
+//     if (!logData) {
+//         return;
+//     }
+//
+//     logData.msg = (logData.msg === 'undefined' || logData.msg === 'null') ? null : logData.msg;
+//     logData.err = (logData.err === 'undefined' || logData.err === 'null') ? null : logData.err;
+//
+//     logData.yoyo = 'Err is ' + logData.err + ' with msg ' + logData.msg;
+//     if (!(logData.err instanceof Error)) {
+//         delete logData.err;
+//     }
+//
+//     if (!logData.msg && !logData.err) {
+//         return;
+//     }
+//
+//     // extra data to help with debugging
+//     logData.msg = logData.msg || logData.message || logData.yoyo;
+//     var session = cls.getNamespace('appSession');
+//     if (session && session.active) {
+//         var caller = session.get('caller');
+//         if (caller && caller.user) {
+//             logData.userId = caller.user._id;
+//             logData.username = caller.user.username;
+//         }
+//
+//         logData.app = session.get('app');
+//         logData.lang = session.get('lang');
+//         logData.url = session.get('url');
+//     }
+//
+//     for (var i = 0; i < ignoreErrs.length; i++) {
+//         if (logData.yoyo.indexOf(ignoreErrs[i]) >= 0) {
+//             return;
+//         }
+//     }
+//
+//     logData.err ?
+//         errorClient.captureError(logData.err, { extra: logData }) :
+//         errorClient.captureMessage(logData.msg, { extra: logData });
+// }
 
 /**
  * Add the event handlers to the event bus
@@ -141,10 +129,10 @@ function init(opts) {
     }
 
     // if remote transport, then set up the logger to Logentries
-    if (errorClient) {
-        eventBus.on('log.error', errorHandler);
-        eventBus.on('log.critical', errorHandler);
-    }
+    // if (errorClient) {
+    //     eventBus.on('log.error', errorHandler);
+    //     eventBus.on('log.critical', errorHandler);
+    // }
 }
 
 // expose functions
