@@ -101,6 +101,12 @@ function init(opts) {
     /* jshint newcap:false */
     if (transport.indexOf('console') >= 0) {
         eventBus.addHandlers(handlers, function (logData) {
+
+            // if log data instance of AppError don't do anything
+            if (!logData || (logData.err && logData.err.isAppError)) {
+                return;
+            }
+
             var len = 10;
             var pad = ' ';
             var standardFields = ['msg', 'level', 'source', 'stack', 'inner'];

@@ -16,6 +16,7 @@ module.exports = function (_, errorDecoder, casing) {
      * @constructor
      */
     var AppError = function (opts) {
+        this.isAppError = true;
         this.code = opts.code;
         this.message = this.msg = opts.msg;
         this.type = opts.type;
