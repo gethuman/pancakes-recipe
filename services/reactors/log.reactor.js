@@ -137,6 +137,6 @@ function init(opts) {
 
 // expose functions
 module.exports =  {
-    errorHandler: errorHandler,
+    // errorHandler: errorHandler,
     init: init
 };
