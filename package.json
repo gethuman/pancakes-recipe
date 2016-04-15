@@ -23,7 +23,7 @@
     "boom": "3.1.2",
     "colors": "1.1.2",
     "commander": "2.9.0",
-    "continuation-local-storage": "3.1.6",
+    "continuation-local-storage": "3.1.7",
     "fakeblock": "0.0.78",
     "funnelweb": "0.0.1",
     "hapi": "13.3.0",
