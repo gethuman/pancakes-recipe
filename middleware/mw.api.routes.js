@@ -27,13 +27,28 @@ module.exports = function (Q, pancakes, mwCommonRoutes, config) {
             });
 
             // route for robots.txt
+            // server.route({
+            //     method:     'GET',
+            //     path:       '/robots.txt',
+            //     config:     { cache: { expiresIn: 86400001 } },
+            //
+            //     handler: function (request, reply) {
+            //         reply('User-agent: *\nDisallow: /').header('Content-Type', 'text/plain');
+            //     }
+            // });
             server.route({
                 method:     'GET',
                 path:       '/robots.txt',
                 config:     { cache: { expiresIn: 86400001 } },
 
                 handler: function (request, reply) {
-                    reply('User-agent: *\nDisallow: /').header('Content-Type', 'text/plain');
+                    if (config.env === 'production') {
+                        reply('User-agent: Mediapartners-Google\nDisallow:\nUser-agent: *\nDisallow: /axj/\nAllow: /')
+                            .header('Content-Type', 'text/plain');
+                    }
+                    else {
+                        reply('User-agent: *\nDisallow: /').header('Content-Type', 'text/plain');
+                    }
                 }
             });
 
