@@ -68,7 +68,10 @@ module.exports = function (_, translations, context, config) {
         var lang = (scope && scope.lang) || context.get('lang') || 'en';
         var translated;
 
-        if (!val || val.length < 2) { return val; }
+        // if just one character or is a number, don't do translation
+        if (!val || val.length < 2 || !isNaN(val)) {
+            return val;
+        }
 
         // translations could be either nested (on the server) or at the root (on the client)
         translated = (translations[app] && translations[app][lang] && translations[app][lang][val]) ||
