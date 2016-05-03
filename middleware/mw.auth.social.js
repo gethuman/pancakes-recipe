@@ -66,7 +66,7 @@ module.exports = function (Q, _, config, crypto) {
     function init(ctx) {
         var server = ctx.server;
 
-        server.register({ register: require('belzl') }, function (err) {
+        server.register({ register: require('bell') }, function (err) {
             if (err) { throw err; }
 
             _.each(config.security.social, function (providerConfig, providerName) {
