@@ -198,7 +198,9 @@ _.extend(RedisAdapter.prototype, {
 
         if (!redisOffline) {
             try {
-                cache.set(req.key, req.value);
+                req.value ?
+                    cache.set(req.key, req.value) :
+                    cache.del(req.key);
             }
             catch (err) {
                 console.log('redis set err: ' + err);
