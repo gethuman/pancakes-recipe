@@ -49,6 +49,9 @@ function wrapRemoteCache(remoteCache) {
             remoteCache.set(key, value);
             remoteCache.expire(key, 3600);
         },
+        del: function (key) {
+            remoteCache.del(key);
+        },
         quit: function () {
             remoteCache.quit();
         },
