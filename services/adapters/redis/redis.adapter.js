@@ -73,6 +73,9 @@ function createLocalCache() {
         },
         set: function (key, value) {
             localCache.set(key, value);
+        },
+        del: function (key) {
+            localCache.set(key, null);
         }
     };
 }
@@ -201,7 +204,7 @@ _.extend(RedisAdapter.prototype, {
 
         if (!redisOffline) {
             try {
-                req.value ?
+                (req.value || !cache.del) ?
                     cache.set(req.key, req.value) :
                     cache.del(req.key);
             }
