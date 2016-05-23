@@ -21,7 +21,7 @@ module.exports = {
         };
     },
 
-    /** 
+    /**
      * Context on the server  side comes from CLS
      */
     server: function (cls) {
