@@ -4,7 +4,7 @@
  *
  * Getting the caller
  */
-module.exports = function (Q, crypto, userService, mongoose, config, log, AppError, cls) {
+module.exports = function (Q, crypto, userService, config, log, AppError, cls) {
 
     /**
      * Get the device id if it exists and the secret is valid
