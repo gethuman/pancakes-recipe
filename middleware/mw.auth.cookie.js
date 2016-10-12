@@ -12,6 +12,8 @@ module.exports = function (Q, config) {
      * @param server
      */
     function registerCookieJar(server) {
+        var deferred = Q.defer();
+
         server.register({
             register: require('yar'),
             options: {
@@ -25,8 +27,10 @@ module.exports = function (Q, config) {
                 }
             }
         }, function (err) {
-            if (err) { throw err; }
+            err ? deferred.reject(err) : deferred.resolve(err);
         });
+
+        return deferred.promise;
     }
 
     /**
@@ -67,11 +71,13 @@ module.exports = function (Q, config) {
     function init(ctx) {
         var server = ctx.server;
 
-        registerCookieJar(server);
-        registerJwtCookie(server);
-        server.ext('onPreAuth', getJwtFromCookie);
+        return registerCookieJar(server)
+            .then(function () {
+                registerJwtCookie(server);
+                server.ext('onPreAuth', getJwtFromCookie);
 
-        return new Q(ctx);
+                return new Q(ctx);
+            });
     }
 
     // exposing functions
