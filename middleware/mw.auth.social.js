@@ -65,25 +65,34 @@ module.exports = function (Q, _, config, crypto) {
      */
     function init(ctx) {
         var server = ctx.server;
+        var deferred = Q.defer();
 
-        server.register({ register: require('bell') }, function (err) {
-            if (err) { throw err; }
+        server.register({register: require('bell')}, function (err) {
+
+            if (err) {
+                deferred.reject(err);
+                return;
+            }
 
             _.each(config.security.social, function (providerConfig, providerName) {
                 var opts = _.extend({}, config.security.cookie, {
-                    'cookie':           'bell-' + providerName,
-                    'clientId':         providerConfig.appId,
-                    'clientSecret':     providerConfig.appSecret,
-                    'isSecure':         config.useSSL,
-                    'forceHttps':       config.useSSL,
-                    'provider':         getProvider(providerName, providerConfig)
+                    'cookie': 'bell-' + providerName,
+                    'clientId': providerConfig.appId,
+                    'clientSecret': providerConfig.appSecret,
+                    'isSecure': config.useSSL,
+                    'forceHttps': config.useSSL,
+                    'provider': getProvider(providerName, providerConfig)
                 });
 
                 server.auth.strategy(providerName, 'bell', opts);
             });
+
+            deferred.resolve();
         });
 
-        return new Q(ctx);
+        return deferred.promise.then(function () {
+            return Q.when(ctx);
+        });
     }
 
     // exposing functions
