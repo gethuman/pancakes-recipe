@@ -20,29 +20,29 @@
   "dependencies": {
     "bcrypt": "^0.8.7",
     "bell": "^8.3.0",
-    "boom": "^4.1.0",
+    "boom": "^4.2.0",
     "colors": "1.1.2",
     "commander": "2.9.0",
     "continuation-local-storage": "^3.2.0",
-    "fakeblock": "0.0.89",
+    "fakeblock": "0.0.90",
     "funnelweb": "0.0.1",
-    "hapi": "^15.1.1",
+    "hapi": "^15.2.0",
     "hapi-auth-cookie": "6.1.1",
     "inert": "4.0.2",
     "jsonwebtoken": "7.1.9",
-    "lodash": "^4.16.4",
+    "lodash": "^4.17.0",
     "lru-cache": "4.0.1",
-    "moment": "^2.15.1",
-    "pancakes": "^0.1.152",
-    "pancakes-mongo": "0.0.141",
+    "moment": "^2.16.0",
+    "pancakes": "^0.1.153",
+    "pancakes-mongo": "0.0.142",
     "q": "1.4.1",
-    "redis": "2.6.2",
-    "request": "^2.75.0",
-    "yar": "^8.0.0"
+    "redis": "^2.6.3",
+    "request": "^2.78.0",
+    "yar": "^8.1.0"
   },
   "devDependencies": {
-    "batter": "^0.1.50",
+    "batter": "^0.1.51",
     "gulp": "3.9.1",
-    "taste": "^0.2.40"
+    "taste": "^0.2.41"
   }
 }
