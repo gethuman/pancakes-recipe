@@ -21,6 +21,7 @@ module.exports = function (Q, config) {
                     expiresIn:  cookieConfig.ttl
                 },
                 cookieOptions: {
+                    clearInvalid: true,
                     password:   cookieConfig.password,
                     domain:     cookieConfig.domain,
                     isSecure:   cookieConfig.isSecure
