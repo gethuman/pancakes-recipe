@@ -9,7 +9,7 @@ var tastePancakes       = require('./test/pancakes.taste');
 var RedisAdapter        = require('./services/adapters/redis/redis.adapter');
 var ApiclientAdapter    = require('./services/adapters/apiclient/apiclient.adapter');
 // var TranslatorAdapter   = require('./services/adapters/translator/translator.adapter');
-var logReactor          = require('./services/reactors/log.reactor');
+// var logReactor          = require('./services/reactors/log.reactor');
 // var translationReactor  = require('./services/reactors/translation.reactor');
 
 module.exports = {
@@ -22,7 +22,7 @@ module.exports = {
         // translator:     TranslatorAdapter
     },
     reactors: {
-        log:            logReactor
+        // log:            logReactor
         // translation:    translationReactor
     }
 };
