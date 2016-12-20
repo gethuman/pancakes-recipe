@@ -55,7 +55,7 @@ module.exports = function (Q, _, Boom, errorDecoder, config, log,
                     msg = response.message || (response + '');
                     if (response.data) { msg += ' : ' + response.data; }
 
-                    log.error(msg);
+                    log.info(msg);
 
                     response = new AppError({
                         code: response.code || 'api_error',
