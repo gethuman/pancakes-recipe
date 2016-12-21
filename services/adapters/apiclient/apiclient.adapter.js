@@ -126,13 +126,25 @@ function send(httpMethod, path, req) {
         json:       _.isEmpty(data) ? true : data
     };
 
+    // if baseUrl not there yet, wait for 100 seconds until it is (i.e. during system startup)
+    if (!baseUrl) {
+        setTimeout(function () {
+            makeRequest(reqConfig, deferred);
+        }, 100);
+    }
+    else {
+        makeRequest(reqConfig, deferred);
+    }
+
+    return deferred.promise;
+}
+
+function makeRequest(reqConfig, deferred) {
     request(reqConfig, function (err, resp, obj) {
         if (err)                            { deferred.reject(err); }
         else if (resp.statusCode !== 200)   { deferred.reject(obj || resp.statusMessage); }
         else                                { deferred.resolve(obj); }
     });
-
-    return deferred.promise;
 }
 
 // add send to the prototype for an instance of apiclient adapter
